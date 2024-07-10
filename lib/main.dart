@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
-import 'package:pamfurred/login.dart';
+import 'package:pamfurred/components/globals.dart';
+import 'package:pamfurred/screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pamfurred',
       theme: ThemeData(
-        textTheme: GoogleFonts.interTextTheme(
-          Theme.of(context).textTheme,
-        ),
-      ),
-      // To be modified
+          textTheme: GoogleFonts.interTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: primaryColor)),
+      // To be changed
       home: const LoginScreen(),
     );
   }

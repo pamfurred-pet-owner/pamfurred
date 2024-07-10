@@ -1,12 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:pamfurred/home_screen.dart';
-import 'package:pamfurred/register.dart';
-import 'globals.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/home_screen.dart';
+import 'package:pamfurred/tests/register.dart';
+import '../components/globals.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -187,15 +188,9 @@ class LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               // validator
-                              onPressed: () {
-                                var isFormValid =
-                                    formKey.currentState!.validate();
-                                if (isFormValid) {
-                                  // Save to database
-                                }
-                              },
+                              onPressed: () {},
                               child: const Text(
-                                "Forgot password?",
+                                "Forgot passwordd?",
                                 style: TextStyle(
                                   fontSize: regularText,
                                   color: secondaryColor,
@@ -213,8 +208,14 @@ class LoginScreenState extends State<LoginScreen> {
                             height: 50,
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(context,
-                                    crossFadeRoute(const HomeScreen()));
+                                // validator
+                                var isFormValid =
+                                    formKey.currentState!.validate();
+                                if (isFormValid) {
+                                  // Save to database
+                                  Navigator.push(context,
+                                      crossFadeRoute(const HomeScreen()));
+                                }
                               },
                               style: ButtonStyle(
                                 shape: WidgetStateProperty.all<
@@ -260,7 +261,9 @@ class LoginScreenState extends State<LoginScreen> {
                                       ..onTap = () {
                                         Navigator.push(
                                             context,
-                                        rightToLeftRoute(const RegisterScreen()));
+                                            rightToLeftRoute(
+                                                const RegisterScreen()));
+                                        // rightToLeftRoute(const RegisterTest()));
                                       },
                                   )
                                 ],

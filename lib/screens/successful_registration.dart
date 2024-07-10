@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pamfurred/login.dart';
-import 'globals.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/login.dart';
+import '../components/globals.dart';
 
 class SuccessfulRegistration extends StatefulWidget {
   const SuccessfulRegistration({super.key});

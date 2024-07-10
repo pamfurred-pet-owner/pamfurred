@@ -1,17 +1,19 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:pamfurred/otp_auth.dart';
-import 'globals.dart';
+import 'package:pamfurred/components/custom_appbar.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/otp_auth.dart';
+import '../components/globals.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterTest extends StatefulWidget {
+  const RegisterTest({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterTest> createState() => _RegisterTestState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterTestState extends State<RegisterTest> {
   final formKey = GlobalKey<FormState>();
 
   late Map<String, TextEditingController> controllers;

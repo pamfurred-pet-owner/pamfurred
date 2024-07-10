@@ -4,9 +4,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:pamfurred/successful_registration.dart';
+import 'package:pamfurred/components/custom_appbar.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/successful_registration.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'globals.dart';
+import '../components/globals.dart';
 
 class OTPAuth extends StatefulWidget {
   const OTPAuth({super.key});
@@ -204,57 +206,57 @@ class _OTPAuthState extends State<OTPAuth> {
   }
 }
 
-Future<void> _getLocationPermission(BuildContext context) async {
-  // Request location permission
-  var status = await Permission.location.request();
+// Future<void> _getLocationPermission(BuildContext context) async {
+//   // Request location permission
+//   var status = await Permission.location.request();
 
-  if (status.isGranted) {
-    // Permission is granted, proceed to get location
-    _getCurrentLocation();
-  } else if (status.isDenied) {
-    // Permission denied, show error or informative message
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Location Permission Required'),
-        content: const Text('Please grant location access to continue.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
-  } else if (status.isPermanentlyDenied) {
-    // Permission permanently denied, open app settings
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Location Permission Required'),
-        content: const Text('Please grant location access in app settings.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Open Settings'),
-            onPressed: () {
-              openAppSettings();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   if (status.isGranted) {
+//     // Permission is granted, proceed to get location
+//     _getCurrentLocation();
+//   } else if (status.isDenied) {
+//     // Permission denied, show error or informative message
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) => AlertDialog(
+//         title: const Text('Location Permission Required'),
+//         content: const Text('Please grant location access to continue.'),
+//         actions: <Widget>[
+//           TextButton(
+//             child: const Text('OK'),
+//             onPressed: () => Navigator.of(context).pop(),
+//           ),
+//         ],
+//       ),
+//     );
+//   } else if (status.isPermanentlyDenied) {
+//     // Permission permanently denied, open app settings
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) => AlertDialog(
+//         title: const Text('Location Permission Required'),
+//         content: const Text('Please grant location access in app settings.'),
+//         actions: <Widget>[
+//           TextButton(
+//             child: const Text('Open Settings'),
+//             onPressed: () {
+//               openAppSettings();
+//               Navigator.of(context).pop();
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-void _getCurrentLocation() async {
-  // Get current position
-  Position position = await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.high,
-  );
+// void _getCurrentLocation() async {
+//   // Get current position
+//   Position position = await Geolocator.getCurrentPosition(
+//     desiredAccuracy: LocationAccuracy.high,
+//   );
 
-  // Use the position data as needed
-  if (kDebugMode) {
-    print('Current location: ${position.latitude}, ${position.longitude}');
-  }
-}
+//   // Use the position data as needed
+//   if (kDebugMode) {
+//     print('Current location: ${position.latitude}, ${position.longitude}');
+//   }
+// }

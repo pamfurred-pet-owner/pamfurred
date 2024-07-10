@@ -5,11 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "pamfurred",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
             "name": "pamfurred (profile mode)",
             "request": "launch",
             "type": "dart",
@@ -20,6 +15,11 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+        },
+        {
+            "name": "Flutter",
+            "request": "launch",
+            "type": "dart"
         }
     ]
 }
