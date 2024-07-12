@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pamfurred/components/globals.dart';
 
 // 1) appBar
 // Primarily for homescreen
@@ -21,7 +20,7 @@ AppBar appBar(BuildContext context) {
     actions: const [
       Padding(
         padding: EdgeInsets.fromLTRB(10, 35, 15, 10),
-        child: Icon(Icons.settings),
+        child: Icon(Icons.settings, size: 30),
       ),
     ],
   );

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 // fontSize
 const double regularText = 15;
-const double titleFont = 25;
 const double headerText = 18;
+const double titleFont = 25;
 
 // fontWeight
 const boldWeight = FontWeight.w900;
@@ -20,6 +20,11 @@ const double primaryTextFieldHeight = 40;
 
 // Padding
 const primaryPadding = EdgeInsets.fromLTRB(35, 0, 35, 0);
+
+// Overall screen padding
+double screenPadding(BuildContext context) {
+  return MediaQuery.of(context).size.width - 40;
+}
 
 // SizedBox
 const double primarySizedBox = 8;
