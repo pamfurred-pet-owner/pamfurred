@@ -27,9 +27,10 @@ double screenPadding(BuildContext context) {
 }
 
 // SizedBox
-const double primarySizedBox = 8;
-const double secondarySizedBox = 16;
-const double tertiarySizedBox = 24;
+const double primarySizedBox = 4;
+const double secondarySizedBox = 8;
+const double tertiarySizedBox = 16;
+const double quaternarySizedBox = 24;
 
 // BorderRadius
 const double primaryBorderRadius = 5;

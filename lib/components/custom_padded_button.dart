@@ -18,7 +18,7 @@ Widget customPaddedTextButton({
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(1),
         child: Text(
           text,
           style: const TextStyle(

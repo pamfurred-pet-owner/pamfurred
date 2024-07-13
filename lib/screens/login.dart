@@ -32,6 +32,12 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(const AssetImage('assets/pamfurred_logo.png'), context);
+  }
+
+  @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
