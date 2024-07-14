@@ -1,7 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:pamfurred/components/globals.dart';
-import 'screens/main_screen.dart';
+import 'screens/login.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +19,12 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.interTextTheme(
           Theme.of(context).textTheme,
         ),
-        colorScheme: Theme.of(context).colorScheme.copyWith(primary: primaryColor),
+        colorScheme:
+            Theme.of(context).colorScheme.copyWith(primary: primaryColor),
+        splashFactory: NoSplash.splashFactory, // Disable splash colors
       ),
-      home: const MainScreen(),
+      // Change to HomeScreen() if the user is already logged in
+      home: const LoginScreen(),
     );
   }
 }

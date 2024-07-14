@@ -44,3 +44,26 @@ AppBar customAppBar(BuildContext context) {
     ),
   );
 }
+
+// 3) customAppBar with Title
+// This is for other screens but homescreen
+AppBar customAppBarWithTitle(BuildContext context, String title) {
+  return AppBar(
+    backgroundColor: Colors.white,
+    toolbarHeight: 60,
+    title: Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Text(title),
+    ),
+    leading: Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
+      child: IconButton(
+        icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+        onPressed: () {
+          // Custom action on back button press
+          Navigator.pop(context);
+        },
+      ),
+    ),
+  );
+}

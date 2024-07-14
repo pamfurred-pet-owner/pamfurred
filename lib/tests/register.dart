@@ -338,6 +338,34 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Pin exact address ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              Container(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                child: Image.asset(
+                  'assets/pin_address.png',
+                  width: double.infinity,
+                ),
+              ),
+              const SizedBox(height: tertiarySizedBox),
             ],
           ),
         ),
@@ -613,123 +641,100 @@ class RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: secondarySizedBox),
-                  const Text(
-                    "Create an account",
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w900,
-                      fontSize: titleFont,
+      body: Theme(
+        data: ThemeData(
+          canvasColor:
+              Colors.transparent, // Set the background color to transparent
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: primaryColor),
+          splashColor: Colors.transparent,
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: secondarySizedBox),
+                    const Text(
+                      "Create an account",
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: titleFont,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: secondarySizedBox),
-                  RichText(
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: regularText),
-                      children: [
-                        TextSpan(
-                          text: "Fields marked with (",
-                          style: TextStyle(
-                            color: greyColor,
+                    const SizedBox(height: secondarySizedBox),
+                    RichText(
+                      text: const TextSpan(
+                        style: TextStyle(fontSize: regularText),
+                        children: [
+                          TextSpan(
+                            text: "Fields marked with (",
+                            style: TextStyle(
+                              color: greyColor,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: "*",
-                          style: TextStyle(
-                            color: primaryColor,
+                          TextSpan(
+                            text: "*",
+                            style: TextStyle(
+                              color: primaryColor,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: ") are required.",
-                          style: TextStyle(
-                            color: greyColor,
+                          TextSpan(
+                            text: ") are required.",
+                            style: TextStyle(
+                              color: greyColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: secondarySizedBox),
-                ],
+                    const SizedBox(height: secondarySizedBox),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: Stepper(
-                elevation: 0,
-                type: StepperType.horizontal,
-                currentStep: activeStepIndex,
-                steps: stepList(),
-                onStepContinue: () {
-                  if (activeStepIndex < (stepList().length - 1)) {
-                    setState(() {
-                      activeStepIndex += 1;
-                    });
-                  } else {
-                    print('Submitted');
-                  }
-                },
-                onStepCancel: () {
-                  if (activeStepIndex == 0) {
-                    return;
-                  }
+              Expanded(
+                child: Stepper(
+                  elevation: 0,
+                  type: StepperType.horizontal,
+                  currentStep: activeStepIndex,
+                  steps: stepList(),
+                  onStepContinue: () {
+                    if (activeStepIndex < (stepList().length - 1)) {
+                      setState(() {
+                        activeStepIndex += 1;
+                      });
+                    } else {
+                      // Save to database
+                      print('Submitted');
+                    }
+                  },
+                  onStepCancel: () {
+                    if (activeStepIndex == 0) {
+                      return;
+                    }
 
-                  setState(() {
-                    activeStepIndex -= 1;
-                  });
-                },
-                onStepTapped: (int index) {
-                  setState(() {
-                    activeStepIndex = index;
-                  });
-                },
-                controlsBuilder:
-                    (BuildContext context, ControlsDetails details) {
-                  final isLastStep = activeStepIndex == stepList().length - 1;
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: details.onStepContinue,
-                          style: ButtonStyle(
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    secondaryBorderRadius),
-                              ),
-                            ),
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                              primaryColor,
-                            ),
-                          ),
-                          child: (isLastStep)
-                              ? const Text("Register",
-                                  style: TextStyle(
-                                    fontSize: regularText,
-                                    color: Colors.white,
-                                  ))
-                              : const Text("Next",
-                                  style: TextStyle(
-                                    fontSize: regularText,
-                                    color: Colors.white,
-                                  )),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      if (activeStepIndex > 0)
+                    setState(() {
+                      activeStepIndex -= 1;
+                    });
+                  },
+                  onStepTapped: (int index) {
+                    setState(() {
+                      activeStepIndex = index;
+                    });
+                  },
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) {
+                    final isLastStep = activeStepIndex == stepList().length - 1;
+                    return Row(
+                      children: [
                         Expanded(
                           child: TextButton(
-                            onPressed: details.onStepCancel,
+                            onPressed: details.onStepContinue,
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
@@ -742,19 +747,52 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 primaryColor,
                               ),
                             ),
-                            child: const Text("Back",
-                                style: TextStyle(
-                                  fontSize: regularText,
-                                  color: Colors.white,
-                                )),
+                            child: (isLastStep)
+                                ? const Text("Register",
+                                    style: TextStyle(
+                                      fontSize: regularText,
+                                      color: Colors.white,
+                                    ))
+                                : const Text("Next",
+                                    style: TextStyle(
+                                      fontSize: regularText,
+                                      color: Colors.white,
+                                    )),
                           ),
                         ),
-                    ],
-                  );
-                },
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        if (activeStepIndex > 0)
+                          Expanded(
+                            child: TextButton(
+                              onPressed: details.onStepCancel,
+                              style: ButtonStyle(
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        secondaryBorderRadius),
+                                  ),
+                                ),
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                  primaryColor,
+                                ),
+                              ),
+                              child: const Text("Back",
+                                  style: TextStyle(
+                                    fontSize: regularText,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

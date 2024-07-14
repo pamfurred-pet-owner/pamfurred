@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
 import 'package:pamfurred/components/globals.dart';
@@ -104,7 +102,7 @@ class HomeScreenState extends State<HomeScreen> {
                       child: customPaddedTextButton(
                           text: "View appointments", onPressed: () {}))
                 ]),
-const SizedBox(height: primarySizedBox),
+                const SizedBox(height: primarySizedBox),
                 const Row(
                   children: [
                     Text("I'm looking for",
@@ -205,7 +203,8 @@ const SizedBox(height: primarySizedBox),
                                     ),
                                   ),
                                 ),
-                                if (selectedIndex == 1) selectedServiceCategory()
+                                if (selectedIndex == 1)
+                                  selectedServiceCategory()
                               ]),
                             ),
                             const SizedBox(height: primarySizedBox),
@@ -250,7 +249,8 @@ const SizedBox(height: primarySizedBox),
                                     ),
                                   ),
                                 ),
-                                if (selectedIndex == 2) selectedServiceCategory()
+                                if (selectedIndex == 2)
+                                  selectedServiceCategory()
                               ]),
                             ),
                           ])
