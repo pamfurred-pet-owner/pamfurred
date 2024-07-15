@@ -50,9 +50,9 @@ AppBar customAppBar(BuildContext context) {
 AppBar customAppBarWithTitle(BuildContext context, String title) {
   return AppBar(
     backgroundColor: Colors.white,
-    toolbarHeight: 60,
+    toolbarHeight: 70,
     title: Padding(
-      padding: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Text(title),
     ),
     leading: Padding(

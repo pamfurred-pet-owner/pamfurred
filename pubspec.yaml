@@ -68,6 +68,9 @@ dependencies:
   line_icons: ^2.0.3
   salomon_bottom_bar: ^3.3.2
 
+  # Animated icons
+  # flutter_animated_icons: ^1.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

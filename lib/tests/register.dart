@@ -6,6 +6,8 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/pin_location.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -357,12 +359,17 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ]),
               ),
               const SizedBox(height: secondarySizedBox),
-              Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                child: Image.asset(
-                  'assets/pin_address.png',
-                  width: double.infinity,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(secondaryBorderRadius),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context, rightToLeftRoute(const PinAddress()));
+                  },
+                  child: Image.asset(
+                    'assets/pin_address.png',
+                    width: double.infinity,
+                  ),
                 ),
               ),
               const SizedBox(height: tertiarySizedBox),
