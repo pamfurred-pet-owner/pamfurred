@@ -19,7 +19,7 @@ class LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
-  bool _obscureText = true;
+  bool obscureText = true;
 
   late FocusNode emailFocusNode;
   late FocusNode passwordFocusNode;
@@ -93,6 +93,7 @@ class LoginScreenState extends State<LoginScreen> {
                               cursorColor: const Color.fromRGBO(74, 74, 74, 1),
                               focusNode: emailFocusNode,
                               controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10.0),
                                 prefixIcon: const Icon(
@@ -132,7 +133,7 @@ class LoginScreenState extends State<LoginScreen> {
                               cursorColor: const Color.fromRGBO(74, 74, 74, 1),
                               focusNode: passwordFocusNode,
                               controller: passwordController,
-                              obscureText: _obscureText,
+                              obscureText: obscureText,
                               // validator
                               validator: (value) {
                                 return (value == '')
@@ -159,11 +160,11 @@ class LoginScreenState extends State<LoginScreen> {
                                     GestureDetector(
                                       onTap: (() {
                                         setState(() {
-                                          _obscureText = !_obscureText;
+                                          obscureText = !obscureText;
                                         });
                                       }),
                                       child: Icon(
-                                          _obscureText
+                                          obscureText
                                               ? Icons.visibility_outlined
                                               : Icons.visibility_off_outlined,
                                           size: 19),

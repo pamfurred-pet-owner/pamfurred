@@ -1,13 +1,15 @@
 import 'dart:async';
-
-import 'package:flutter/gestures.dart';
+import 'dart:io';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/otp_auth.dart';
 import 'package:pamfurred/screens/pin_location.dart';
+import 'package:path_provider/path_provider.dart';
+import '../components/custom_padded_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,7 +19,10 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class RegisterScreenState extends State<RegisterScreen> {
+  final formKey = GlobalKey<FormState>();
+
   int activeStepIndex = 0;
+  String pinnedLocationImage = '';
 
   // TextEditingControllers
   late Map<String, TextEditingController> controllers = {
@@ -35,31 +40,19 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscureText = true;
 
-  String otp = '';
-  Timer? timer;
-  int countDown = 120;
-  bool canResend = false;
-
-  void startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (countDown > 0) {
-          countDown--;
-        } else {
-          canResend = true;
-          timer.cancel();
-        }
-      });
-    });
+  @override
+  void initState() {
+    super.initState();
+    loadLatestImage();
   }
 
-  void resendOTP() {
-    if (canResend) {
+  Future<void> loadLatestImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/pinned_location.png';
+    if (File(path).existsSync()) {
       setState(() {
-        countDown = 120;
-        canResend = false;
+        pinnedLocationImage = path;
       });
-      startTimer();
     }
   }
 
@@ -100,6 +93,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['firstName'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter first name' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -135,6 +132,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['lastName'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter last name' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -170,6 +171,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   child: IntlPhoneField(
                     cursorColor: Colors.black,
                     initialCountryCode: 'PH',
+                    controller: controllers['phoneNumber'],
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10.0),
                         border: OutlineInputBorder(
@@ -204,6 +206,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['doorNo'],
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -242,6 +245,11 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['street'],
+                  keyboardType: TextInputType.streetAddress,
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter street name' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -280,6 +288,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['barangay'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter barangay' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -318,6 +330,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['city'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter city' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -359,16 +375,44 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ]),
               ),
               const SizedBox(height: secondarySizedBox),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(secondaryBorderRadius),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context, rightToLeftRoute(const PinAddress()));
-                  },
-                  child: Image.asset(
-                    'assets/pin_address.png',
-                    width: double.infinity,
+              Center(
+                child: Container(
+                  height: 170,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () async {
+                      var result = await Navigator.of(context)
+                          .push(rightToLeftRoute(const PinAddress()));
+                      if (result != null) {
+                        setState(() {
+                          pinnedLocationImage = result;
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: pinnedLocationImage.isNotEmpty
+                            ? DecorationImage(
+                                image: FileImage(File(pinnedLocationImage)),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: pinnedLocationImage.isEmpty
+                          ? Center(
+                              child: Image.asset(
+                              'assets/pin_address.png',
+                              fit: BoxFit.cover,
+                            ))
+                          : null,
+                    ),
                   ),
                 ),
               ),
@@ -415,6 +459,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['username'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter username' : null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -452,7 +500,18 @@ class RegisterScreenState extends State<RegisterScreen> {
                 height: primaryTextFieldHeight,
                 child: TextFormField(
                   cursorColor: Colors.black,
+                  keyboardType: TextInputType.emailAddress,
                   controller: controllers['email'],
+                  // validator
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter email address';
+                    } else {
+                      return (!EmailValidator.validate(value))
+                          ? 'Invalid Email Address'
+                          : null;
+                    }
+                  },
                   decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
@@ -491,6 +550,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextFormField(
                   cursorColor: Colors.black,
                   controller: controllers['password'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter password' : null;
+                  },
                   obscureText: _obscureText,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(10.0),
@@ -526,106 +589,8 @@ class RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         Step(
-          state: activeStepIndex <= 2 ? StepState.editing : StepState.complete,
-          isActive: activeStepIndex >= 2,
-          title: const Text(''),
-          content: Column(
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: secondarySizedBox),
-                  Text(
-                    "Verify email address",
-                    style: TextStyle(
-                      fontSize: headerText,
-                      fontWeight: mediumWeight,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: tertiarySizedBox),
-              Center(
-                child: SizedBox(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      style: TextStyle(fontSize: regularText),
-                      children: [
-                        TextSpan(
-                          text: "Enter the OTP sent to ",
-                          style: TextStyle(
-                              color: Colors.black, fontSize: regularText),
-                        ),
-                        TextSpan(
-                          // Insert user's username here
-                          text: "davidjacobs@gmail.com",
-                          style: TextStyle(
-                              fontSize: regularText,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: ".",
-                          style: TextStyle(
-                              color: Colors.black, fontSize: regularText),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: tertiarySizedBox),
-              OtpTextField(
-                fieldWidth: 60,
-                fieldHeight: 60,
-                showFieldAsBox: true,
-                borderColor: greyColor,
-                borderRadius: BorderRadius.circular(primaryBorderRadius),
-                focusedBorderColor: secondaryColor,
-                numberOfFields: 4,
-                textStyle: const TextStyle(fontSize: regularText),
-              ),
-              const SizedBox(height: tertiarySizedBox),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${(countDown ~/ 60).toString().padLeft(2, '0')}:${(countDown % 60).toString().padLeft(2, '0')}',
-                  ),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: const TextStyle(fontSize: regularText),
-                      children: [
-                        const TextSpan(
-                          text: "Didn't receive OTP? ",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Resend",
-                          style: const TextStyle(
-                            color: primaryColor,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              resendOTP();
-                            },
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: tertiarySizedBox)
-            ],
-          ),
-        ),
-        Step(
           state: StepState.complete,
-          isActive: activeStepIndex >= 3,
+          isActive: activeStepIndex >= 2,
           title: const Text(''),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -633,7 +598,7 @@ class RegisterScreenState extends State<RegisterScreen> {
             children: [
               Text('Name: ${controllers['firstName']?.text}'
                   ' '
-                  '${controllers['LastName']?.text}'),
+                  '${controllers['lastName']?.text}'),
               Text('Phone number: ${controllers['phoneNumber']?.text}'),
               Text(
                   'Address: ${controllers['doorNo']?.text},${controllers['street']?.text},${controllers['barangay']?.text},${controllers['city']?.text}'),
@@ -705,97 +670,84 @@ class RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               Expanded(
-                child: Stepper(
-                  elevation: 0,
-                  type: StepperType.horizontal,
-                  currentStep: activeStepIndex,
-                  steps: stepList(),
-                  onStepContinue: () {
-                    if (activeStepIndex < (stepList().length - 1)) {
-                      setState(() {
-                        activeStepIndex += 1;
-                      });
-                    } else {
-                      // Save to database
-                      print('Submitted');
-                    }
-                  },
-                  onStepCancel: () {
-                    if (activeStepIndex == 0) {
-                      return;
-                    }
+                child: Form(
+                  key: formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Stepper(
+                    elevation: 0,
+                    type: StepperType.horizontal,
+                    currentStep: activeStepIndex,
+                    steps: stepList(),
+                    onStepContinue: () {
+                      if (activeStepIndex < (stepList().length - 1)) {
+                        setState(() {
+                          activeStepIndex += 1;
+                        });
+                      } else {
+                        // Save to database
+                        print('Submitted');
+                      }
+                    },
+                    onStepCancel: () {
+                      if (activeStepIndex == 0) {
+                        return;
+                      }
 
-                    setState(() {
-                      activeStepIndex -= 1;
-                    });
-                  },
-                  onStepTapped: (int index) {
-                    setState(() {
-                      activeStepIndex = index;
-                    });
-                  },
-                  controlsBuilder:
-                      (BuildContext context, ControlsDetails details) {
-                    final isLastStep = activeStepIndex == stepList().length - 1;
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: TextButton(
-                            onPressed: details.onStepContinue,
-                            style: ButtonStyle(
-                              shape: WidgetStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      secondaryBorderRadius),
-                                ),
-                              ),
-                              backgroundColor: WidgetStateProperty.all<Color>(
-                                primaryColor,
+                      setState(() {
+                        activeStepIndex -= 1;
+                      });
+                    },
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) {
+                      final isLastStep =
+                          activeStepIndex == stepList().length - 1;
+                      return Row(
+                        children: [
+                          if (activeStepIndex > 0)
+                            Expanded(
+                              child: customPaddedOutlinedTextButton(
+                                text: "Back",
+                                onPressed: details.onStepCancel != null
+                                    ? details.onStepCancel!
+                                    : () {},
                               ),
                             ),
-                            child: (isLastStep)
-                                ? const Text("Register",
-                                    style: TextStyle(
-                                      fontSize: regularText,
-                                      color: Colors.white,
-                                    ))
-                                : const Text("Next",
-                                    style: TextStyle(
-                                      fontSize: regularText,
-                                      color: Colors.white,
-                                    )),
+                          const SizedBox(
+                            width: secondarySizedBox,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        if (activeStepIndex > 0)
                           Expanded(
-                            child: TextButton(
-                              onPressed: details.onStepCancel,
-                              style: ButtonStyle(
-                                shape: WidgetStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        secondaryBorderRadius),
-                                  ),
-                                ),
-                                backgroundColor: WidgetStateProperty.all<Color>(
-                                  primaryColor,
-                                ),
-                              ),
-                              child: const Text("Back",
-                                  style: TextStyle(
-                                    fontSize: regularText,
-                                    color: Colors.white,
-                                  )),
+                            child: customPaddedTextButton(
+                              onPressed: () {
+                                // Validate the form
+                                var isFormValid =
+                                    formKey.currentState!.validate();
+                                print(
+                                    'Form valid: $isFormValid'); // Debug print
+
+                                if (isFormValid) {
+                                  if (isLastStep) {
+                                    // Save to database and navigate to HomeScreen
+                                    print(
+                                        'Navigating to OTPAuth'); // Debug print
+                                    Navigator.push(context,
+                                        rightToLeftRoute(const OTPAuth()));
+                                  } else {
+                                    // Continue to the next step
+                                    print(
+                                        'Continuing to next step'); // Debug print
+                                    details.onStepContinue?.call();
+                                  }
+                                } else {
+                                  print('Form is not valid'); // Debug print
+                                }
+                              },
+                              text: (isLastStep) ? "Register" : "Next",
                             ),
                           ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

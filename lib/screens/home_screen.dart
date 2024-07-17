@@ -57,10 +57,13 @@ class HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: primarySizedBox),
-                  const Card(
+                  Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(secondaryBorderRadius)),
                     elevation: 1.5,
-                    color: Color.fromRGBO(255, 246, 228, 1),
-                    child: SizedBox(
+                    color: const Color.fromRGBO(255, 246, 228, 1),
+                    child: const SizedBox(
                       width: double.infinity,
                       height: 85,
                       child: Padding(
@@ -127,6 +130,9 @@ class HomeScreenState extends State<HomeScreen> {
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 300),
                                   child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            secondaryBorderRadius)),
                                     key: ValueKey<int>(selectedIndex),
                                     elevation: 1.5,
                                     color: selectedIndex == 0
@@ -151,6 +157,7 @@ class HomeScreenState extends State<HomeScreen> {
                                         child: Image.asset(
                                           'assets/vet_service.png',
                                           width: 230,
+                                          fit: BoxFit.contain,
                                         ),
                                       )
                                     ]),
@@ -161,63 +168,74 @@ class HomeScreenState extends State<HomeScreen> {
                             ]),
                           ),
                           const SizedBox(width: primarySizedBox),
-                          Column(children: [
+                          Column(
+                            children: [
                             GestureDetector(
                               onTap: () => onItemTap(1),
-                              child: Stack(children: [
-                                SizedBox(
-                                  height: 167,
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      24,
-                                  child: AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 300),
-                                    child: Card(
-                                      key: ValueKey<int>(selectedIndex),
-                                      elevation: 1.5,
-                                      color: selectedIndex == 1
-                                          ? primaryColor
-                                          : lightGreyColor,
-                                      child: Stack(children: [
-                                        Positioned(
-                                          top: 32,
-                                          left: 16,
-                                          width: 70,
-                                          child: Text("Pet grooming",
-                                              style: TextStyle(
-                                                  fontSize: regularText,
-                                                  color: selectedIndex == 1
-                                                      ? Colors.white
-                                                      : Colors.black)),
-                                        ),
-                                        Positioned(
-                                          top: 80,
-                                          bottom: -32,
-                                          right: -32,
-                                          child: Image.asset(
-                                            'assets/pet_grooming.png',
-                                            width: 100,
-                                            fit: BoxFit.cover,
+                              child: ClipRect(
+                                child: Stack(children: [
+                                  SizedBox(
+                                    height: 171,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2 -
+                                            24,
+                                    child: AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                secondaryBorderRadius)),
+                                        key: ValueKey<int>(selectedIndex),
+                                        elevation: 1.5,
+                                        color: selectedIndex == 1
+                                            ? primaryColor
+                                            : lightGreyColor,
+                                        child: Stack(children: [
+                                          Positioned(
+                                            top: 32,
+                                            left: 16,
+                                            width: 70,
+                                            child: Text("Pet grooming",
+                                                style: TextStyle(
+                                                    fontSize: regularText,
+                                                    color: selectedIndex == 1
+                                                        ? Colors.white
+                                                        : Colors.black)),
                                           ),
-                                        )
-                                      ]),
+                                          Positioned(
+                                            top: 80,
+                                            bottom: -32,
+                                            right: -32,
+                                            child: Image.asset(
+                                              'assets/pet_grooming.png',
+                                              width: 100,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          )
+                                        ]),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                if (selectedIndex == 1)
-                                  selectedServiceCategory()
-                              ]),
+                                  if (selectedIndex == 1)
+                                    selectedServiceCategory()
+                                ]),
+                              ),
                             ),
                             const SizedBox(height: primarySizedBox),
                             GestureDetector(
                               onTap: () => onItemTap(2),
                               child: Stack(children: [
                                 SizedBox(
-                                  height: 167,
+                                  height: 171.5,
                                   width: MediaQuery.of(context).size.width / 2 -
                                       24,
                                   child: AnimatedSwitcher(
                                     duration: const Duration(milliseconds: 300),
                                     child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              secondaryBorderRadius)),
                                       key: ValueKey<int>(selectedIndex),
                                       elevation: 1.5,
                                       color: selectedIndex == 2
@@ -242,7 +260,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           child: Image.asset(
                                             'assets/pet_boarding.png',
                                             width: 100,
-                                            fit: BoxFit.cover,
+                                            fit: BoxFit.contain,
                                           ),
                                         )
                                       ]),
