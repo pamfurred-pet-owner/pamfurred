@@ -1,7 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
+import 'package:pamfurred/components/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
+import 'package:get/get.dart';
+import '../components/header_text.dart';
+import '../controllers/pg_sp_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  final PgSpController pgSpController = Get.put(PgSpController());
+
   bool isSelected = false;
   int selectedIndex = -1; // No service category selected initially
 
@@ -48,12 +56,10 @@ class HomeScreenState extends State<HomeScreen> {
               children: [
                 Column(children: [
                   const SizedBox(height: secondarySizedBox),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text("Upcoming appointments",
-                          style: TextStyle(
-                              fontSize: headerText, fontWeight: mediumWeight)),
+                      customHeaderText(context, "Upcoming appointments"),
                     ],
                   ),
                   const SizedBox(height: primarySizedBox),
@@ -106,11 +112,9 @@ class HomeScreenState extends State<HomeScreen> {
                           text: "View appointments", onPressed: () {}))
                 ]),
                 const SizedBox(height: primarySizedBox),
-                const Row(
+                Row(
                   children: [
-                    Text("I'm looking for",
-                        style: TextStyle(
-                            fontSize: headerText, fontWeight: mediumWeight))
+                    customHeaderText(context, "I'm looking for"),
                   ],
                 ),
                 const SizedBox(height: primarySizedBox),
@@ -168,8 +172,7 @@ class HomeScreenState extends State<HomeScreen> {
                             ]),
                           ),
                           const SizedBox(width: primarySizedBox),
-                          Column(
-                            children: [
+                          Column(children: [
                             GestureDetector(
                               onTap: () => onItemTap(1),
                               child: ClipRect(
@@ -287,6 +290,124 @@ class HomeScreenState extends State<HomeScreen> {
                     )
                   ],
                 ),
+                const SizedBox(height: primarySizedBox),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    customHeaderText(context, "Pet grooming service providers"),
+                    const Text("More",
+                        style: TextStyle(
+                            color: primaryColor, fontSize: regularText))
+                  ],
+                ),
+                Obx(() {
+                  if (pgSpController.pgSp.isEmpty) {
+                    return const SizedBox(
+                        height: 150,
+                        child: Center(child: CircularProgressIndicator()));
+                  }
+                  return SizedBox(
+                    height: 250,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: pgSpController.pgSp.length,
+                        itemBuilder: (context, index) {
+                          final sp = pgSpController.pgSp[index];
+                          final imageUrl = sp['image'] ??
+                              ''; // Default to Pamfurred logo if null
+                          final rating =
+                              sp['rating'] ?? 'N/A'; // Default to 'N/A' if null
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: primarySizedBox),
+                            child: SizedBox(
+                              width: 250,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        secondaryBorderRadius)),
+                                elevation: 0,
+                                color: Colors.transparent,
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                          primaryBorderRadius),
+                                      child: Image.network(
+                                        imageUrl,
+                                        width: double.infinity,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          } else {
+                                            return const SizedBox(
+                                                height: 150,
+                                                child: Center(
+                                                    child:
+                                                        CircularProgressIndicator()));
+                                          }
+                                        },
+                                        errorBuilder: (BuildContext context,
+                                            Object exception,
+                                            StackTrace? stackTrace) {
+                                          return Container(
+                                              color: lightRedColor,
+                                              width: double.infinity,
+                                              height: 150,
+                                              child: const Center(
+                                                  child: Icon(Icons.error)));
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: primarySizedBox),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: Text(sp['name'],
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                  fontSize: regularText,
+                                                  fontWeight: mediumWeight)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: primarySizedBox),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.star,
+                                                size: 19,
+                                                color: secondaryColor),
+                                            Text(rating.toString())
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(CupertinoIcons.location,
+                                                size: 19),
+                                            Text(calculateDistance())
+                                          ],
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  );
+                })
               ],
             ),
           ),

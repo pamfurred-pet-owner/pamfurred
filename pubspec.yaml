@@ -75,7 +75,10 @@ dependencies:
   # flutter_animated_icons: ^1.0.1
 
   # Cloud Firestore
-  cloud_firestore: 
+  # cloud_firestore: 
+
+  # GetX
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
