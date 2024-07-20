@@ -16,6 +16,11 @@ const greyColor = Color.fromRGBO(83, 83, 83, 1);
 const lightGreyColor = Color.fromRGBO(241, 241, 241, 1);
 const lightRedColor = Color.fromRGBO(255, 214, 191, 1);
 
+// Screen width
+double getScreenWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
+
 // Textfields/Textformfields
 const double primaryTextFieldHeight = 40;
 
