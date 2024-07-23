@@ -8,27 +8,25 @@ Widget customPaddedTextButton({
   return TextButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(secondaryBorderRadius),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(secondaryBorderRadius),
+            ),
           ),
-        ),
-        backgroundColor: WidgetStateProperty.all<Color>(
-          primaryColor,
-        ),
-      ),
+          backgroundColor: WidgetStateProperty.all<Color>(
+            primaryColor,
+          )),
       child: Padding(
         padding: const EdgeInsets.all(1),
         child: Text(
           text,
           style: const TextStyle(
-            color: Colors.white,
-            fontSize: regularText,
-          ),
+              color: Colors.white,
+              fontSize: regularText,
+              fontWeight: FontWeight.normal),
         ),
       ));
 }
-
 
 Widget customPaddedOutlinedTextButton({
   required String text,
@@ -40,11 +38,11 @@ Widget customPaddedOutlinedTextButton({
       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(secondaryBorderRadius),
-          side: const BorderSide(color: primaryColor), // Set the border side here
+          side: const BorderSide(color: primaryColor),
         ),
       ),
       padding: WidgetStateProperty.all<EdgeInsets>(
-        const EdgeInsets.all(10.0), // Customize the padding as needed
+        const EdgeInsets.all(10.0),
       ),
     ),
     child: Text(

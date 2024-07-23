@@ -15,7 +15,7 @@ class PgSpController extends GetxController {
   Future<void> loadJsonData() async {
     try {
       final String response =
-          await rootBundle.loadString('../assets/db/mock_sp_db.json');
+          await rootBundle.loadString('../assets/db/mock_db.json');
       final data = json.decode(response);
       pgSp.value = List<ServiceProvider>.from((data['pet-grooming'] ?? [])
           .map((item) => ServiceProvider.fromMap(item)));

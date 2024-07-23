@@ -18,7 +18,7 @@ class ServiceProvider {
   // Factory method to create an instance from a map
   factory ServiceProvider.fromMap(Map<String, dynamic> map) {
     return ServiceProvider(
-      id: map['id'],
+      id: map['sp_id'],
       image: map['image'],
       name: map['name'],
       latitude: map['latitude'],
@@ -30,7 +30,7 @@ class ServiceProvider {
   // Method to convert an instance to a map
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'sp_id': id,
       'image': image,
       'name': name,
       'latitude': latitude,

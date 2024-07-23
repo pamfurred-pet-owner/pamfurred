@@ -1,0 +1,216 @@
+{
+    "pet-grooming": [
+        {
+            "sp_id": 1,
+            "image": "https://scontent.fceb1-5.fna.fbcdn.net/v/t39.30808-6/310430699_118000794399065_9011274172910168086_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGIPNXV21tRmiHO6O12qXGB6bqWXUVOtF3pupZdRU60XeG14hmW871tkQKCBGiFlaCpS4ltq4siKwih8GuhJkAC&_nc_ohc=QxzYzDaZP58Q7kNvgFJWuq9&_nc_zt=23&_nc_ht=scontent.fceb1-5.fna&oh=00_AYAkIqIypphmxKIK_ynHf633YmlxJ1PQKjP5f2XcGl77Cg&oe=66A096F6",
+            "name": "Paws and Claws Pet Station",
+            "latitude": 8.1920,
+            "longitude": 124.0850,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 2,
+            "image": "",
+            "name": "Purrfect Paws Grooming Spa",
+            "latitude": 8.4770,
+            "longitude": 124.6501,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 3,
+            "image": "https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg",
+            "name": "Furry Finishers Pet Salon",
+            "latitude": 8.4800,
+            "longitude": 124.5916,
+            "rating": 0.0
+        },
+        {
+            "sp_id": 4,
+            "image": "https://images.pexels.com/photos/6490932/pexels-photo-6490932.jpeg",
+            "name": "Grooming Glitz and Glam",
+            "latitude": 8.4685,
+            "longitude": 124.6829,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 5,
+            "image": "https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg",
+            "name": "Paw-sitively Polished Pet Parlor",
+            "latitude": 8.5091,
+            "longitude": 124.7689,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 6,
+            "image": "https://images.pexels.com/photos/57416/cat-sweet-kitty-animals-57416.jpeg",
+            "name": "Snip 'n Shine Pet Retreat",
+            "latitude": 8.4851,
+            "longitude": 124.7492,
+            "rating": 4.1
+        },
+        {
+            "sp_id": 7,
+            "image": "https://images.pexels.com/photos/1543793/pexels-photo-1543793.jpeg",
+            "name": "Mane Attraction Pet Grooming",
+            "latitude": 8.4896,
+            "longitude": 124.6576,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 8,
+            "image": "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg",
+            "name": "Tailored Tails Pet Grooming Services",
+            "latitude": 8.4655,
+            "longitude": 124.7354,
+            "rating": 4.4
+        },
+        {
+            "sp_id": 9,
+            "image": "https://images.pexels.com/photos/1472999/pexels-photo-1472999.jpeg",
+            "name": "Fuzzy Finish Pet Salon",
+            "latitude": 8.4795,
+            "longitude": 124.6663,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 10,
+            "image": "https://images.pexels.com/photos/2071882/pexels-photo-2071882.jpeg",
+            "name": "Critter Care Grooming Services",
+            "latitude": 8.4606,
+            "longitude": 124.7830,
+            "rating": 4.5
+        }
+    ],
+    "pet-boarding": [
+        {
+            "sp_id": 1,
+            "image": "https://scontent.fceb1-5.fna.fbcdn.net/v/t39.30808-6/310430699_118000794399065_9011274172910168086_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGIPNXV21tRmiHO6O12qXGB6bqWXUVOtF3pupZdRU60XeG14hmW871tkQKCBGiFlaCpS4ltq4siKwih8GuhJkAC&_nc_ohc=QxzYzDaZP58Q7kNvgFJWuq9&_nc_zt=23&_nc_ht=scontent.fceb1-5.fna&oh=00_AYAkIqIypphmxKIK_ynHf633YmlxJ1PQKjP5f2XcGl77Cg&oe=66A096F6",
+            "name": "Paws and Claws Pet Station",
+            "latitude": 8.1920,
+            "longitude": 124.0850,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 2,
+            "image": "",
+            "name": "Purrfect Paws Grooming Spa",
+            "latitude": 8.4770,
+            "longitude": 124.6501,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 3,
+            "image": "https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg",
+            "name": "Furry Finishers Pet Salon",
+            "latitude": 8.4800,
+            "longitude": 124.5916,
+            "rating": 0.0
+        },
+        {
+            "sp_id": 4,
+            "image": "https://images.pexels.com/photos/6490932/pexels-photo-6490932.jpeg",
+            "name": "Grooming Glitz and Glam",
+            "latitude": 8.4685,
+            "longitude": 124.6829,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 5,
+            "image": "https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg",
+            "name": "Paw-sitively Polished Pet Parlor",
+            "latitude": 8.5091,
+            "longitude": 124.7689,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 6,
+            "image": "https://images.pexels.com/photos/57416/cat-sweet-kitty-animals-57416.jpeg",
+            "name": "Snip 'n Shine Pet Retreat",
+            "latitude": 8.4851,
+            "longitude": 124.7492,
+            "rating": 4.1
+        },
+        {
+            "sp_id": 7,
+            "image": "https://images.pexels.com/photos/1543793/pexels-photo-1543793.jpeg",
+            "name": "Mane Attraction Pet Grooming",
+            "latitude": 8.4896,
+            "longitude": 124.6576,
+            "rating": 4.5
+        },
+        {
+            "sp_id": 8,
+            "image": "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg",
+            "name": "Tailored Tails Pet Grooming Services",
+            "latitude": 8.4655,
+            "longitude": 124.7354,
+            "rating": 4.4
+        },
+        {
+            "sp_id": 9,
+            "image": "https://images.pexels.com/photos/1472999/pexels-photo-1472999.jpeg",
+            "name": "Fuzzy Finish Pet Salon",
+            "latitude": 8.4795,
+            "longitude": 124.6663,
+            "rating": 4.3
+        },
+        {
+            "sp_id": 10,
+            "image": "https://images.pexels.com/photos/2071882/pexels-photo-2071882.jpeg",
+            "name": "Critter Care Grooming Services",
+            "latitude": 8.4606,
+            "longitude": 124.7830,
+            "rating": 4.5
+        }
+    ],
+    "appointments": [
+        {
+            "appointment_id": 1,
+            "user_id": 1,
+            "sp_id": 1,
+            "pet_id": 1,
+            "appointment_item_id": 1,
+            "appointment_date": "2024-01-01",
+            "appointment_time": "09:00",
+            "status": "Done",
+            "total_amount": 50.00
+        },
+        {
+            "appointment_id": 2,
+            "user_id": 2,
+            "sp_id": 2,
+            "pet_id": 2,
+            "appointment_item_id": 2,
+            "appointment_date": "2024-01-02",
+            "appointment_time": "10:00",
+            "status": "Upcoming",
+            "total_amount": 60.00
+        }
+    ],
+    "users": [
+        {
+            "user_id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "latitude": 8.4846,
+            "longitude": 124.6499
+        },
+        {
+            "user_id": 2,
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "latitude": 8.4700,
+            "longitude": 124.6800
+        }
+    ],
+    "pets": [
+        {
+            "pet_id": 1,
+            "pet_category": "Dog"
+        },
+        {
+            "pet_id": 2,
+            "pet_category": "Cat"
+        }
+    ]
+}

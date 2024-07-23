@@ -359,8 +359,10 @@ class HomeScreenState extends State<HomeScreen> {
               final sp = pgSpController.pgSp[index];
               final imageUrl = (sp.image == '')
                   ? 'assets/pamfurred_logo.png'
-                  : sp.image; // Default to Pamfurred logo if null
-              final rating = sp.rating; // Default to 'N/A' if null
+                  : sp.image; // Default to Pamfurred logo if there's no uploaded image
+              final rating = (sp.rating == 0.0)
+                  ? 'N/A'
+                  : sp.rating; // Default to 'N/A' if rating is 0.0
               return Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: primarySizedBox),
