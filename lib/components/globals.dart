@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 // fontSize
+const double smallText = 13;
 const double regularText = 15;
-const double headerText = 18;
-const double titleFont = 25;
+const double headerText = 25;
+const double titleFont = 18;
 
 // fontWeight
 const boldWeight = FontWeight.w900;
@@ -46,4 +47,9 @@ const double secondaryBorderRadius = 10;
 // Variables requiring device width
 double deviceWidthDivideOnePointFive(BuildContext context) {
   return MediaQuery.of(context).size.width / 1.5;
+}
+
+// Utility function to convert a string to lowercase
+String toLowercase(String text) {
+  return text.toLowerCase();
 }

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
+import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/screens/otp_auth.dart';
 import '../components/globals.dart';
@@ -123,20 +124,6 @@ class _RegisterTestState extends State<RegisterTest> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: secondarySizedBox),
-        Text(
-          title,
-          style: const TextStyle(fontSize: headerText, fontWeight: mediumWeight),
-        ),
-        const SizedBox(height: secondarySizedBox),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double deviceWidth = deviceWidthDivideOnePointFive(context);
@@ -148,7 +135,7 @@ class _RegisterTestState extends State<RegisterTest> {
           padding: primaryPadding,
           child: Column(
             children: [
-              _buildSectionHeader("Create an account"),
+              buildSectionHeader("Create an account"),
               RichText(
                 text: const TextSpan(
                   style: TextStyle(fontSize: regularText),
@@ -170,7 +157,7 @@ class _RegisterTestState extends State<RegisterTest> {
               ),
               const SizedBox(height: secondarySizedBox),
 
-              _buildSectionHeader("Name and Contact"),
+              buildSectionHeader("Name and Contact"),
               Row(
                 children: [
                   Expanded(child: _buildTextField("First name", "firstName")),
@@ -185,7 +172,7 @@ class _RegisterTestState extends State<RegisterTest> {
               _buildPhoneField(),
               const SizedBox(height: secondarySizedBox),
 
-              _buildSectionHeader("Address"),
+              buildSectionHeader("Address"),
               Row(
                 children: [
                   Expanded(child: _buildTextField("Door no.", "doorNo")),
@@ -207,7 +194,7 @@ class _RegisterTestState extends State<RegisterTest> {
               ),
               const SizedBox(height: secondarySizedBox),
 
-              _buildSectionHeader("Credentials"),
+              buildSectionHeader("Credentials"),
               Row(
                 children: [
                   Expanded(child: _buildTextField("Username", "username")),

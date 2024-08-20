@@ -5,7 +5,7 @@ import 'package:pamfurred/components/custom_padded_button.dart';
 import 'package:pamfurred/components/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:get/get.dart';
-import '../components/header_text.dart';
+import '../components/title_text.dart';
 import '../controllers/pg_sp_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      customHeaderText(context, "Upcoming appointments"),
+                      customTitleText(context, "Upcoming appointments"),
                     ],
                   ),
                   const SizedBox(height: primarySizedBox),
@@ -113,7 +113,7 @@ class HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: primarySizedBox),
                 Row(
                   children: [
-                    customHeaderText(context, "I'm looking for"),
+                    customTitleText(context, "I'm looking for"),
                   ],
                 ),
                 const SizedBox(height: primarySizedBox),
@@ -470,7 +470,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        customHeaderText(context, header),
+        customTitleText(context, header),
         TextButton(
           onPressed: () {},
           child: const Text("More",
