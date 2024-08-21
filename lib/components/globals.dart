@@ -23,6 +23,11 @@ double getScreenWidth(BuildContext context) {
   return MediaQuery.of(context).size.width;
 }
 
+// Screen height
+double getScreenHeight(BuildContext context) {
+  return MediaQuery.of(context).size.height;
+}
+
 // Textfields/Textformfields
 const double primaryTextFieldHeight = 40;
 
