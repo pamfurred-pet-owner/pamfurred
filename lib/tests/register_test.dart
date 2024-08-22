@@ -1,270 +1,755 @@
-import 'package:flutter/gestures.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
-import 'package:pamfurred/components/header.dart';
+import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/screens/otp_auth.dart';
-import '../components/globals.dart';
+import 'package:pamfurred/screens/pin_location.dart';
+import 'package:path_provider/path_provider.dart';
+import '../components/custom_padded_button.dart';
 
-class RegisterTest extends StatefulWidget {
-  const RegisterTest({super.key});
+class RegisterScreenTest extends StatefulWidget {
+  const RegisterScreenTest({super.key});
 
   @override
-  State<RegisterTest> createState() => _RegisterTestState();
+  RegisterScreenTestState createState() => RegisterScreenTestState();
 }
 
-class _RegisterTestState extends State<RegisterTest> {
+class RegisterScreenTestState extends State<RegisterScreenTest> {
   final formKey = GlobalKey<FormState>();
 
-  late Map<String, TextEditingController> controllers;
+  int activeStepIndex = 0;
+  String pinnedLocationImage = '';
 
-  @override
-  void initState() {
-    super.initState();
-
-    controllers = {
-      'firstName': TextEditingController(),
-      'lastName': TextEditingController(),
-      'phoneNumber': TextEditingController(),
-      'doorNo': TextEditingController(),
-      'street': TextEditingController(),
-      'barangay': TextEditingController(),
-      'city': TextEditingController(),
-      'username': TextEditingController(),
-      'email': TextEditingController(),
-      'password': TextEditingController(),
-    };
-  }
+  // TextEditingControllers
+  late Map<String, TextEditingController> controllers = {
+    'firstName': TextEditingController(),
+    'lastName': TextEditingController(),
+    'phoneNumber': TextEditingController(),
+    'doorNo': TextEditingController(),
+    'street': TextEditingController(),
+    'barangay': TextEditingController(),
+    'city': TextEditingController(),
+    'username': TextEditingController(),
+    'email': TextEditingController(),
+    'password': TextEditingController(),
+  };
 
   bool _obscureText = true;
 
   @override
-  void dispose() {
-    for (var controller in controllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
+  void initState() {
+    super.initState();
+    loadLatestImage();
   }
 
-  Widget _buildTextField(String label, String controllerKey, {bool isPassword = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          text: TextSpan(children: [
-            TextSpan(
-              text: "$label ",
-              style: const TextStyle(color: Colors.black, fontSize: regularText),
-            ),
-            const TextSpan(
-              text: "*",
-              style: TextStyle(color: primaryColor),
-            ),
-          ]),
-        ),
-        const SizedBox(height: primarySizedBox),
-        SizedBox(
-          height: primaryTextFieldHeight,
-          child: TextFormField(
-            controller: controllers[controllerKey],
-            obscureText: isPassword ? _obscureText : false,
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(10.0),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(secondaryBorderRadius),
+  Future<void> loadLatestImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/pinned_location.png';
+    if (File(path).existsSync()) {
+      setState(() {
+        pinnedLocationImage = path;
+      });
+    }
+  }
+
+  List<Step> stepList() => [
+        Step(
+          state: activeStepIndex <= 0 ? StepState.editing : StepState.complete,
+          isActive: activeStepIndex >= 0,
+          title: const Text(''),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Name and contact",
+                style: TextStyle(
+                  fontSize: headerText,
+                  fontWeight: mediumWeight,
+                ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: secondaryColor),
-                borderRadius: BorderRadius.circular(secondaryBorderRadius),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "First name ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ]),
               ),
-              suffix: isPassword
-                  ? IconButton(
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          _obscureText ? Icons.visibility : Icons.visibility_off,
-                          color: Colors.grey,
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['firstName'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter first name' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
                         ),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Last name ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['lastName'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter last name' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Phone number ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                  height: 65,
+                  child: IntlPhoneField(
+                    cursorColor: Colors.black,
+                    initialCountryCode: 'PH',
+                    controller: controllers['phoneNumber'],
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            secondaryBorderRadius,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: secondaryColor),
+                            borderRadius:
+                                BorderRadius.circular(secondaryBorderRadius))),
+                  )),
+              const SizedBox(height: secondarySizedBox),
+              const Text(
+                "Address",
+                style: TextStyle(
+                  fontSize: headerText,
+                  fontWeight: mediumWeight,
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              const Text(
+                "Door no.",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: regularText,
+                ),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['doorNo'],
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Street ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['street'],
+                  keyboardType: TextInputType.streetAddress,
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter street name' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Barangay ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['barangay'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter barangay' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "City ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['city'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter city' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: tertiarySizedBox),
+              const Text(
+                "Pin address",
+                style: TextStyle(
+                  fontSize: headerText,
+                  fontWeight: mediumWeight,
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Pin exact address ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              Center(
+                child: Container(
+                  height: 170,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () async {
+                      var result = await Navigator.of(context)
+                          .push(rightToLeftRoute(const PinAddress()));
+                      if (result != null) {
+                        setState(() {
+                          pinnedLocationImage = result;
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: pinnedLocationImage.isNotEmpty
+                            ? DecorationImage(
+                                image: FileImage(File(pinnedLocationImage)),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: pinnedLocationImage.isEmpty
+                          ? Center(
+                              child: Image.asset(
+                              'assets/pin_address.png',
+                              fit: BoxFit.cover,
+                            ))
+                          : null,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: tertiarySizedBox),
+            ],
+          ),
+        ),
+        Step(
+          state: activeStepIndex <= 1 ? StepState.editing : StepState.complete,
+          isActive: activeStepIndex >= 1,
+          title: const Text(''),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Credentials",
+                style: TextStyle(
+                  fontSize: headerText,
+                  fontWeight: mediumWeight,
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Username ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['username'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter username' : null;
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Email address ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: controllers['email'],
+                  // validator
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter email address';
+                    } else {
+                      return (!EmailValidator.validate(value))
+                          ? 'Invalid Email Address'
+                          : null;
+                    }
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          secondaryBorderRadius,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: secondaryColor),
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius))),
+                ),
+              ),
+              const SizedBox(height: secondarySizedBox),
+              RichText(
+                text: const TextSpan(children: [
+                  TextSpan(
+                    text: "Password ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "*",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: regularText,
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: primarySizedBox),
+              SizedBox(
+                height: primaryTextFieldHeight,
+                child: TextFormField(
+                  cursorColor: Colors.black,
+                  controller: controllers['password'],
+                  // validator
+                  validator: (value) {
+                    return (value == null || value.isEmpty) ? 'Please enter password' : null;
+                  },
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        secondaryBorderRadius,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: secondaryColor),
+                        borderRadius:
+                            BorderRadius.circular(secondaryBorderRadius)),
+                    suffix: IconButton(
+                      icon: Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          )),
                       onPressed: () {
                         setState(() {
                           _obscureText = !_obscureText;
                         });
                       },
-                    )
-                  : null,
-            ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: tertiarySizedBox),
+            ],
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildPhoneField() {
-    return SizedBox(
-      height: 65,
-      child: IntlPhoneField(
-        initialCountryCode: 'PH',
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(10.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(secondaryBorderRadius),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: secondaryColor),
-            borderRadius: BorderRadius.circular(secondaryBorderRadius),
+        Step(
+          state: StepState.complete,
+          isActive: activeStepIndex >= 2,
+          title: const Text(''),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Name: ${controllers['firstName']?.text}'
+                  ' '
+                  '${controllers['lastName']?.text}'),
+              Text('Phone number: ${controllers['phoneNumber']?.text}'),
+              Text(
+                  'Address: ${controllers['doorNo']?.text},${controllers['street']?.text},${controllers['barangay']?.text},${controllers['city']?.text}'),
+              Text('Password: ${controllers['password']?.text}')
+            ],
           ),
         ),
-        onChanged: (phone) {
-          controllers['phoneNumber']?.text = phone.completeNumber;
-        },
-      ),
-    );
-  }
+      ];
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = deviceWidthDivideOnePointFive(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: primaryPadding,
+      body: Theme(
+        data: ThemeData(
+          canvasColor:
+              Colors.transparent, // Set the background color to transparent
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: primaryColor),
+          splashColor: Colors.transparent,
+        ),
+        child: SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildSectionHeader("Create an account"),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(fontSize: regularText),
+              Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextSpan(
-                      text: "Fields marked with (",
-                      style: TextStyle(color: greyColor),
+                    const SizedBox(height: secondarySizedBox),
+                    const Text(
+                      "Create an account",
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: titleFont,
+                      ),
                     ),
-                    TextSpan(
-                      text: "*",
-                      style: TextStyle(color: primaryColor),
+                    const SizedBox(height: secondarySizedBox),
+                    RichText(
+                      text: const TextSpan(
+                        style: TextStyle(fontSize: regularText),
+                        children: [
+                          TextSpan(
+                            text: "Fields marked with (",
+                            style: TextStyle(
+                              color: greyColor,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "*",
+                            style: TextStyle(
+                              color: primaryColor,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ") are required.",
+                            style: TextStyle(
+                              color: greyColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextSpan(
-                      text: ") are required.",
-                      style: TextStyle(color: greyColor),
-                    ),
+                    const SizedBox(height: secondarySizedBox),
                   ],
                 ),
               ),
-              const SizedBox(height: secondarySizedBox),
-
-              buildSectionHeader("Name and Contact"),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("First name", "firstName")),
-                  const SizedBox(width: primarySizedBox),
-                  Expanded(child: _buildTextField("Last name", "lastName")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-
-              const Text("Phone number *"),
-              const SizedBox(height: secondarySizedBox),
-              _buildPhoneField(),
-              const SizedBox(height: secondarySizedBox),
-
-              buildSectionHeader("Address"),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Door no.", "doorNo")),
-                  const SizedBox(width: primarySizedBox),
-                  Expanded(child: _buildTextField("Street", "street")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Barangay", "barangay")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("City", "city")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-
-              buildSectionHeader("Credentials"),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Username", "username")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Email address", "email")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Password", "password", isPassword: true)),
-                ],
-              ),
-              const SizedBox(height: tertiarySizedBox),
-
-              Center(
-                child: SizedBox(
-                  width: deviceWidth,
-                  height: primaryTextFieldHeight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context, rightToLeftRoute(const OTPAuth()));
+              Expanded(
+                child: Form(
+                  key: formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Stepper(
+                    elevation: 0,
+                    type: StepperType.horizontal,
+                    currentStep: activeStepIndex,
+                    steps: stepList(),
+                    onStepContinue: () {
+                      if (activeStepIndex < (stepList().length - 1)) {
+                        setState(() {
+                          activeStepIndex += 1;
+                        });
+                      } else {
+                        // Save to database
+                        print('Submitted');
+                      }
                     },
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(secondaryBorderRadius),
-                        ),
-                      ),
-                      backgroundColor: WidgetStateProperty.all<Color>(primaryColor),
-                    ),
-                    child: const Text(
-                      "Register",
-                      style: TextStyle(color: Colors.white, fontSize: regularText),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: tertiarySizedBox),
+                    onStepCancel: () {
+                      if (activeStepIndex == 0) {
+                        return;
+                      }
 
-              Center(
-                child: SizedBox(
-                  width: deviceWidth,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: const TextStyle(fontSize: regularText),
-                      children: [
-                        const TextSpan(
-                          text: "Already have an account? ",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: "Login",
-                          style: const TextStyle(color: primaryColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pop(context);
-                            },
-                        ),
-                      ],
-                    ),
+                      setState(() {
+                        activeStepIndex -= 1;
+                      });
+                    },
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) {
+                      final isLastStep =
+                          activeStepIndex == stepList().length - 1;
+                      return Row(
+                        children: [
+                          if (activeStepIndex > 0)
+                            Expanded(
+                              child: customPaddedOutlinedTextButton(
+                                text: "Back",
+                                onPressed: details.onStepCancel != null
+                                    ? details.onStepCancel!
+                                    : () {},
+                              ),
+                            ),
+                          const SizedBox(
+                            width: secondarySizedBox,
+                          ),
+                          Expanded(
+                            child: customPaddedTextButton(
+                              onPressed: () {
+                                // Validate the form
+                                var isFormValid =
+                                    formKey.currentState!.validate();
+                                print(
+                                    'Form valid: $isFormValid'); // Debug print
+
+                                if (isFormValid) {
+                                  if (isLastStep) {
+                                    // Save to database and navigate to HomeScreen
+                                    print(
+                                        'Navigating to OTPAuth'); // Debug print
+                                    Navigator.push(context,
+                                        rightToLeftRoute(const OTPAuth()));
+                                  } else {
+                                    // Continue to the next step
+                                    print(
+                                        'Continuing to next step'); // Debug print
+                                    details.onStepContinue?.call();
+                                  }
+                                } else {
+                                  print('Form is not valid'); // Debug print
+                                }
+                              },
+                              text: (isLastStep) ? "Register" : "Next",
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
-              const SizedBox(height: tertiarySizedBox),
             ],
           ),
         ),

@@ -39,6 +39,7 @@ class MyTabbedWidgetState extends State<MyTabbedWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 20,
         elevation: 0,
         bottom: TabBar(

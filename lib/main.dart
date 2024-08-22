@@ -2,7 +2,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:pamfurred/components/globals.dart';
-import 'package:pamfurred/screens/main_screen.dart';
+import 'package:pamfurred/screens/login.dart';
+// import 'package:pamfurred/screens/main_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +27,8 @@ class MyApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory, // Disable splash colors
       ),
       // Redirect to HomeScreen() if the user is already logged in
-      // home: const LoginScreen(),
-      home: const MainScreen(),
+      home: const LoginScreen(),
+      // home: const MainScreen(),
     );
   }
 }

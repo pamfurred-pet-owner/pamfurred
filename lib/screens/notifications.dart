@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pamfurred/components/globals.dart';
-import 'package:pamfurred/components/header.dart';
+// import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/title_text.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -130,6 +130,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         .toList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Align(
           alignment: Alignment.center,
@@ -180,7 +181,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
       },
       child: Card(
         // Change background color based on the tapped state of the specific card
-        color: isTapped[index] ? Colors.white : lightGreyColor,
+        color: isTapped[index] ? Colors.white : lighterGreyColor,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

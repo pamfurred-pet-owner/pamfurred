@@ -5,6 +5,8 @@ import 'package:pamfurred/components/custom_padded_button.dart';
 import 'package:pamfurred/components/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:get/get.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/screens/search_results.dart';
 import '../components/title_text.dart';
 import '../controllers/pg_sp_controller.dart';
 
@@ -284,7 +286,13 @@ class HomeScreenState extends State<HomeScreen> {
                         TextButton(
                             onPressed: () {},
                             child: customPaddedTextButton(
-                                text: "Submit", onPressed: () {}))
+                                text: "Submit",
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      crossFadeRoute(SearchResultsScreen(
+                                          index: selectedIndex)));
+                                }))
                       ],
                     )
                   ],
@@ -382,7 +390,7 @@ class HomeScreenState extends State<HomeScreen> {
                               width: double.infinity,
                               height: 150,
                               decoration: BoxDecoration(
-                                  color: lightRedColor,
+                                  color: primaryColor,
                                   borderRadius: BorderRadius.circular(
                                       primaryBorderRadius)),
                             ),

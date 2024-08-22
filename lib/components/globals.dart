@@ -15,6 +15,7 @@ const primaryColor = Color.fromRGBO(160, 62, 6, 1.0);
 const secondaryColor = Color.fromRGBO(255, 137, 29, 1.0);
 const greyColor = Color.fromRGBO(83, 83, 83, 1);
 const lightGreyColor = Color.fromRGBO(241, 241, 241, 1);
+const lighterGreyColor = Color.fromRGBO(244, 244, 244, 1);
 const lightRedColor = Color.fromRGBO(255, 214, 191, 1);
 const tangerine = Color.fromRGBO(209, 76, 1, 1);
 

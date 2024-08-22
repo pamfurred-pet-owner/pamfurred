@@ -21,9 +21,9 @@ Route rightToLeftRoute(Widget page) {
 }
 
 // 2) Crossfade:
-Route crossFadeRoute(Widget nextPage) {
+Route crossFadeRoute(Widget page) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => nextPage,
+    pageBuilder: (context, animation, secondaryAnimation) => page,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = 0.0;
       var end = 1.0;

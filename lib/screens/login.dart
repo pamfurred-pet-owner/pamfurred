@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
-import 'package:pamfurred/screens/home_screen.dart';
+import 'package:pamfurred/screens/main_screen.dart';
 import 'package:pamfurred/tests/register.dart';
 import '../components/globals.dart';
 
@@ -69,7 +69,7 @@ class LoginScreenState extends State<LoginScreen> {
                         children: [
                           Image.asset(
                             'assets/pamfurred_logo.png',
-                            width: deviceWidth / 1.25,
+                            width: deviceWidth + 20,
                             fit: BoxFit.contain,
                           ),
                           const SizedBox(
@@ -221,7 +221,7 @@ class LoginScreenState extends State<LoginScreen> {
                                 if (isFormValid) {
                                   // Save to database
                                   Navigator.push(context,
-                                      crossFadeRoute(const HomeScreen()));
+                                      crossFadeRoute(const MainScreen()));
                                 }
                               },
                               style: ButtonStyle(

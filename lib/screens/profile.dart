@@ -15,6 +15,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic> profileData = {
     'username': 'chuchu143',
     'email_address': 'bobskie@gmail.com',
+    'password': 'bobobob',
     'first_name': 'Bob Niño',
     'last_name': 'Golosinda',
     'phone_number': '091431431143',
@@ -34,11 +35,17 @@ class ProfileScreenState extends State<ProfileScreen> {
     },
   };
 
+  String convertToAsterisks(String text) {
+    return '*' *
+        text.length; // Create a string of asterisks with the same length
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
           child: Center(
             child: SizedBox(
               width: screenPadding(context),
@@ -63,9 +70,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             customTitleText(context, "Pets"),
+                            const Icon(Icons.edit,
+                                size: 20, color: Colors.black)
                           ],
                         ),
                       ),
@@ -126,7 +135,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                                         if (loadingProgress == null) {
                                           return child;
                                         }
-                                        return const CircularProgressIndicator();
+                                        return const Center(
+                                            child: CircularProgressIndicator());
                                       },
                                       errorBuilder:
                                           (context, error, stackTrace) {
@@ -167,163 +177,22 @@ class ProfileScreenState extends State<ProfileScreen> {
                               width:
                                   getScreenWidth(context) - secondarySizedBox,
                               child: SizedBox(
-                                height: 285,
+                                height: 340,
                                 child: Column(
                                   children: [
-                                    Card(
-                                      color: lightGreyColor,
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: tertiarySizedBox,
-                                            vertical:
-                                                tertiarySizedBox), // Padding inside the row
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start, // Align text to the left
-                                                children: [
-                                                  const Text(
-                                                    "Name",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: regularText,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                      height: primarySizedBox),
-                                                  Text(
-                                                    // Change this to the first and last name of the ones from the db
-                                                    '${profileData['first_name']} ${profileData['last_name']}',
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            124, 124, 124, 1)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.black,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: lightGreyColor,
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: tertiarySizedBox,
-                                            vertical:
-                                                tertiarySizedBox), // Padding inside the row
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start, // Align text to the left
-                                                children: [
-                                                  const Text(
-                                                    "Contact info",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: regularText,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                      height: primarySizedBox),
-                                                  Text(
-                                                    // Change this to the phone number from the db
-                                                    profileData['phone_number'],
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            124, 124, 124, 1)),
-                                                  ),
-                                                  const SizedBox(
-                                                      height: primarySizedBox),
-                                                  Text(
-                                                    // Change this to the email address from the db
-                                                    profileData[
-                                                        'email_address'],
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            124, 124, 124, 1)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.black,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: lightGreyColor,
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: tertiarySizedBox,
-                                            vertical:
-                                                tertiarySizedBox), // Padding inside the row
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start, // Align text to the left
-                                                children: [
-                                                  const Text(
-                                                    "Address",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: regularText,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                      height: primarySizedBox),
-                                                  Text(
-                                                    // Change this to the address from the db
-                                                    profileData['address'],
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            124, 124, 124, 1)),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.black,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                    detailsCard(
+                                        title: "Name",
+                                        details:
+                                            "${profileData['first_name']} ${profileData['last_name']}"),
+                                    detailsCard(
+                                        title: "Phone number",
+                                        details: profileData['phone_number']),
+                                    detailsCard(
+                                        title: "Email address",
+                                        details: profileData['email_address']),
+                                    detailsCard(
+                                        title: "Address",
+                                        details: profileData['address'])
                                   ],
                                 ),
                               ),
@@ -360,96 +229,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                               width:
                                   getScreenWidth(context) - secondarySizedBox,
                               child: SizedBox(
-                                height: 149,
+                                height: 175,
                                 child: Column(
                                   children: [
-                                    Card(
-                                      color: lightGreyColor,
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: tertiarySizedBox,
-                                            vertical:
-                                                tertiarySizedBox), // Padding inside the row
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start, // Align text to the left
-                                                children: [
-                                                  const Text(
-                                                    "Username",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: regularText,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                      height: primarySizedBox),
-                                                  Text(
-                                                    // Change this to the username from the db
-                                                    profileData['username'],
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            124, 124, 124, 1)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.black,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const Card(
-                                      color: lightGreyColor,
-                                      elevation: 0,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: tertiarySizedBox,
-                                            vertical:
-                                                tertiarySizedBox), // Padding inside the row
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start, // Align text to the left
-                                                children: [
-                                                  Text(
-                                                    "Password",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: regularText,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: Colors.black,
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
+                                    detailsCard(
+                                        title: "Username",
+                                        details: profileData['username']),
+                                    detailsCard(
+                                        title: "Password",
+                                        details: convertToAsterisks(
+                                            profileData['password'])),
                                   ],
                                 ),
                               ),
@@ -463,6 +252,51 @@ class ProfileScreenState extends State<ProfileScreen> {
               ]),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  detailsCard({required String title, String? details}) {
+    return Card(
+      color: lightGreyColor,
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: tertiarySizedBox,
+            vertical: tertiarySizedBox), // Padding inside the row
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align text to the left
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: regularText,
+                    ),
+                  ),
+                  const SizedBox(height: primarySizedBox),
+                  Text(
+                    // Change this to the content from the db
+                    details ?? details!,
+                    style:
+                        const TextStyle(color: greyColor, fontSize: smallText),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.black,
+              size: 20,
+            ),
+          ],
         ),
       ),
     );
