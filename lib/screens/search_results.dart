@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
+import 'package:pamfurred/components/title_text.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final int index;
@@ -12,226 +13,168 @@ class SearchResultsScreen extends StatefulWidget {
 }
 
 class SearchResultsScreenState extends State<SearchResultsScreen> {
-  // Method to check what service category was selected on the home screen
-  void checkSelectedServiceCategory(int index) {
-    String selectedServiceCategory;
+  String checkSelectedServiceCategory(int index) {
     switch (index) {
       case 0:
-        selectedServiceCategory = "Veterinary service";
-        break;
+        return "Veterinary service";
       case 1:
-        selectedServiceCategory = "Pet grooming";
-        break;
+        return "Pet grooming";
       case 2:
-        selectedServiceCategory = "Pet boarding";
-        break;
+        return "Pet boarding";
+      default:
+        return "";
     }
   }
 
-  // Mock db for serviceProvider data
-  Map<String, dynamic> serviceProviders = {
-    "Paws & Claws": {
-      "category": "Pet Grooming",
-      "service": "Bath",
-      "image": "assets/images/bath.png",
-      "price": 300,
-      "rating": "positive",
-    },
-    "Furry Friends": {
-      "category": "Pet Grooming",
-      "service": "Hair Style",
-      "image": "assets/images/hair_style.png",
-      "price": 600,
-      "rating": "neutral",
-    },
-    "Pet Paradise": {
-      "category": "Pet Boarding",
-      "service": "Cologne",
-      "image": "assets/images/cologne.png",
-      "price": 150,
-      "rating": "positive",
-    },
-    "The Pampered Pet": {
-      "category": "Pet Grooming",
-      "service": "Nail Trim",
-      "image": "assets/images/nail_trim.png",
-      "price": 200,
-      "rating": "positive",
-    },
-    "Furry Tails": {
-      "category": "Veterinary Service",
-      "service": "Teeth Cleaning",
-      "image": "assets/images/teeth_cleaning.png",
-      "price": 400,
-      "rating": "neutral",
-    },
-    "Whiskers & Wags": {
-      "category": "Pet Grooming",
-      "service": "Ear Cleaning",
-      "image": "assets/images/ear_cleaning.png",
-      "price": 250,
-      "rating": "positive",
-    },
-    "Pet Care Plus": {
-      "category": "Veterinary Service",
-      "service": "Flea Treatment",
-      "image": "assets/images/flea_treatment.png",
-      "price": 350,
-      "rating": "negative",
+  List<Map<String, dynamic>> getServiceProvidersByCategory(int index) {
+    String selectedServiceCategory = checkSelectedServiceCategory(index);
+    List<Map<String, dynamic>> providersList = [];
+
+    serviceProviders.forEach((name, details) {
+      if (details['category'].toString().toLowerCase() ==
+          selectedServiceCategory.toLowerCase()) {
+        providersList.add({
+          'name': name,
+          'image': details['image'] ?? '',
+          'service': details['service'] ?? '',
+          'price': details['price'] ?? 0,
+          'rating': details['rating'] ?? 'N/A',
+        });
+      }
+    });
+
+    return providersList;
+  }
+
+  String getRatingImage(String rating) {
+    switch (rating.toLowerCase()) {
+      case 'positive':
+        return 'assets/positive.png';
+      case 'neutral':
+        return 'assets/neutral.png';
+      case 'negative':
+        return 'assets/negative.png';
+      default:
+        return 'assets/default_rating.png'; // Use a default image if needed
     }
+  }
+
+  Map<String, dynamic> serviceProviders = {
+    // Service provider data...
   };
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> providers =
+        getServiceProvidersByCategory(widget.index);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: customAppBar(context),
-        body: SingleChildScrollView(
-          child: Center(
-            child: SizedBox(
-              width: screenPadding(context),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.settings, color: Colors.black),
-                        iconAlignment: IconAlignment.end,
-                        label: const Text('Preferences',
-                            style: TextStyle(color: Colors.black)),
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(secondaryBorderRadius),
-                          ),
-                        ),
-                      ),
-                    ],
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.settings, color: Colors.black),
+                  label: const Text('Preferences',
+                      style: TextStyle(color: Colors.black)),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(secondaryBorderRadius),
+                    ),
                   ),
-                  // ListView.builder(
-                  //     scrollDirection: Axis.vertical,
-                  //     itemCount: (pgSpController.pgSp.length <= 10)
-                  //         ? pgSpController.pgSp.length
-                  //         : 10,
-                  //     itemBuilder: (context, index) {
-                  //       final sp = pgSpController.pgSp[index];
-                  //       final imageUrl = (sp.image == '')
-                  //           ? 'assets/pamfurred_logo.png'
-                  //           : sp.image; // Default to Pamfurred logo if there's no uploaded image
-                  //       final rating = (sp.rating == 0.0)
-                  //           ? 'N/A'
-                  //           : sp.rating; // Default to 'N/A' if rating is 0.0
-                  //       return Padding(
-                  //         padding: const EdgeInsets.symmetric(
-                  //             horizontal: primarySizedBox),
-                  //         child: SizedBox(
-                  //           width: 250,
-                  //           child: Card(
-                  //             shape: RoundedRectangleBorder(
-                  //                 borderRadius: BorderRadius.circular(
-                  //                     secondaryBorderRadius)),
-                  //             elevation: 0,
-                  //             color: Colors.transparent,
-                  //             child: Column(
-                  //               children: [
-                  //                 Stack(children: [
-                  //                   Positioned(
-                  //                     child: Container(
-                  //                       width: double.infinity,
-                  //                       height: 150,
-                  //                       decoration: BoxDecoration(
-                  //                           color: primaryColor,
-                  //                           borderRadius: BorderRadius.circular(
-                  //                               primaryBorderRadius)),
-                  //                     ),
-                  //                   ),
-                  //                   Positioned(
-                  //                     child: ClipRRect(
-                  //                       borderRadius: BorderRadius.circular(
-                  //                           primaryBorderRadius),
-                  //                       child: Image.network(
-                  //                         imageUrl,
-                  //                         width: double.infinity,
-                  //                         height: 150,
-                  //                         fit: (sp.image != '')
-                  //                             ? BoxFit.cover
-                  //                             : BoxFit.contain,
-                  //                         loadingBuilder: (BuildContext context,
-                  //                             Widget child,
-                  //                             ImageChunkEvent?
-                  //                                 loadingProgress) {
-                  //                           if (loadingProgress == null) {
-                  //                             return child;
-                  //                           } else {
-                  //                             return const SizedBox(
-                  //                                 height: 150,
-                  //                                 child: Center(
-                  //                                     child:
-                  //                                         CircularProgressIndicator()));
-                  //                           }
-                  //                         },
-                  //                         errorBuilder: (BuildContext context,
-                  //                             Object exception,
-                  //                             StackTrace? stackTrace) {
-                  //                           return const SizedBox(
-                  //                               width: double.infinity,
-                  //                               height: 150,
-                  //                               child: Center(
-                  //                                   child: Icon(Icons.error)));
-                  //                         },
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                 ]),
-                  //                 const SizedBox(height: primarySizedBox),
-                  //                 Row(
-                  //                   mainAxisAlignment: MainAxisAlignment.start,
-                  //                   children: [
-                  //                     Flexible(
-                  //                       child: Text(sp.name,
-                  //                           overflow: TextOverflow.ellipsis,
-                  //                           maxLines: 1,
-                  //                           style: const TextStyle(
-                  //                               fontSize: regularText,
-                  //                               fontWeight: mediumWeight)),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //                 const SizedBox(height: primarySizedBox),
-                  //                 Row(
-                  //                   mainAxisAlignment:
-                  //                       MainAxisAlignment.spaceBetween,
-                  //                   children: [
-                  //                     Row(
-                  //                       children: [
-                  //                         const Icon(Icons.star,
-                  //                             size: 19, color: secondaryColor),
-                  //                         Text(rating.toString())
-                  //                       ],
-                  //                     ),
-                  //                     Row(
-                  //                       children: [
-                  //                         const Icon(CupertinoIcons.location,
-                  //                             size: 19),
-                  //                         Text(calculateDistance(
-                  //                             sp.latitude, sp.longitude))
-                  //                       ],
-                  //                     )
-                  //                   ],
-                  //                 )
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(height: primarySizedBox),
+            Expanded(
+              child: ListView.builder(
+                itemCount: providers.length,
+                itemBuilder: (context, index) {
+                  var provider = providers[index];
+                  return SizedBox(
+                    height: 100,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      elevation: 1.5,
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Image.network(
+                            provider['image']!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.error);
+                            },
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(secondarySizedBox),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  customTitleText(
+                                      context, provider['name'] ?? 'No name'),
+                                  const SizedBox(height: primarySizedBox),
+                                  Text(
+                                    provider['service'] ?? 'No service',
+                                    style: const TextStyle(
+                                      fontSize: smallText,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        "₱",
+                                        style: TextStyle(
+                                          fontSize: smallText,
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: primarySizedBox),
+                                      customTitleTextWithPrimaryColor(
+                                          context, "${provider['price']}"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: secondarySizedBox),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Image.asset(
+                                  getRatingImage(provider['rating'] ?? 'N/A'),
+                                  width: 25,
+                                  height: 25,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: tertiarySizedBox,
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -6,10 +6,10 @@ AppBar appBar(BuildContext context) {
   return AppBar(
     shape: const Border.symmetric(horizontal: BorderSide(width: .1)),
     backgroundColor: Colors.white,
-    toolbarHeight: 85,
+    toolbarHeight: 60,
     leadingWidth: 190,
     leading: Padding(
-      padding: const EdgeInsets.fromLTRB(15, 35, 0, 10),
+      padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
       child: SizedBox(
         child: Image.asset(
           'assets/pamfurred_logo.png',
@@ -19,7 +19,7 @@ AppBar appBar(BuildContext context) {
     ),
     actions: const [
       Padding(
-        padding: EdgeInsets.fromLTRB(10, 35, 15, 10),
+        padding: EdgeInsets.fromLTRB(10, 10, 15, 10),
         child: Icon(Icons.settings, size: 30),
       ),
     ],

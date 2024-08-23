@@ -21,7 +21,7 @@ class HomeScreenState extends State<HomeScreen> {
   final PgSpController pgSpController = Get.put(PgSpController());
 
   bool isSelected = false;
-  int selectedIndex = -1; // No service category selected initially
+  int selectedIndex = 0; // No service category selected initially
 
   void onItemTap(int index) {
     setState(() {
