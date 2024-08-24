@@ -83,6 +83,9 @@ dependencies:
   # Badges
   badges: ^3.1.2
 
+  # Shimmer
+  shimmer: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

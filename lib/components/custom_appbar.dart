@@ -33,7 +33,7 @@ AppBar customAppBar(BuildContext context) {
     backgroundColor: Colors.white,
     toolbarHeight: 60,
     leading: Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(10.0),
       child: IconButton(
         icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
         onPressed: () {

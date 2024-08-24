@@ -7,7 +7,8 @@
     <application
         android:label="pamfurred"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"> <!-- This line is now inside the application tag -->
 
         <!-- Your application components -->
 
@@ -25,7 +26,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            
+
             <!-- Meta-data for Flutter embedding -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
