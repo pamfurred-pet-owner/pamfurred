@@ -1,8 +1,4 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import '../controllers/pg_sp_controller.dart';
-
-final PgSpController pgSpController = Get.put(PgSpController());
 
 String calculateDistance(latitude, longitude) {
   // Replace these with pet owner coordinates
