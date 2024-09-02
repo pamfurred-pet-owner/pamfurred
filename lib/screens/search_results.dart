@@ -22,7 +22,7 @@ class SearchResultsScreenState extends State<SearchResultsScreen> {
   void initState() {
     super.initState();
     // Simulate a delay to show the shimmer effect
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       setState(() {
         isLoading = false;
       });

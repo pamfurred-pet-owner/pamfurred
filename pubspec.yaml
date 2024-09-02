@@ -77,14 +77,12 @@ dependencies:
   # Cloud Firestore
   # cloud_firestore: 
 
-  # GetX
-  get: ^4.6.6
-
   # Badges
   badges: ^3.1.2
 
   # Shimmer
   shimmer: ^3.0.0
+  flutter_riverpod: ^2.5.1
 
 dev_dependencies:
   flutter_test:

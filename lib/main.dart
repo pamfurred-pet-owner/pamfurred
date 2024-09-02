@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
@@ -15,20 +16,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Pamfurred',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.interTextTheme(
-          Theme.of(context).textTheme,
+    return ProviderScope(
+      child: GetMaterialApp(
+        title: 'Pamfurred',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: primaryColor),
+          splashFactory: NoSplash.splashFactory, // Disable splash colors
         ),
-        colorScheme:
-            Theme.of(context).colorScheme.copyWith(primary: primaryColor),
-        splashFactory: NoSplash.splashFactory, // Disable splash colors
+        // Redirect to HomeScreen() if the user is already logged in
+        // home: const LoginScreen(),
+        home: const MainScreen(),
       ),
-      // Redirect to HomeScreen() if the user is already logged in
-      // home: const LoginScreen(),
-      home: const MainScreen(),
     );
   }
 }

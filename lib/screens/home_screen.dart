@@ -1,25 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
 import 'package:pamfurred/components/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
-import 'package:get/get.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/screens/search_results.dart';
 import '../components/title_text.dart';
-import '../controllers/pg_sp_controller.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => HomeScreenState();
+  ConsumerState<HomeScreen> createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
-  final PgSpController pgSpController = Get.put(PgSpController());
-
+class HomeScreenState extends ConsumerState<HomeScreen> {
   bool isSelected = false;
   int selectedIndex = 0; // No service category selected initially
 
@@ -42,6 +40,7 @@ class HomeScreenState extends State<HomeScreen> {
     precacheImage(const AssetImage('assets/vet_service.png'), context);
     precacheImage(const AssetImage('assets/pet_grooming.png'), context);
     precacheImage(const AssetImage('assets/pet_boarding.png'), context);
+    precacheImage(const AssetImage('assets/pamfurred_logo.png'), context);
   }
 
   @override
@@ -338,140 +337,139 @@ class HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: secondarySizedBox),
         recoHeader("Pet grooming service providers"),
         const SizedBox(height: secondarySizedBox),
-        serviceProviders(),
+        serviceProviders("pet-grooming"),
         recoHeader("Pet boarding service providers"),
         const SizedBox(height: secondarySizedBox),
-        serviceProviders(),
+        serviceProviders("pet-boarding"),
         recoHeader("Veterinary service providers"),
         const SizedBox(height: secondarySizedBox),
-        serviceProviders()
+        serviceProviders("veterinary-service")
       ],
     );
   }
 
-  serviceProviders() {
-    return Obx(() {
-      if (pgSpController.pgSp.isEmpty) {
-        // if (pgSpController.isLoading.value) {
-        return const SizedBox(
-            height: 150, child: Center(child: CircularProgressIndicator()));
-      }
-      return SizedBox(
-        height: 250,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: (pgSpController.pgSp.length <= 10)
-                ? pgSpController.pgSp.length
-                : 10,
-            itemBuilder: (context, index) {
-              final sp = pgSpController.pgSp[index];
-              final imageUrl = (sp.image == '')
-                  ? 'assets/pamfurred_logo.png'
-                  : sp.image; // Default to Pamfurred logo if there's no uploaded image
-              final rating = (sp.rating == 0.0)
-                  ? 'N/A'
-                  : sp.rating; // Default to 'N/A' if rating is 0.0
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: primarySizedBox),
-                child: SizedBox(
-                  width: 250,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(secondaryBorderRadius)),
-                    elevation: 0,
-                    color: Colors.transparent,
-                    child: Column(
-                      children: [
-                        Stack(children: [
-                          Positioned(
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(
-                                      primaryBorderRadius)),
-                            ),
+  serviceProviders(String serviceCategory) {
+    // Access the list of maps from the provider
+    final allitems = ref.watch(mockDbProvider);
+
+    // Filter the list of maps where 'age' is 24
+    final items =
+        allitems.where((map) => map['category'] == serviceCategory).toList();
+
+    if (items.isEmpty) {
+      // if (pgSpController.isLoading.value) {
+      return const SizedBox(
+          height: 150, child: Center(child: CircularProgressIndicator()));
+    }
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: (items.length <= 10) ? items.length : 10,
+          itemBuilder: (context, index) {
+            final sp = items[index];
+            final imageUrl = (sp['image'] == '')
+                ? 'assets/pamfurred_logo.png'
+                : sp[
+                    'image']; // Default to Pamfurred logo if there's no uploaded image
+            final rating = (sp['rating'] == 0.0)
+                ? 'N/A'
+                : sp['rating']; // Default to 'N/A' if rating is 0.0
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: primarySizedBox),
+              child: SizedBox(
+                width: 250,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(secondaryBorderRadius)),
+                  elevation: 0,
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Stack(children: [
+                        Positioned(
+                          child: Container(
+                            width: double.infinity,
+                            height: 150,
+                            decoration: BoxDecoration(
+                                color: lightGreyColor,
+                                borderRadius:
+                                    BorderRadius.circular(primaryBorderRadius)),
                           ),
-                          Positioned(
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(primaryBorderRadius),
-                              child: Image.network(
-                                imageUrl,
-                                width: double.infinity,
-                                height: 150,
-                                fit: (sp.image != '')
-                                    ? BoxFit.cover
-                                    : BoxFit.contain,
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  } else {
-                                    return const SizedBox(
-                                        height: 150,
-                                        child: Center(
-                                            child:
-                                                CircularProgressIndicator()));
-                                  }
-                                },
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  return const SizedBox(
-                                      width: double.infinity,
-                                      height: 150,
-                                      child: Center(child: Icon(Icons.error)));
-                                },
-                              ),
-                            ),
-                          ),
-                        ]),
-                        const SizedBox(height: primarySizedBox),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(sp.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                      fontSize: regularText,
-                                      fontWeight: mediumWeight)),
-                            ),
-                          ],
                         ),
-                        const SizedBox(height: primarySizedBox),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.star,
-                                    size: 19, color: secondaryColor),
-                                Text(rating.toString())
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Icon(CupertinoIcons.location, size: 19),
-                                Text(calculateDistance(
-                                    sp.latitude, sp.longitude))
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                        Positioned(
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(primaryBorderRadius),
+                            child: imageUrl == "assets/pamfurred_logo.png"
+                                ? Image.asset("assets/pamfurred_logo.png",
+                                    width: double.infinity,
+                                    height: 150,
+                                    fit: BoxFit.contain)
+                                : Image.network(
+                                    imageUrl,
+                                    width: double.infinity,
+                                    height: 150,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return const SizedBox(
+                                            height: 150,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()));
+                                      }
+                                    },
+                                  ),
+                          ),
+                        ),
+                      ]),
+                      const SizedBox(height: primarySizedBox),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(sp['name'],
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: regularText,
+                                    fontWeight: mediumWeight)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: primarySizedBox),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.star,
+                                  size: 19, color: secondaryColor),
+                              Text(rating.toString())
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(CupertinoIcons.location, size: 19),
+                              Text(calculateDistance(
+                                  sp['latitude'], sp['longitude']))
+                            ],
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              );
-            }),
-      );
-    });
+              ),
+            );
+          }),
+    );
   }
 
   recoHeader(String header) {
