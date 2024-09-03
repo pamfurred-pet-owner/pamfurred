@@ -7,6 +7,7 @@ const double headerText = 25;
 const double titleFont = 18;
 
 // fontWeight
+const regularWeight = FontWeight.w100;
 const boldWeight = FontWeight.w900;
 const mediumWeight = FontWeight.w600;
 
@@ -18,6 +19,7 @@ const lightGreyColor = Color.fromRGBO(241, 241, 241, 1);
 const lighterGreyColor = Color.fromRGBO(244, 244, 244, 1);
 const lightRedColor = Color.fromRGBO(255, 214, 191, 1);
 const tangerine = Color.fromRGBO(209, 76, 1, 1);
+const darkGreyColor = Color.fromARGB(255, 51, 51, 51);
 
 // Screen width
 double getScreenWidth(BuildContext context) {
@@ -49,6 +51,8 @@ const double quaternarySizedBox = 24;
 // BorderRadius
 const double primaryBorderRadius = 5;
 const double secondaryBorderRadius = 10;
+const double tertiaryBorderRadius = 15;
+const double quaternaryBorderRadius = 20;
 
 // Variables requiring device width
 double deviceWidthDivideOnePointFive(BuildContext context) {

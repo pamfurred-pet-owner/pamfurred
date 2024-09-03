@@ -8,6 +8,7 @@ import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/screens/search_results.dart';
+import 'package:pamfurred/screens/serviceprovider_profile.dart';
 import '../components/title_text.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -334,7 +335,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   getRecos() {
     return Column(
       children: [
-        const SizedBox(height: secondarySizedBox),
+        const SizedBox(height: primarySizedBox),
         recoHeader("Pet grooming service providers"),
         const SizedBox(height: secondarySizedBox),
         serviceProviders("pet-grooming"),
@@ -362,112 +363,128 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           height: 150, child: Center(child: CircularProgressIndicator()));
     }
     return SizedBox(
-      height: 250,
+      height: 207,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: (items.length <= 10) ? items.length : 10,
           itemBuilder: (context, index) {
             final sp = items[index];
+            const defaultImage = 'assets/pamfurred_logo.png';
             final imageUrl = (sp['image'] == '')
-                ? 'assets/pamfurred_logo.png'
+                ? defaultImage
                 : sp[
                     'image']; // Default to Pamfurred logo if there's no uploaded image
             final rating = (sp['rating'] == 0.0)
                 ? 'N/A'
                 : sp['rating']; // Default to 'N/A' if rating is 0.0
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: primarySizedBox),
-              child: SizedBox(
-                width: 250,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(secondaryBorderRadius)),
-                  elevation: 0,
-                  color: Colors.transparent,
-                  child: Column(
-                    children: [
-                      Stack(children: [
-                        Positioned(
-                          child: Container(
-                            width: double.infinity,
-                            height: 150,
-                            decoration: BoxDecoration(
-                                color: lightGreyColor,
-                                borderRadius:
-                                    BorderRadius.circular(primaryBorderRadius)),
-                          ),
-                        ),
-                        Positioned(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(primaryBorderRadius),
-                            child: imageUrl == "assets/pamfurred_logo.png"
-                                ? Image.asset("assets/pamfurred_logo.png",
-                                    width: double.infinity,
-                                    height: 150,
-                                    fit: BoxFit.contain)
-                                : Image.network(
-                                    imageUrl,
-                                    width: double.infinity,
-                                    height: 150,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (BuildContext context,
-                                        Widget child,
-                                        ImageChunkEvent? loadingProgress) {
-                                      if (loadingProgress == null) {
-                                        return child;
-                                      } else {
-                                        return const SizedBox(
-                                            height: 150,
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()));
-                                      }
-                                    },
-                                  ),
-                          ),
-                        ),
-                      ]),
-                      const SizedBox(height: primarySizedBox),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: primarySizedBox),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        rightToLeftRoute(const ServiceproviderProfileScreen()));
+                  },
+                  child: SizedBox(
+                    width: 250,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(secondaryBorderRadius)),
+                      elevation: 0,
+                      color: Colors.transparent,
+                      child: Column(
                         children: [
-                          Flexible(
-                            child: Text(sp['name'],
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: const TextStyle(
-                                    fontSize: regularText,
-                                    fontWeight: mediumWeight)),
+                          Stack(children: [
+                            Positioned(
+                              child: Container(
+                                width: double.infinity,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                    color: lightGreyColor,
+                                    borderRadius: BorderRadius.circular(
+                                        primaryBorderRadius)),
+                              ),
+                            ),
+                            Positioned(
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(primaryBorderRadius),
+                                child: imageUrl == defaultImage
+                                    ? Image.asset(defaultImage,
+                                        width: double.infinity,
+                                        height: 150,
+                                        fit: BoxFit.contain)
+                                    : Image.network(
+                                        imageUrl,
+                                        width: double.infinity,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          } else {
+                                            return const SizedBox(
+                                                height: 150,
+                                                child: Center(
+                                                    child:
+                                                        CircularProgressIndicator()));
+                                          }
+                                        },
+                                        errorBuilder: (BuildContext context,
+                                            Object exception,
+                                            StackTrace? stackTrace) {
+                                          return const SizedBox(
+                                              width: double.infinity,
+                                              height: 150,
+                                              child: Center(
+                                                  child: Icon(Icons.error)));
+                                        },
+                                      ),
+                              ),
+                            ),
+                          ]),
+                          const SizedBox(height: primarySizedBox),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: Text(sp['name'],
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                        fontSize: regularText,
+                                        fontWeight: mediumWeight)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: primarySizedBox),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.star,
+                                      size: 19, color: secondaryColor),
+                                  Text(rating.toString())
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(CupertinoIcons.location, size: 19),
+                                  Text(calculateDistance(
+                                      sp['latitude'], sp['longitude']))
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      const SizedBox(height: primarySizedBox),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.star,
-                                  size: 19, color: secondaryColor),
-                              Text(rating.toString())
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(CupertinoIcons.location, size: 19),
-                              Text(calculateDistance(
-                                  sp['latitude'], sp['longitude']))
-                            ],
-                          )
-                        ],
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
+                ));
           }),
     );
   }
