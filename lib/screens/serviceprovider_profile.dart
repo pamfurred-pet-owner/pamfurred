@@ -1,22 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/title_text.dart';
+import 'package:pamfurred/providers/sp_profile_provider.dart';
 import 'package:pamfurred/providers/sp_tab_provider.dart';
 
 class ServiceproviderProfileScreen extends ConsumerWidget {
-  const ServiceproviderProfileScreen({super.key});
+  final String imageUrl;
+  const ServiceproviderProfileScreen(this.imageUrl, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Read the selected tab index from the provider
     final selectedIndex = ref.watch(selectedTabProvider);
+    const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
-    // List of contents for each tab
+    // Assuming the `formattedServiceDetailsProvider` returns a `Map<String, List<String>>`
+    final services = ref.watch(formattedServiceDetailsProvider('pet-grooming'));
+
     final List<Widget> tabTitles = [
       Center(
         child: Text(
@@ -46,58 +49,167 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
         ),
       ),
     ];
-    // List of contents for each tab
+
     final List<Widget> tabContents = [
+      // About tab content
       Center(
-          child: Column(
-        children: [
-          spDetailsHeader(
-            CupertinoIcons.location_solid,
-            "28th Street Nazareth, Cagayan de Oro City",
-          ),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.star, "4.5"),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.home_repair_service, "In salon"),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.access_time_filled, "9 AM - 6 PM"),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.call, "092555517754"),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.pets, "Caters dogs, cats, bunnies"),
-          const SizedBox(height: secondarySizedBox),
-          spDetailsHeader(Icons.house,
-              "Pet grooming, pet boarding, and veterinary service"),
-        ],
-      )),
-      Center(child: regularTextWidget("Services")),
+        child: Column(
+          children: [
+            spDetailsHeader(
+              CupertinoIcons.location_solid,
+              "28th Street Nazareth, Cagayan de Oro City",
+            ),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.star, "4.5"),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.home_repair_service, "In salon"),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.access_time_filled, "9 AM - 6 PM"),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.call, "092555517754"),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.pets, "Caters dogs, cats, bunnies"),
+            const SizedBox(height: secondarySizedBox),
+            spDetailsHeader(Icons.house,
+                "Pet grooming, pet boarding, and veterinary service"),
+          ],
+        ),
+      ),
+      // Services tab content with Stack-based cards
+      Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                customTitleText(context, "Grooming services"),
+              ],
+            ),
+            SizedBox(
+              height: getScreenHeight(context) - 405,
+              child: ListView.builder(
+                  itemCount: services.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final serviceName = services.keys.elementAt(index);
+                    final serviceDetails = services[serviceName] ?? [];
+
+                    // Use `List<String>` to display data
+                    final formattedString = serviceDetails.first;
+
+                    return Stack(
+                      children: [
+                        Card(
+                          color: Colors.transparent,
+                          elevation: 0,
+                          child: Container(
+                            width: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: InkWell(
+                              onTap: () {},
+                              splashColor: Colors.transparent,
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          serviceName,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: regularText,
+                                            fontWeight: regularWeight,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          formattedString,
+                                          overflow: TextOverflow.clip,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Additional widget that you want to place on top of the card
+                        const Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 10,
+                          child: CircleAvatar(
+                            backgroundColor: lightGreyColor,
+                            child: Icon(
+                              Icons.add,
+                              color: primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+            ),
+          ],
+        ),
+      ),
+      // Packages tab content
       Center(child: regularTextWidget("Packages")),
     ];
+
     return SafeArea(
       child: Scaffold(
-          appBar: customAppBar(context),
-          body: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: primarySizedBox),
-                // Replace data of service provider details
-                SizedBox(
-                  width: screenPadding(context),
-                  child: Column(children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.network(
-                          "https://tinyurl.com/yxxv7523",
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(height: secondarySizedBox),
-                        customTitleTextWithPrimaryColor(
-                            context, "Paws and Claws Pet Station"),
-                      ],
-                    ),
+        appBar: customAppBar(context),
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: primarySizedBox),
+              Image.network(
+                imageUrl,
+                width: double.infinity,
+                height: 200,
+                fit: imageUrl == defaultImage ? BoxFit.contain : BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return const SizedBox(
+                        height: 150,
+                        child: Center(child: CircularProgressIndicator()));
+                  }
+                },
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return const SizedBox(
+                      width: double.infinity,
+                      height: 150,
+                      child: Center(child: Icon(Icons.error)));
+                },
+              ),
+              SizedBox(
+                width: screenPadding(context),
+                child: Column(
+                  children: [
+                    const SizedBox(height: secondarySizedBox),
+                    customTitleTextWithPrimaryColor(
+                        context, "Paws and Claws Pet Station"),
                     const SizedBox(height: primarySizedBox),
                     Column(
                       children: [
@@ -128,44 +240,37 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
                           }),
                         ),
                         const SizedBox(height: secondarySizedBox),
-                        Container(
-                          child: tabContents[
-                              selectedIndex], // Display content based on selected index
+                        SizedBox(
+                          width: double.infinity,
+                          child: tabContents[selectedIndex],
                         ),
                       ],
                     )
-                  ]),
+                  ],
                 ),
-                const SizedBox(height: primarySizedBox),
-                SizedBox(
-                  width: screenPadding(context),
-                )
-              ],
-            ),
-          )),
-    );
-  }
-
-  spDetailsHeader(IconData icon, String detail) {
-    return Container(
-      padding: const EdgeInsets.only(
-          bottom: secondarySizedBox), //Spacing below the container
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.black, // Set border color
-            width: .15, // Set border width
+              ),
+              const SizedBox(height: primarySizedBox),
+            ],
           ),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(icon as IconData?, size: 20, color: Colors.black),
-          const SizedBox(width: secondarySizedBox),
-          regularGreyTextWidget(detail),
-        ],
-      ),
+    );
+  }
+
+  Widget spDetailsHeader(IconData icon, String detail) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(icon, size: 20, color: Colors.black),
+            const SizedBox(width: secondarySizedBox),
+            regularGreyTextWidget(detail),
+          ],
+        ),
+        const SizedBox(height: secondarySizedBox),
+      ],
     );
   }
 }

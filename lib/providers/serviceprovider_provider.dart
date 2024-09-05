@@ -1,12 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Define a provider for accessing the mockDb data
 final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
   return [
     {
       "sp_id": 1,
       "image":
-          "https://cdn.pixabay.com/photo/2023/11/30/15/49/dog-8421955_1280.jpg",
+          "https://tinyurl.com/yxxv7523",
       "name": "Paws and Claws Pet Station",
       "latitude": 8.1920,
       "longitude": 124.0850,

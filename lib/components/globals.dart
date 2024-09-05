@@ -14,6 +14,7 @@ const mediumWeight = FontWeight.w600;
 // Colors
 const primaryColor = Color.fromRGBO(160, 62, 6, 1.0);
 const secondaryColor = Color.fromRGBO(255, 137, 29, 1.0);
+const lighterSecondaryColor = Color.fromRGBO(255, 246, 228, 1);
 const greyColor = Color.fromRGBO(83, 83, 83, 1);
 const lightGreyColor = Color.fromRGBO(241, 241, 241, 1);
 const lighterGreyColor = Color.fromRGBO(244, 244, 244, 1);
