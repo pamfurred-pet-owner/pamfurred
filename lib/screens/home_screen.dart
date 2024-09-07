@@ -277,7 +277,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         _sectionHeader(context, header),
         const SizedBox(height: secondarySizedBox),
         _serviceProviders(category),
-        const SizedBox(height: secondarySizedBox)
+        const SizedBox(height: tertiarySizedBox)
       ],
     );
   }

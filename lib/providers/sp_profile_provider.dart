@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
+final spProfileProvider = Provider<List<Map<String, dynamic>>>((ref) {
   return [
     {
       "sp_id": 1,
@@ -58,7 +58,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
 // Provider for formatted service details with sizes and prices
 final formattedServiceDetailsProvider =
     Provider.family<Map<String, List<String>>, String>((ref, category) {
-  final mockDb = ref.watch(mockDbProvider);
+  final mockDb = ref.watch(spProfileProvider);
 
   final formattedServices = <String, List<String>>{};
   for (var serviceProvider in mockDb) {
@@ -100,7 +100,7 @@ String capitalize(String word) {
 // Provider for accessing packages by category
 final packagesByCategoryProvider =
     Provider.family<Map<String, Map<String, dynamic>>, String>((ref, category) {
-  final mockDb = ref.watch(mockDbProvider);
+  final mockDb = ref.watch(spProfileProvider);
 
   final packages = <String, Map<String, dynamic>>{};
   for (var serviceProvider in mockDb) {

@@ -1,39 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/header.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
+import 'package:pamfurred/providers/pet_profile_provider.dart';
+import 'package:pamfurred/providers/profile_provider.dart';
+import 'package:pamfurred/screens/pet_profile.dart';
+import 'package:shimmer/shimmer.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
-
-  @override
-  State<ProfileScreen> createState() => ProfileScreenState();
-}
-
-class ProfileScreenState extends State<ProfileScreen> {
-  // Mock db that contains profile data
-  Map<String, dynamic> profileData = {
-    'username': 'chuchu143',
-    'email_address': 'bobskie@gmail.com',
-    'password': 'bobobob',
-    'first_name': 'Bob Niño',
-    'last_name': 'Golosinda',
-    'phone_number': '091431431143',
-    'address': 'Lapasan, Cagayan de Oro City',
-  };
-
-  // Mock db that contains pet profile data
-  Map<String, Map<String, dynamic>> petProfileData = {
-    'pet1': {
-      'image': 'https://tinyurl.com/y8kxk2eh',
-    },
-    'pet2': {
-      'image': 'https://tinyurl.com/mr24m33t',
-    },
-    'pet3': {
-      'image': 'https://tinyurl.com/5p4wcyws',
-    },
-  };
 
   String convertToAsterisks(String text) {
     return '*' *
@@ -41,7 +18,12 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Fetch profile data from the provider
+    final profileData = ref.watch(profileProvider);
+
+    // Access the list of pet profiles
+    final petProfileData = ref.watch(petProfileProvider);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -100,48 +82,60 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   padding: EdgeInsets.only(
                                       left: leftPadding,
                                       right: rightPadding,
-                                      bottom: tertiarySizedBox),
+                                      bottom: 13),
                                   child: const ClipOval(
                                     child: Material(
                                       color: lightGreyColor, // Button color
                                       child: SizedBox(
-                                          width: 40,
-                                          height: 40,
+                                          width: 45,
                                           child: Icon(Icons.add,
-                                              color: Colors.black)),
+                                              color: primaryColor)),
                                     ),
                                   ),
                                 );
                               } else {
-                                // Extract each pet profile data using index
-                                String petKey =
-                                    petProfileData.keys.elementAt(index);
-                                String petProfileImage =
-                                    petProfileData[petKey]?['image'] ?? '';
-
+                                final petProfileImage =
+                                    petProfileData[index]['image'] ?? '';
                                 return Container(
                                   padding: EdgeInsets.only(
                                       left: leftPadding,
                                       right: rightPadding,
                                       bottom: tertiarySizedBox),
-                                  child: ClipOval(
-                                    child: Image.network(
-                                      petProfileImage,
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      },
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Icon(Icons.error);
-                                      },
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        slideUpRoute(
+                                            PetProfileScreen(petId: index + 1)),
+                                      );
+                                    },
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        petProfileImage,
+                                        height: 40,
+                                        width: 45,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          // Show a shimmer effect while loading
+                                          return Shimmer.fromColors(
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              height: 40,
+                                              width: 45,
+                                              color: Colors.white,
+                                            ),
+                                          );
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(Icons.error);
+                                        },
+                                      ),
                                     ),
                                   ),
                                 );
