@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
+import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/pet_profile_provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PetProfileScreen extends ConsumerWidget {
   final int petId;
@@ -15,77 +15,117 @@ class PetProfileScreen extends ConsumerWidget {
     final asyncPet = ref.watch(fetchPetByIdProvider(petId));
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: customAppBar(context),
       body: asyncPet.when(
         data: (pet) {
+          const double descWidth = 331;
           return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: primarySizedBox),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            child: Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: screenPadding(context),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 180, // Size of the outer circle including border
-                      height: 180,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.red, Colors.transparent],
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ClipOval(
-                          child: Image.network(
-                            pet['image'],
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              // Display an error icon when the image fails to load
-                              return Container(
-                                color: Colors.grey[300],
-                                child: const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                  size: 50,
+                    const SizedBox(height: primarySizedBox),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          fit: StackFit.loose,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(
+                                  0.1), // Space for the gradient border
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                    colors: [primaryColor, Colors.transparent],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: [0.25, 0.9]),
+                              ),
+                              child: Card(
+                                shape: const CircleBorder(),
+                                elevation: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      secondarySizedBox), // Space between image and card border
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      pet['image'], // Replace with your image URL
+                                      fit: BoxFit.cover,
+                                      width: 151,
+                                      height: 151,
+                                    ),
+                                  ),
                                 ),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              // Show a shimmer effect while loading
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
-                                child: Container(
-                                  color: Colors.white,
-                                ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                            const Positioned(
+                                bottom: 5,
+                                right: 0,
+                                child: SizedBox(
+                                  height: 32,
+                                  child: CircleAvatar(
+                                    backgroundColor: primaryColor,
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ))
+                          ],
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: tertiarySizedBox),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        customTitleText(context, pet['pet_name']),
+                        const SizedBox(
+                          width: secondarySizedBox,
+                        ),
+                        editIcon(),
+                      ],
+                    ),
+                    const SizedBox(height: tertiarySizedBox),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      petDesc(context, pet['age'].toString(), "mos. old"),
+                      verticalDivider(),
+                      petDesc(context, pet['pet_category'], "category"),
+                      verticalDivider(),
+                      petDesc(context, pet['weight'].toString(), "lbs."),
+                      const SizedBox(width: tertiarySizedBox),
+                      editIcon()
+                    ]),
+                    const SizedBox(height: tertiarySizedBox),
+                    SizedBox(
+                      width: descWidth + 25,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          customTitleText(context, 'About ${pet['pet_name']}'),
+                          editIcon()
+                        ],
                       ),
                     ),
+                    const SizedBox(height: tertiarySizedBox),
+                    Center(
+                      child: SizedBox(
+                        width: descWidth,
+                        child: Text(pet['pet_desc'],
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                color: darkGreyColor, fontSize: regularText)),
+                      ),
+                    )
                   ],
                 ),
-                const SizedBox(height: primarySizedBox),
-                // Image.network(pet['image']),
-                // const SizedBox(height: 16),
-                // Text(pet['pet_name'],
-                //     style: const TextStyle(
-                //         fontSize: 24, fontWeight: FontWeight.bold)),
-                // Text("Category: ${pet['pet_category']}",
-                //     style: const TextStyle(fontSize: 16)),
-                // Text("Weight: ${pet['weight']} kg",
-                //     style: const TextStyle(fontSize: 16)),
-                // Text("Age: ${pet['age']} years",
-                //     style: const TextStyle(fontSize: 16)),
-                // const SizedBox(height: 16),
-                // Text(pet['pet_desc'], style: const TextStyle(fontSize: 14)),
-              ],
+              ),
             ),
           );
         },
@@ -93,5 +133,40 @@ class PetProfileScreen extends ConsumerWidget {
         error: (err, stack) => Center(child: Text("Error: $err")),
       ),
     );
+  }
+
+  subtitleText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+          color: darkGreyColor,
+          fontSize: regularText,
+          fontWeight: regularWeight),
+    );
+  }
+
+  verticalDivider() {
+    return Container(
+      width: 1, // Width of the divider
+      height: 33, // Height of the divider
+      color: Colors.black, // Line color
+      margin: const EdgeInsets.symmetric(
+          horizontal:
+              quaternarySizedBox), // Space between divider and adjacent elements
+    );
+  }
+
+  petDesc(BuildContext context, String petDetail, String subtitle) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        customTitleText(context, petDetail),
+        subtitleText(subtitle),
+      ],
+    );
+  }
+
+  editIcon() {
+    return const Icon(Icons.edit, size: 18, color: Colors.black);
   }
 }

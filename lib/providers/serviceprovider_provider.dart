@@ -5,8 +5,8 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
     {
       "sp_id": 1,
       "image":
-          "https://tinyurl.com/yxxv7523",
-      "name": "Paws and Claws Pet Station",
+          "https://scontent.fdvo1-1.fna.fbcdn.net/v/t39.30808-6/303383610_451807140302013_8347004728886342413_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFdwN-UdOPvFGaR0fzTPGAL5ZkDFMSFixblmQMUxIWLFtzeMtRnz8FpQtIJyXJsdFxVhE0pX9hSoi4H2HxwYA1W&_nc_ohc=ajEFiKMf034Q7kNvgEqbIV4&_nc_zt=23&_nc_ht=scontent.fdvo1-1.fna&oh=00_AYAXWJJC1gtVlKhUbUU3BQTbN5qghgxoG95JBbtHK4wn_w&oe=66E3A7BD",
+      "name": "Golden Pet Veterinary Clinic",
       "latitude": 8.1920,
       "longitude": 124.0850,
       "rating": 4.5,
@@ -234,18 +234,4 @@ final packagesProvider = Provider<Map<String, dynamic>>((ref) {
   }
 
   return packages;
-});
-
-// Provider for fetching services
-final servicesProvider = Provider<Map<String, dynamic>>((ref) {
-  final mockDb = ref.watch(mockDbProvider);
-  final services = <String, dynamic>{};
-
-  for (var serviceProvider in mockDb) {
-    if (serviceProvider.containsKey('services')) {
-      services[serviceProvider['name']] = serviceProvider['services'];
-    }
-  }
-
-  return services;
 });

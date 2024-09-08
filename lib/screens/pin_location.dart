@@ -17,7 +17,8 @@ class PinAddress extends StatefulWidget {
   State<PinAddress> createState() => PinAddressState();
 }
 
-class PinAddressState extends State<PinAddress> with SingleTickerProviderStateMixin {
+class PinAddressState extends State<PinAddress>
+    with SingleTickerProviderStateMixin {
   String locationMessage = '';
   double? latitude;
   double? longitude;
@@ -36,7 +37,8 @@ class PinAddressState extends State<PinAddress> with SingleTickerProviderStateMi
       vsync: this,
       duration: const Duration(milliseconds: 30),
     );
-    animation = Tween<double>(begin: 0.9, end: 1.0).animate(animationController);
+    animation =
+        Tween<double>(begin: 0.9, end: 1.0).animate(animationController);
   }
 
   Future<void> getLocation() async {
@@ -97,7 +99,8 @@ class PinAddressState extends State<PinAddress> with SingleTickerProviderStateMi
               if (pinnedLocation != null) {
                 final screenshotBytes = await screenshotController.capture();
                 final imagePath = await saveScreenshot(screenshotBytes!);
-                Navigator.pop(context, imagePath);
+                Navigator.pop(imagePath as BuildContext);
+                // Navigator.pop(context, imagePath);
               }
             },
           ),
@@ -126,7 +129,7 @@ class PinAddressState extends State<PinAddress> with SingleTickerProviderStateMi
                         MarkerLayer(
                           markers: [
                             Marker(
-                              point: pinnedLocation!,
+                                point: pinnedLocation!,
                                 child: ScaleTransition(
                                   scale: animation,
                                   child: const Icon(
@@ -134,8 +137,7 @@ class PinAddressState extends State<PinAddress> with SingleTickerProviderStateMi
                                     size: 40,
                                     color: primaryColor,
                                   ),
-                                )
-                            ),
+                                )),
                           ],
                         ),
                     ],

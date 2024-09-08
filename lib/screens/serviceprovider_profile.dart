@@ -5,7 +5,7 @@ import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/title_text.dart';
-import 'package:pamfurred/providers/sp_profile_provider.dart';
+import 'package:pamfurred/providers/sp_profile_provider_services.dart';
 import 'package:pamfurred/providers/sp_tab_provider.dart';
 
 class ServiceproviderProfileScreen extends ConsumerWidget {
@@ -17,9 +17,7 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
     final selectedIndex = ref.watch(selectedTabProvider);
     const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
-    // Assuming the `formattedServiceDetailsProvider` returns a `Map<String, List<String>>`
-    final services = ref.watch(formattedServiceDetailsProvider('pet-grooming'));
-
+    final allServices = ref.watch(servicesProvider);
     final List<Widget> tabTitles = [
       Center(
         child: Text(
@@ -77,96 +75,65 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
       ),
       // Services tab content with Stack-based cards
       Center(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                customTitleText(context, "Grooming services"),
-              ],
-            ),
-            SizedBox(
-              height: getScreenHeight(context) - 405,
-              child: ListView.builder(
-                  itemCount: services.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final serviceName = services.keys.elementAt(index);
-                    final serviceDetails = services[serviceName] ?? [];
-
-                    // Use `List<String>` to display data
-                    final formattedString = serviceDetails.first;
-
-                    return Stack(
-                      children: [
-                        Card(
-                          color: Colors.transparent,
-                          elevation: 0,
-                          child: Container(
-                            width: 300,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: InkWell(
-                              onTap: () {},
-                              splashColor: Colors.transparent,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          serviceName,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: regularText,
-                                            fontWeight: regularWeight,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          formattedString,
-                                          overflow: TextOverflow.clip,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+        child: SizedBox(
+          height: getScreenHeight(context) - 395,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  customTitleText(context, "Grooming services"),
+                ],
+              ),
+              SizedBox(
+                height: getScreenHeight(context) - 421,
+                child: ListView.builder(
+                  itemCount: allServices.length,
+                  itemBuilder: (context, index) {
+                    final service = allServices[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            service.image,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.error,
+                                  size: 60, color: Colors.red);
+                            },
                           ),
                         ),
-                        // Additional widget that you want to place on top of the card
-                        const Positioned(
-                          top: 0,
-                          bottom: 0,
-                          right: 10,
-                          child: CircleAvatar(
-                            backgroundColor: lightGreyColor,
-                            child: Icon(
-                              Icons.add,
-                              color: primaryColor,
-                            ),
+                        title: Text(
+                          service.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text('₱${service.price}'),
+                        trailing: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            icon: const Icon(Icons.add, color: primaryColor),
+                            onPressed: () {
+                              // Handle add action
+                              // Example: ref.read(cartNotifierProvider.notifier).addProduct(service);
+                            },
                           ),
                         ),
-                      ],
+                      ),
                     );
-                  }),
-            ),
-          ],
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       // Packages tab content
@@ -175,11 +142,11 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: customAppBar(context),
         body: Center(
           child: Column(
             children: [
-              const SizedBox(height: primarySizedBox),
               Image.network(
                 imageUrl,
                 width: double.infinity,
@@ -197,20 +164,21 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
                 },
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
-                  return const SizedBox(
+                  return Container(
+                      color: lighterGreyColor,
                       width: double.infinity,
                       height: 150,
-                      child: Center(child: Icon(Icons.error)));
+                      child: const Center(child: Icon(Icons.error)));
                 },
               ),
               SizedBox(
                 width: screenPadding(context),
                 child: Column(
                   children: [
-                    const SizedBox(height: secondarySizedBox),
+                    const SizedBox(height: tertiarySizedBox),
                     customTitleTextWithPrimaryColor(
                         context, "Paws and Claws Pet Station"),
-                    const SizedBox(height: primarySizedBox),
+                    const SizedBox(height: secondarySizedBox),
                     Column(
                       children: [
                         Row(
@@ -239,7 +207,7 @@ class ServiceproviderProfileScreen extends ConsumerWidget {
                             );
                           }),
                         ),
-                        const SizedBox(height: secondarySizedBox),
+                        const SizedBox(height: tertiarySizedBox),
                         SizedBox(
                           width: double.infinity,
                           child: tabContents[selectedIndex],

@@ -61,7 +61,7 @@ final petProfileProvider = Provider<List<Map<String, dynamic>>>((ref) {
 final fetchPetByIdProvider =
     FutureProvider.family<Map<String, dynamic>, int>((ref, petId) async {
   // Simulate network delay
-  await Future.delayed(const Duration(seconds: 2));
+  await Future.delayed(const Duration(microseconds: 500));
 
   // Fetch the list of pets from the original provider
   final pets = ref.read(petProfileProvider);
