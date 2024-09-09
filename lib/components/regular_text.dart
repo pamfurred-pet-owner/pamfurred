@@ -15,6 +15,21 @@ Widget regularTextWidget(String text) {
   );
 }
 
+Widget regularBoldTextWidget(String text) {
+  return Flexible(
+    child: Text(
+      maxLines: 2,
+      text,
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: regularText,
+        fontWeight: mediumWeight,
+      ),
+    ),
+  );
+}
+
+
 Widget regularGreyTextWidget(String text) {
   return Flexible(
     child: Text(

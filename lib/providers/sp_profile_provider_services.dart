@@ -28,8 +28,7 @@ const List<Service> allServices = [
       name: 'Nail cut',
       category: 'pet-grooming',
       price: 340,
-      image:
-          'https://tinyurl.com/5n7bu3a8'),
+      image: 'https://tinyurl.com/5n7bu3a8'),
   Service(
       id: '3',
       name: 'Toothbrush',
