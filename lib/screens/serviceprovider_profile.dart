@@ -94,6 +94,7 @@ class _ServiceproviderProfileScreenState
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Replace dropdown with button to show modal bottom sheet
                   Container(
@@ -108,8 +109,16 @@ class _ServiceproviderProfileScreenState
                           showModalBottomSheet(
                             context: context,
                             builder: (BuildContext context) {
-                              return SizedBox(
-                                height: 200,
+                              return Container(
+                                height: 180,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft:
+                                          Radius.circular(tertiaryBorderRadius),
+                                      topRight: Radius.circular(
+                                          tertiaryBorderRadius)),
+                                  color: lighterGreyColor,
+                                ),
                                 child: ListView.builder(
                                   itemCount: serviceOptions.length,
                                   itemBuilder: (context, index) {
@@ -143,10 +152,60 @@ class _ServiceproviderProfileScreenState
                       ),
                     ),
                   ),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: 400,
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Pet type selection
+                                RadioGroup(
+                                  title: 'Pet type',
+                                  options: const ['Dog', 'Cat', 'Rabbit'],
+                                  selectedOption: ref.watch(
+                                      petTypeProvider), // Watching pet type provider
+                                  onChanged: (value) {
+                                    ref
+                                        .read(petTypeProvider.notifier)
+                                        .updatePetType(
+                                            value!); // Updating pet type
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                // Service type selection
+                                RadioGroup(
+                                  title: 'Service type',
+                                  options: const ['Home service', 'In-clinic'],
+                                  selectedOption: ref.watch(
+                                      serviceTypeProvider), // Watching service type provider
+                                  onChanged: (value) {
+                                    ref
+                                        .read(serviceTypeProvider.notifier)
+                                        .updateServiceType(
+                                            value!); // Updating service type
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: primaryColor,
+                      size: 25,
+                    ),
+                  )
                 ],
               ),
               const SizedBox(
-                height: secondarySizedBox,
+                height: tertiarySizedBox,
               ),
               Expanded(
                 child: ListView.builder(
@@ -160,50 +219,54 @@ class _ServiceproviderProfileScreenState
                         borderRadius:
                             BorderRadius.circular(primaryBorderRadius),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(secondarySizedBox),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(primaryBorderRadius),
-                              child: SizedBox(
-                                width: 90,
-                                height: 85,
-                                child: Image.network(
-                                  service.image,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(Icons.error, size: 70);
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(primaryBorderRadius),
+                            child: SizedBox(
+                              width: 90,
+                              height: 85,
+                              child: Image.network(
+                                service.image,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.error, size: 70);
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                              width:
+                                  tertiarySizedBox), // Adjust spacing as needed
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                customTitleText(context, service.name),
+                                Text('₱${service.price}'),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 37,
+                            child: Center(
+                              child: CircleAvatar(
+                                backgroundColor: secondaryColor,
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 23,
+                                  ),
+                                  onPressed: () {
+                                    // Handle add action
                                   },
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                                width: 16), // Adjust spacing as needed
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  customTitleText(context, service.name),
-                                  Text('₱${service.price}'),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                                width: 16), // Adjust spacing as needed
-                            CircleAvatar(
-                              backgroundColor: secondaryColor,
-                              child: IconButton(
-                                icon:
-                                    const Icon(Icons.add, color: Colors.white),
-                                onPressed: () {
-                                  // Handle add action
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -260,18 +323,21 @@ class _ServiceproviderProfileScreenState
                   if (loadingProgress == null) {
                     return child;
                   } else {
-                    return const SizedBox(
-                        height: 150,
-                        child: Center(child: CircularProgressIndicator()));
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                 },
-                errorBuilder: (BuildContext context, Object exception,
+                errorBuilder: (BuildContext context, Object error,
                     StackTrace? stackTrace) {
                   return Container(
-                      color: lighterGreyColor,
-                      width: double.infinity,
-                      height: 150,
-                      child: const Center(child: Icon(Icons.error)));
+                    color: lighterGreyColor,
+                    width: double.infinity,
+                    height: 150,
+                    child: const Center(
+                      child: Icon(Icons.error),
+                    ),
+                  );
                 },
               ),
               SizedBox(
@@ -331,12 +397,53 @@ class _ServiceproviderProfileScreenState
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(icon, size: 20, color: Colors.black),
+            Icon(icon, size: 20, color: const Color.fromARGB(255, 26, 10, 10)),
             const SizedBox(width: secondarySizedBox),
             regularGreyTextWidget(detail),
           ],
         ),
         const SizedBox(height: secondarySizedBox),
+      ],
+    );
+  }
+}
+
+// Radio button class
+
+class RadioGroup extends StatelessWidget {
+  final String title;
+  final List<String> options;
+  final String selectedOption;
+  final ValueChanged<String?> onChanged;
+
+  const RadioGroup({
+    super.key,
+    required this.title,
+    required this.options,
+    required this.selectedOption,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        ...options.map((option) {
+          return RadioListTile<String>(
+            title: Text(option),
+            value: option,
+            groupValue: selectedOption,
+            onChanged: (value) {
+              print("Selected option: $value"); // Debugging line
+              onChanged(value); // Trigger state update
+            },
+          );
+        }).toList(),
       ],
     );
   }
