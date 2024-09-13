@@ -24,8 +24,8 @@ const List<Service> allServices = [
   Service(
     id: '1',
     name: 'Bath',
-    category: 'pet-grooming',
-    petType: ['Dog'], // List<String> expected
+    category: 'Pet grooming services',
+    petType: ['Dog'],
     price: 120,
     image: 'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
     serviceType: ['Home service', 'In-clinic'],
@@ -33,35 +33,35 @@ const List<Service> allServices = [
   Service(
     id: '2',
     name: 'Nail cut',
-    category: 'pet-grooming',
-    petType: ['Cat'], // List<String> expected
+    category: 'Pet grooming services',
+    petType: ['Cat'],
     price: 340,
     image: 'https://tinyurl.com/5n7bu3a8',
-    serviceType: ['Home service'], // Changed to List<String>
+    serviceType: ['Home service'],
   ),
   Service(
     id: '3',
     name: 'Toothbrush',
-    category: 'pet-grooming',
-    petType: ['Dog'], // List<String> expected
+    category: 'Pet grooming services',
+    petType: ['Dog'],
     price: 540,
     image: 'https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg',
-    serviceType: ['Home service'], // Changed to List<String>
+    serviceType: ['Home service'],
   ),
   Service(
     id: '4',
     name: 'X-Ray',
-    category: 'veterinary-service',
-    petType: ['Cat', 'Dog'], // List<String> expected
+    category: 'Veterinary services',
+    petType: ['Cat', 'Dog'],
     price: 140,
     image: 'https://tinyurl.com/mtdukp3d',
-    serviceType: ['In-clinic'], // Changed to List<String>
+    serviceType: ['In-clinic'],
   ),
   Service(
     id: '5',
     name: 'Pet sitting',
-    category: 'pet-boarding',
-    petType: ['Dog'], // Added petType for consistency
+    category: 'Pet boarding services',
+    petType: ['Dog'],
     price: 290,
     image: 'https://tinyurl.com/mtk2exvk',
     serviceType: ['Home service', 'In-clinic'],
@@ -69,17 +69,17 @@ const List<Service> allServices = [
   Service(
     id: '6',
     name: 'Haircut',
-    category: 'pet-grooming',
-    petType: ['Dog'], // List<String> expected
+    category: 'Pet grooming services',
+    petType: ['Dog'],
     price: 440,
     image: 'https://tinyurl.com/5n7bu3a8',
-    serviceType: ['In-clinic'], // Changed to List<String>
+    serviceType: ['In-clinic'],
   ),
   Service(
     id: '7',
     name: 'Hair color',
-    category: 'pet-grooming',
-    petType: ['Dog'], // List<String> expected
+    category: 'Pet grooming services',
+    petType: ['Dog'],
     price: 520,
     image: 'https://tinyurl.com/yppwfv6m',
     serviceType: ['Home service', 'In-clinic'],
@@ -87,8 +87,8 @@ const List<Service> allServices = [
   Service(
     id: '8',
     name: 'Pet walking',
-    category: 'pet-boarding',
-    petType: ['Rabbit'], // List<String> expected
+    category: 'Pet boarding services',
+    petType: ['Rabbit'],
     price: 790,
     image: 'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
     serviceType: ['Home service'],
@@ -105,11 +105,9 @@ final serviceTypeProvider = StateNotifierProvider<ServiceTypeNotifier, String>(
 );
 
 class ServiceTypeNotifier extends StateNotifier<String> {
-  ServiceTypeNotifier()
-      : super('Home service'); // Default value for service type
+  ServiceTypeNotifier() : super('Home service');
 
   void updateServiceType(String value) {
-    print("ServiceTypeNotifier - Updated value: $value"); // Debugging line
     state = value;
   }
 }
@@ -120,10 +118,23 @@ final petTypeProvider = StateNotifierProvider<PetTypeNotifier, String>(
 );
 
 class PetTypeNotifier extends StateNotifier<String> {
-  PetTypeNotifier() : super('Dog'); // Set a valid default pet type
+  PetTypeNotifier() : super('Dog');
 
   void updatePetType(String value) {
-    print("PetTypeNotifier - Updated value: $value"); // Debugging line
     state = value;
   }
 }
+
+// Provider to manage the list of service options
+final serviceOptionsProvider = Provider<List<String>>((ref) {
+  return [
+    'Pet grooming services',
+    'Pet boarding services',
+    'Veterinary services',
+  ];
+});
+
+// Provider to manage the selected service category
+final selectedServiceCategoryProvider = StateProvider<String>((ref) {
+  return 'Pet grooming services'; // Adjust default value if needed
+});

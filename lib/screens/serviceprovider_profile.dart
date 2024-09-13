@@ -27,12 +27,27 @@ class _ServiceproviderProfileScreenState
 
     const double elevatedButtonHeight = 50;
 
+    // Service options
+    final serviceOptions = ref.watch(serviceOptionsProvider);
+
+    // State providers for filtering
+    final selectedServiceType = ref.watch(serviceTypeProvider);
+    final selectedPetType = ref.watch(petTypeProvider);
+    final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
+
+    // Filtered services based on selection
     final allServices = ref.watch(servicesProvider);
-    final List<String> serviceOptions = [
-      'Pet grooming services',
-      'Pet boarding services',
-      'Veterinary services',
-    ];
+
+    final filteredServices = allServices.where((service) {
+      final matchesPetType = service.petType.contains(selectedPetType);
+      final matchesServiceCategory =
+          service.category == selectedServiceCategory;
+      final matchesSelectedServiceType =
+          service.serviceType.contains(selectedServiceType);
+      return matchesPetType &&
+          matchesServiceCategory &&
+          matchesSelectedServiceType;
+    }).toList();
 
     final List<Widget> tabTitles = [
       Center(
@@ -127,8 +142,9 @@ class _ServiceproviderProfileScreenState
                                       title: Text(option),
                                       onTap: () {
                                         ref
-                                            .read(selectedServiceProvider
-                                                .notifier)
+                                            .read(
+                                                selectedServiceCategoryProvider
+                                                    .notifier)
                                             .state = option;
                                         Navigator.pop(context);
                                       },
@@ -143,7 +159,7 @@ class _ServiceproviderProfileScreenState
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              ref.watch(selectedServiceProvider),
+                              selectedServiceCategory,
                               style: const TextStyle(fontSize: regularText),
                             ),
                             const Icon(Icons.arrow_drop_down),
@@ -207,11 +223,14 @@ class _ServiceproviderProfileScreenState
               const SizedBox(
                 height: tertiarySizedBox,
               ),
+              filteredServices.isEmpty? const Center(
+                child: Text("No services available"),
+              ) :
               Expanded(
                 child: ListView.builder(
-                  itemCount: allServices.length,
+                  itemCount: filteredServices.length,
                   itemBuilder: (context, index) {
-                    final service = allServices[index];
+                    final service = filteredServices[index];
                     return Card(
                       color: Colors.transparent,
                       elevation: 0,
@@ -443,7 +462,7 @@ class RadioGroup extends StatelessWidget {
               onChanged(value); // Trigger state update
             },
           );
-        }).toList(),
+        }),
       ],
     );
   }
