@@ -6,7 +6,6 @@ import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/title_text.dart';
-import 'package:pamfurred/providers/dropdown_menu_provder.dart';
 import 'package:pamfurred/providers/sp_profile_provider_services.dart';
 import 'package:pamfurred/providers/sp_tab_provider.dart';
 
