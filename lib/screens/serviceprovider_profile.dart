@@ -1,3 +1,4 @@
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,6 +100,9 @@ class _ServiceproviderProfileScreenState
             const SizedBox(height: secondarySizedBox),
             spDetailsHeader(Icons.pets, "Caters dogs, cats, bunnies"),
             const SizedBox(height: secondarySizedBox),
+            // Expanded(
+            //     child: ListView.builder(
+            //         itemCount: 2, itemBuilder: (context, index) {}))
           ],
         ),
       ),
@@ -174,37 +178,81 @@ class _ServiceproviderProfileScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            height: 400,
+                            height: 230,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Pet type selection
-                                RadioGroup(
-                                  title: 'Pet type',
-                                  options: const ['Dog', 'Cat', 'Rabbit'],
-                                  selectedOption: ref.watch(
-                                      petTypeProvider), // Watching pet type provider
-                                  onChanged: (value) {
-                                    ref
-                                        .read(petTypeProvider.notifier)
-                                        .updatePetType(
-                                            value!); // Updating pet type
-                                  },
+                                const SizedBox(height: secondarySizedBox),
+                                customTitleText(context, 'Pet Type'),
+                                const SizedBox(height: secondarySizedBox),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    CustomRadioButton(
+                                      buttonLables: const [
+                                        'Dog',
+                                        'Cat',
+                                        'Rabbit'
+                                      ],
+                                      buttonValues: const [
+                                        'Dog',
+                                        'Cat',
+                                        'Rabbit'
+                                      ],
+                                      radioButtonValue: (value) =>
+                                          // Updating pet type
+                                          {
+                                        ref
+                                            .read(petTypeProvider.notifier)
+                                            .updatePetType(value)
+                                      },
+                                      defaultSelected:
+                                          ref.watch(petTypeProvider),
+                                      selectedColor: primaryColor,
+                                      unSelectedColor: Colors.transparent,
+                                      elevation: 0,
+                                      enableShape: true,
+                                      buttonTextStyle: const ButtonTextStyle(
+                                          textStyle:
+                                              TextStyle(fontSize: regularText)),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 20),
-                                // Service type selection
-                                RadioGroup(
-                                  title: 'Service type',
-                                  options: const ['Home service', 'In-clinic'],
-                                  selectedOption: ref.watch(
-                                      serviceTypeProvider), // Watching service type provider
-                                  onChanged: (value) {
-                                    ref
-                                        .read(serviceTypeProvider.notifier)
-                                        .updateServiceType(
-                                            value!); // Updating service type
-                                  },
+                                const SizedBox(height: secondarySizedBox),
+                                customTitleText(context, 'Service Type'),
+                                const SizedBox(height: secondarySizedBox),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    CustomRadioButton(
+                                      buttonLables: const [
+                                        'Home service',
+                                        'In-clinic'
+                                      ],
+                                      buttonValues: const [
+                                        'Home service',
+                                        'In-clinic'
+                                      ],
+                                      radioButtonValue: (value) =>
+                                          // Updating service type
+                                          {
+                                        ref
+                                            .read(serviceTypeProvider.notifier)
+                                            .updateServiceType(value)
+                                      },
+                                      defaultSelected:
+                                          ref.watch(serviceTypeProvider),
+                                      selectedColor: primaryColor,
+                                      unSelectedColor: Colors.transparent,
+                                      elevation: 0,
+                                      enableShape: true,
+                                      buttonTextStyle: const ButtonTextStyle(
+                                          textStyle:
+                                              TextStyle(fontSize: regularText)),
+                                      width: 150,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -223,74 +271,78 @@ class _ServiceproviderProfileScreenState
               const SizedBox(
                 height: tertiarySizedBox,
               ),
-              filteredServices.isEmpty? const Center(
-                child: Text("No services available"),
-              ) :
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredServices.length,
-                  itemBuilder: (context, index) {
-                    final service = filteredServices[index];
-                    return Card(
-                      color: Colors.transparent,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(primaryBorderRadius),
-                      ),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(primaryBorderRadius),
-                            child: SizedBox(
-                              width: 90,
-                              height: 85,
-                              child: Image.network(
-                                service.image,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.error, size: 70);
-                                },
-                              ),
+              filteredServices.isEmpty
+                  ? const Center(
+                      child: Text("No services available"),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                        itemCount: filteredServices.length,
+                        itemBuilder: (context, index) {
+                          final service = filteredServices[index];
+                          return Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(primaryBorderRadius),
                             ),
-                          ),
-                          const SizedBox(
-                              width:
-                                  tertiarySizedBox), // Adjust spacing as needed
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                customTitleText(context, service.name),
-                                Text('₱${service.price}'),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      primaryBorderRadius),
+                                  child: SizedBox(
+                                    width: 90,
+                                    height: 85,
+                                    child: Image.network(
+                                      service.image,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(Icons.error,
+                                            size: 70);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width:
+                                        tertiarySizedBox), // Adjust spacing as needed
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      customTitleText(context, service.name),
+                                      Text('₱${service.price}'),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 37,
+                                  child: Center(
+                                    child: CircleAvatar(
+                                      backgroundColor: secondaryColor,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 23,
+                                        ),
+                                        onPressed: () {
+                                          // Handle add action
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            width: 37,
-                            child: Center(
-                              child: CircleAvatar(
-                                backgroundColor: secondaryColor,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 23,
-                                  ),
-                                  onPressed: () {
-                                    // Handle add action
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
               const SizedBox(
                 height: elevatedButtonHeight + tertiarySizedBox,
               )

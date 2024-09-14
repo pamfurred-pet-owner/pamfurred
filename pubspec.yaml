@@ -86,7 +86,10 @@ dependencies:
   # Riverpod
   flutter_riverpod: ^2.5.1
 
+  #Riverpod annotation
   riverpod_annotation: ^2.3.5
+
+  custom_radio_grouped_button: any
 
 dev_dependencies:
   flutter_test:
