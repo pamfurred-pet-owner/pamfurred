@@ -93,12 +93,13 @@ class PetProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: tertiarySizedBox),
+                    // TODO: Add area for pet breed
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       petDesc(context, pet['age'].toString(), "mos. old"),
                       verticalDivider(),
                       petDesc(context, pet['pet_category'], "category"),
                       verticalDivider(),
-                      petDesc(context, pet['weight'].toString(), "lbs."),
+                      petDesc(context, pet['weight'].toString(), "kg."),
                       const SizedBox(width: tertiarySizedBox),
                       editIcon()
                     ]),
