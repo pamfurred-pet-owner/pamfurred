@@ -20,7 +20,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
         "Tail hair color": 200,
         "Bath": {"small": 100, "medium": 200, "large": 300},
         "Toothbrush": {"small": 100, "medium": 200, "large": 300}
-      }
+      },
     },
     {
       "sp_id": 2,
