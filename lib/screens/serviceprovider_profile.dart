@@ -5,10 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/regular_text.dart';
+import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
+import 'package:pamfurred/providers/cart_provider.dart';
 import 'package:pamfurred/providers/sp_profile_provider_packages.dart';
 import 'package:pamfurred/providers/sp_profile_provider_services.dart';
 import 'package:pamfurred/providers/sp_tab_provider.dart';
+import 'package:pamfurred/screens/cart_screen.dart';
 
 class ServiceproviderProfileScreen extends ConsumerStatefulWidget {
   final String imageUrl;
@@ -27,6 +30,12 @@ class _ServiceproviderProfileScreenState
     const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
     const double elevatedButtonHeight = 50;
+
+    // Cart services provider
+    final cartServices = ref.watch(cartNotifierProvider);
+
+    // Cart services provider
+    // final cartPackages = ref.watch(cartPakagesNotifierProvider);
 
     // Service and package bottomsheet options
     final serviceOptions = ref.watch(serviceOptionsProvider);
@@ -101,6 +110,7 @@ class _ServiceproviderProfileScreenState
     ];
 
     // TODO: Make services and packages tab content reusable
+    // TODO: Add "all" in filtering services and packages
 
     final List<Widget> tabContents = [
       // About tab content
@@ -301,7 +311,9 @@ class _ServiceproviderProfileScreenState
                       child: ListView.builder(
                         itemCount: filteredServices.length,
                         itemBuilder: (context, index) {
+                          // Get the current service from the filtered list
                           final service = filteredServices[index];
+
                           return Card(
                             color: Colors.transparent,
                             elevation: 0,
@@ -341,21 +353,43 @@ class _ServiceproviderProfileScreenState
                                     ],
                                   ),
                                 ),
+
                                 SizedBox(
                                   width: 37,
                                   child: Center(
                                     child: CircleAvatar(
                                       backgroundColor: secondaryColor,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                          size: 23,
-                                        ),
-                                        onPressed: () {
-                                          // Handle add action
-                                        },
-                                      ),
+                                      // Check if the service is already in the cart by comparing its ID
+                                      child: cartServices.any((cartService) =>
+                                              cartService.id == service.id)
+                                          ? IconButton(
+                                              icon: const Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Remove the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .removeService(service);
+                                              },
+                                            )
+                                          : IconButton(
+                                              icon: const Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Add the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .addService(service);
+                                              },
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -591,16 +625,37 @@ class _ServiceproviderProfileScreenState
                                   child: Center(
                                     child: CircleAvatar(
                                       backgroundColor: secondaryColor,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                          size: 23,
-                                        ),
-                                        onPressed: () {
-                                          // Handle add action
-                                        },
-                                      ),
+                                      // Check if the service is already in the cart by comparing its ID
+                                      child: cartServices.any((cartPackage) =>
+                                              cartPackage.id == package.id)
+                                          ? IconButton(
+                                              icon: const Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Remove the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .removePackage(package);
+                                              },
+                                            )
+                                          : IconButton(
+                                              icon: const Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Add the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .addPackage(package);
+                                              },
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -632,7 +687,12 @@ class _ServiceproviderProfileScreenState
           height: elevatedButtonHeight,
           margin: const EdgeInsets.all(primarySizedBox),
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                slideUpRoute(const CartScreen()),
+              );
+            },
             child: const Center(
               child: Text(
                 'Book appointment',

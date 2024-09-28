@@ -1,96 +1,80 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class Service {
-  const Service({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.image,
-    required this.serviceType,
-    required this.petType,
-  });
-
-  final String id;
-  final String name;
-  final String category;
-  final int price;
-  final String image;
-  final List<String> serviceType;
-  final List<String> petType;
-}
+import 'package:pamfurred/models/services.dart';
 
 const List<Service> allServices = [
   Service(
-    id: '1',
-    name: 'Bath',
+    serviceId: '1',
+    serviceName: 'Bath',
     category: 'Pet grooming services',
     petType: ['Dog'],
-    price: 120,
-    image: 'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
+    servicePrice: 120,
+    serviceImage:
+        'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
     serviceType: ['Home service', 'In-clinic'],
   ),
   Service(
-    id: '2',
-    name: 'Nail cut',
+    serviceId: '2',
+    serviceName: 'Nail cut',
     category: 'Pet grooming services',
     petType: ['Cat'],
-    price: 340,
-    image: 'https://tinyurl.com/5n7bu3a8',
+    servicePrice: 340,
+    serviceImage: 'https://tinyurl.com/5n7bu3a8',
     serviceType: ['Home service'],
   ),
   Service(
-    id: '3',
-    name: 'Toothbrush',
+    serviceId: '3',
+    serviceName: 'Toothbrush',
     category: 'Pet grooming services',
     petType: ['Dog'],
-    price: 540,
-    image: 'https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg',
+    servicePrice: 540,
+    serviceImage:
+        'https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg',
     serviceType: ['Home service'],
   ),
   Service(
-    id: '4',
-    name: 'X-Ray',
+    serviceId: '4',
+    serviceName: 'X-Ray',
     category: 'Veterinary services',
     petType: ['Cat', 'Dog'],
-    price: 140,
-    image: 'https://tinyurl.com/mtdukp3d',
+    servicePrice: 140,
+    serviceImage: 'https://tinyurl.com/mtdukp3d',
     serviceType: ['In-clinic'],
   ),
   Service(
-    id: '5',
-    name: 'Pet sitting',
+    serviceId: '5',
+    serviceName: 'Pet sitting',
     category: 'Pet boarding services',
     petType: ['Dog'],
-    price: 290,
-    image: 'https://tinyurl.com/mtk2exvk',
+    servicePrice: 290,
+    serviceImage: 'https://tinyurl.com/mtk2exvk',
     serviceType: ['Home service', 'In-clinic'],
   ),
   Service(
-    id: '6',
-    name: 'Haircut',
+    serviceId: '6',
+    serviceName: 'Haircut',
     category: 'Pet grooming services',
     petType: ['Dog'],
-    price: 440,
-    image: 'https://tinyurl.com/5n7bu3a8',
+    servicePrice: 440,
+    serviceImage: 'https://tinyurl.com/5n7bu3a8',
     serviceType: ['In-clinic'],
   ),
   Service(
-    id: '7',
-    name: 'Hair color',
+    serviceId: '7',
+    serviceName: 'Hair color',
     category: 'Pet grooming services',
     petType: ['Dog'],
-    price: 520,
-    image: 'https://tinyurl.com/yppwfv6m',
+    servicePrice: 520,
+    serviceImage: 'https://tinyurl.com/yppwfv6m',
     serviceType: ['Home service', 'In-clinic'],
   ),
   Service(
-    id: '8',
-    name: 'Pet walking',
+    serviceId: '8',
+    serviceName: 'Pet walking',
     category: 'Pet boarding services',
     petType: ['Rabbit'],
-    price: 790,
-    image: 'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
+    servicePrice: 790,
+    serviceImage:
+        'https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg',
     serviceType: ['Home service'],
   ),
 ];
