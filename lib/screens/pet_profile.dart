@@ -14,6 +14,8 @@ class PetProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncPet = ref.watch(fetchPetByIdProvider(petId));
 
+    // bool _isExpanded = false;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: customAppBar(context),
@@ -93,23 +95,40 @@ class PetProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: tertiarySizedBox),
-                    // TODO: Add area for pet breed
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      petDesc(context, pet['age'].toString(), "mos. old"),
-                      verticalDivider(),
-                      petDesc(context, pet['pet_category'], "category"),
-                      verticalDivider(),
-                      petDesc(context, pet['weight'].toString(), "kg."),
-                      const SizedBox(width: tertiarySizedBox),
-                      editIcon()
-                    ]),
+                    SizedBox(
+                      width: descWidth + 25,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          customTitleText(context, 'Basic info'),
+                          editIcon()
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: secondarySizedBox),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        petDesc(context, 'assets/id-card.png', pet['pet_name'],
+                            "name"),
+                        const SizedBox(height: secondarySizedBox),
+                        petDesc(context, 'assets/time.png',
+                            pet['age'].toString(), "mos. old"),
+                        const SizedBox(height: secondarySizedBox),
+                        petDesc(context, 'assets/weight-scale.png',
+                            pet['weight'].toString(), "kg."),
+                        const SizedBox(height: secondarySizedBox),
+                        // petDesc(context, 'assets/gender.png',
+                        //     pet['sex'].toString(), "sex"),
+                      ],
+                    ),
                     const SizedBox(height: tertiarySizedBox),
                     SizedBox(
                       width: descWidth + 25,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          customTitleText(context, 'About ${pet['pet_name']}'),
+                          customTitleText(context, 'Description'),
                           editIcon()
                         ],
                       ),
@@ -146,6 +165,7 @@ class PetProfileScreen extends ConsumerWidget {
     );
   }
 
+// Unused
   verticalDivider() {
     return Container(
       width: 1, // Width of the divider
@@ -157,12 +177,29 @@ class PetProfileScreen extends ConsumerWidget {
     );
   }
 
-  petDesc(BuildContext context, String petDetail, String subtitle) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+  petDesc(
+      BuildContext context, String image, String petDetail, String subtitle) {
+    return Row(
       children: [
-        customTitleText(context, petDetail),
-        subtitleText(subtitle),
+        Column(
+          children: [Image.asset(image, height: 35)],
+        ),
+        const SizedBox(width: tertiarySizedBox),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                customTitleText(context, petDetail),
+              ],
+            ),
+            Row(
+              children: [
+                subtitleText(subtitle),
+              ],
+            )
+          ],
+        ),
       ],
     );
   }

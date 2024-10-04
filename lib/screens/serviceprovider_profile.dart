@@ -31,6 +31,9 @@ class _ServiceproviderProfileScreenState
 
     const double elevatedButtonHeight = 50;
 
+    bool willBook = false;
+    bool showButton = false;
+
     // Packages riverpod provider variables
     final selectedPackageType = ref.watch(packageTypeProvider);
     final selectedPetTypePackage = ref.watch(petTypePackageProvider);
