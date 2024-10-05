@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
+import 'package:pamfurred/components/custom_floating_action_button.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
@@ -31,9 +32,28 @@ class _ServiceproviderProfileScreenState
 
     const double elevatedButtonHeight = 50;
 
-    bool willBook = false;
-    bool showButton = false;
-
+    // Cart services provider
+    final cartServices = ref.watch(cartNotifierProvider);
+    // Cart services provider
+    // final cartPackages = ref.watch(cartPakagesNotifierProvider);
+    // Service and package bottomsheet options
+    final serviceOptions = ref.watch(serviceOptionsProvider);
+    // Services riverpod provider variables
+    final selectedServiceType = ref.watch(serviceTypeProvider);
+    final selectedPetType = ref.watch(petTypeProvider);
+    final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
+    // Filtered services based on selection
+    final allServices = ref.watch(servicesProvider);
+    final filteredServices = allServices.where((service) {
+      final matchesPetType = service.petType.contains(selectedPetType);
+      final matchesServiceCategory =
+          service.category == selectedServiceCategory;
+      final matchesSelectedServiceType =
+          service.serviceType.contains(selectedServiceType);
+      return matchesPetType &&
+          matchesServiceCategory &&
+          matchesSelectedServiceType;
+    }).toList();
     // Packages riverpod provider variables
     final selectedPackageType = ref.watch(packageTypeProvider);
     final selectedPetTypePackage = ref.watch(petTypePackageProvider);
@@ -132,21 +152,246 @@ class _ServiceproviderProfileScreenState
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          showCustomModalBottomSheet();
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: 180,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft:
+                                          Radius.circular(tertiaryBorderRadius),
+                                      topRight: Radius.circular(
+                                          tertiaryBorderRadius)),
+                                  color: lighterGreyColor,
+                                ),
+                                child: ListView.builder(
+                                  itemCount: serviceOptions.length,
+                                  itemBuilder: (context, index) {
+                                    final option = serviceOptions[index];
+                                    return ListTile(
+                                      title: Text(option),
+                                      onTap: () {
+                                        ref
+                                            .read(
+                                                selectedServiceCategoryProvider
+                                                    .notifier)
+                                            .state = option;
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
                         },
-                        child: getDropdownAndIcon(ref,
-                            selectedProductCategory:
-                                ref.watch(selectedServiceCategoryProvider)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedServiceCategory,
+                              style: const TextStyle(fontSize: regularText),
+                            ),
+                            const Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  filterServices(context, ref),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: 230,
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: secondarySizedBox),
+                                customTitleText(context, 'Pet Type'),
+                                const SizedBox(height: secondarySizedBox),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    CustomRadioButton(
+                                      buttonLables: const [
+                                        'Dog',
+                                        'Cat',
+                                        'Rabbit'
+                                      ],
+                                      buttonValues: const [
+                                        'Dog',
+                                        'Cat',
+                                        'Rabbit'
+                                      ],
+                                      radioButtonValue: (value) =>
+                                          // Updating pet type
+                                          {
+                                        ref
+                                            .read(petTypeProvider.notifier)
+                                            .updatePetType(value)
+                                      },
+                                      defaultSelected:
+                                          ref.watch(petTypeProvider),
+                                      selectedColor: primaryColor,
+                                      unSelectedColor: Colors.transparent,
+                                      elevation: 0,
+                                      enableShape: true,
+                                      buttonTextStyle: const ButtonTextStyle(
+                                          textStyle:
+                                              TextStyle(fontSize: regularText)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: secondarySizedBox),
+                                customTitleText(context, 'Service Type'),
+                                const SizedBox(height: secondarySizedBox),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    CustomRadioButton(
+                                      buttonLables: const [
+                                        'Home service',
+                                        'In-clinic'
+                                      ],
+                                      buttonValues: const [
+                                        'Home service',
+                                        'In-clinic'
+                                      ],
+                                      radioButtonValue: (value) =>
+                                          // Updating service type
+                                          {
+                                        ref
+                                            .read(serviceTypeProvider.notifier)
+                                            .updateServiceType(value)
+                                      },
+                                      defaultSelected:
+                                          ref.watch(serviceTypeProvider),
+                                      selectedColor: primaryColor,
+                                      unSelectedColor: Colors.transparent,
+                                      elevation: 0,
+                                      enableShape: true,
+                                      buttonTextStyle: const ButtonTextStyle(
+                                          textStyle:
+                                              TextStyle(fontSize: regularText)),
+                                      width: 150,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: primaryColor,
+                      size: 25,
+                    ),
+                  )
                 ],
               ),
               const SizedBox(
                 height: tertiarySizedBox,
               ),
-              getList(context, ref),
+              filteredServices.isEmpty
+                  ? const Center(
+                      child: Text("No services available"),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                        itemCount: filteredServices.length,
+                        itemBuilder: (context, index) {
+                          // Get the current service from the filtered list
+                          final service = filteredServices[index];
+                          return Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(primaryBorderRadius),
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      primaryBorderRadius),
+                                  child: SizedBox(
+                                    width: 90,
+                                    height: 85,
+                                    child: Image.network(
+                                      service.image,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(Icons.error,
+                                            size: 70);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width:
+                                        tertiarySizedBox), // Adjust spacing as needed
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      customTitleText(context, service.name),
+                                      Text('₱${service.price}'),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 37,
+                                  child: Center(
+                                    child: CircleAvatar(
+                                      backgroundColor: secondaryColor,
+                                      // Check if the service is already in the cart by comparing its ID
+                                      child: cartServices.any((cartService) =>
+                                              cartService.id == service.id)
+                                          ? IconButton(
+                                              icon: const Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Remove the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .removeService(service);
+                                              },
+                                            )
+                                          : IconButton(
+                                              icon: const Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 23,
+                                              ),
+                                              onPressed: () {
+                                                // Add the service using its ID
+                                                ref
+                                                    .read(cartNotifierProvider
+                                                        .notifier)
+                                                    .addService(service);
+                                              },
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
               const SizedBox(
                 height: elevatedButtonHeight + tertiarySizedBox,
               )
@@ -173,11 +418,50 @@ class _ServiceproviderProfileScreenState
                     child: Center(
                       child: TextButton(
                         onPressed: () {
-                          showCustomModalBottomSheet();
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: 180,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft:
+                                          Radius.circular(tertiaryBorderRadius),
+                                      topRight: Radius.circular(
+                                          tertiaryBorderRadius)),
+                                  color: lighterGreyColor,
+                                ),
+                                child: ListView.builder(
+                                  itemCount: serviceOptions.length,
+                                  itemBuilder: (context, index) {
+                                    final option = serviceOptions[index];
+                                    return ListTile(
+                                      title: Text(option),
+                                      onTap: () {
+                                        ref
+                                            .read(
+                                                selectedPackageCategoryProvider
+                                                    .notifier)
+                                            .state = option;
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
                         },
-                        child: getDropdownAndIcon(ref,
-                            selectedProductCategory:
-                                ref.watch(selectedPackageCategoryProvider)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedPackageCategory,
+                              style: const TextStyle(fontSize: regularText),
+                            ),
+                            const Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -290,9 +574,6 @@ class _ServiceproviderProfileScreenState
                         itemCount: filteredPackages.length,
                         itemBuilder: (context, index) {
                           final package = filteredPackages[index];
-                          // Cart services provider
-                          final cartServices = ref.watch(cartNotifierProvider);
-
                           return Card(
                             color: Colors.transparent,
                             elevation: 0,
@@ -391,31 +672,10 @@ class _ServiceproviderProfileScreenState
         backgroundColor: Colors.white,
         appBar: customAppBar(context),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(secondaryBorderRadius),
-              border: Border.all(width: 0.5, color: primaryColor),
-              color: primaryColor),
-          height: elevatedButtonHeight,
-          margin: const EdgeInsets.all(primarySizedBox),
-          child: TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                slideUpRoute(const CartScreen()),
-              );
-            },
-            child: const Center(
-              child: Text(
-                'Book appointment',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: regularText,
-                    fontWeight: regularWeight),
-              ),
-            ),
-          ),
-        ),
+        floatingActionButton: customFloatingActionButton(context,
+            buttonText: 'Book appointment', onPressed: () {
+          Navigator.push(context, slideUpRoute(const CartScreen()));
+        }),
         body: Center(
           child: Column(
             children: [
@@ -511,293 +771,6 @@ class _ServiceproviderProfileScreenState
           ],
         ),
         const SizedBox(height: secondarySizedBox),
-      ],
-    );
-  }
-
-  Future<void> showCustomModalBottomSheet() {
-    return showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        // Service and package bottomsheet options
-        final serviceOptions = ref.watch(serviceOptionsProvider);
-        return Container(
-          height: 180,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(tertiaryBorderRadius),
-                topRight: Radius.circular(tertiaryBorderRadius)),
-            color: lighterGreyColor,
-          ),
-          child: ListView.builder(
-            itemCount: serviceOptions.length,
-            itemBuilder: (context, index) {
-              final option = serviceOptions[index];
-              return ListTile(
-                title: Text(option),
-                onTap: () {
-                  ref.read(selectedServiceCategoryProvider.notifier).state =
-                      option;
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-Widget getList(BuildContext context, WidgetRef ref) {
-  // Services riverpod provider variables
-  final selectedServiceType = ref.watch(serviceTypeProvider);
-  final selectedPetType = ref.watch(petTypeProvider);
-  final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
-
-  // Filtered services based on selection
-  final allServices = ref.watch(servicesProvider);
-  final filteredServices = allServices.where((service) {
-    final matchesPetType = service.petType.contains(selectedPetType);
-    final matchesServiceCategory = service.category == selectedServiceCategory;
-    final matchesSelectedServiceType =
-        service.serviceType.contains(selectedServiceType);
-    return matchesPetType &&
-        matchesServiceCategory &&
-        matchesSelectedServiceType;
-  }).toList();
-
-  return filteredServices.isEmpty
-      ? const Center(
-          child: Text("No services available"),
-        )
-      : Expanded(
-          child: ListView.builder(
-            itemCount: filteredServices.length,
-            itemBuilder: (context, index) {
-              // Get the current service from the filtered list
-              final service = filteredServices[index];
-
-              // Cart services provider
-              final cartServices = ref.watch(cartNotifierProvider);
-
-              return Card(
-                color: Colors.transparent,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(primaryBorderRadius),
-                ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(primaryBorderRadius),
-                      child: SizedBox(
-                        width: 90,
-                        height: 85,
-                        child: Image.network(
-                          service.image,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.error, size: 70);
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                        width: tertiarySizedBox), // Adjust spacing as needed
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          customTitleText(context, service.name),
-                          Text('₱${service.price}'),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 37,
-                      child: Center(
-                        child: CircleAvatar(
-                          backgroundColor: secondaryColor,
-                          // Check if the service is already in the cart by comparing its ID
-                          child: cartServices.any(
-                                  (cartService) => cartService.id == service.id)
-                              ? IconButton(
-                                  icon: const Icon(
-                                    Icons.remove,
-                                    color: Colors.white,
-                                    size: 23,
-                                  ),
-                                  onPressed: () {
-                                    // Remove the service using its ID
-                                    ref
-                                        .read(cartNotifierProvider.notifier)
-                                        .removeService(service);
-                                  },
-                                )
-                              : IconButton(
-                                  icon: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 23,
-                                  ),
-                                  onPressed: () {
-                                    // Add the service using its ID
-                                    ref
-                                        .read(cartNotifierProvider.notifier)
-                                        .addService(service);
-                                  },
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-}
-
-Widget filterServices(BuildContext context, WidgetRef ref) {
-  return IconButton(
-    onPressed: () {
-      filterServicesBottomSheet(context, ref);
-    },
-    icon: const Icon(
-      Icons.filter_list,
-      color: primaryColor,
-      size: 25,
-    ),
-  );
-}
-
-Future<void> filterServicesBottomSheet(BuildContext context, WidgetRef ref) {
-  return showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return Container(
-        height: 230,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: secondarySizedBox),
-            customTitleText(context, 'Pet Type'),
-            const SizedBox(height: secondarySizedBox),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CustomRadioButton(
-                  buttonLables: const ['Dog', 'Cat', 'Rabbit'],
-                  buttonValues: const ['Dog', 'Cat', 'Rabbit'],
-                  radioButtonValue: (value) =>
-                      // Updating pet type
-                      {ref.read(petTypeProvider.notifier).updatePetType(value)},
-                  defaultSelected: ref.watch(petTypeProvider),
-                  selectedColor: primaryColor,
-                  unSelectedColor: Colors.transparent,
-                  elevation: 0,
-                  enableShape: true,
-                  buttonTextStyle: const ButtonTextStyle(
-                      textStyle: TextStyle(fontSize: regularText)),
-                ),
-              ],
-            ),
-            const SizedBox(height: secondarySizedBox),
-            customTitleText(context, 'Service Type'),
-            const SizedBox(height: secondarySizedBox),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                getCustomRadioButton(
-                  ref, // Pass the StateNotifier
-                  updateProductType: (String value) => ref
-                      .read(serviceTypeProvider.notifier)
-                      .updateServiceType(value), // Pass the update logic
-                )
-              ],
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
-Widget getCustomRadioButton(
-  WidgetRef ref, {
-  required Function(String) updateProductType, // Pass the update function
-}) {
-  return CustomRadioButton(
-    buttonLables: const ['Home service', 'In-clinic'],
-    buttonValues: const ['Home service', 'In-clinic'],
-    radioButtonValue: (value) {
-      // Call the update function when a value is selected
-      updateProductType(value);
-    },
-    defaultSelected: ref.watch(
-        serviceTypeProvider), // Watch the provider to get the selected value
-    selectedColor: primaryColor,
-    unSelectedColor: Colors.transparent,
-    elevation: 0,
-    enableShape: true,
-    buttonTextStyle:
-        const ButtonTextStyle(textStyle: TextStyle(fontSize: regularText)),
-    width: 150,
-  );
-}
-
-Widget getDropdownAndIcon(WidgetRef ref,
-    {required String selectedProductCategory}) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        selectedProductCategory,
-        style: const TextStyle(fontSize: regularText),
-      ),
-      const Icon(Icons.arrow_drop_down),
-    ],
-  );
-}
-
-// Radio button class
-
-class RadioGroup extends StatelessWidget {
-  final String title;
-  final List<String> options;
-  final String selectedOption;
-  final ValueChanged<String?> onChanged;
-
-  const RadioGroup({
-    super.key,
-    required this.title,
-    required this.options,
-    required this.selectedOption,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        ...options.map((option) {
-          return RadioListTile<String>(
-            title: Text(option),
-            value: option,
-            groupValue: selectedOption,
-            onChanged: (value) {
-              onChanged(value); // Trigger state update
-            },
-          );
-        }),
       ],
     );
   }
