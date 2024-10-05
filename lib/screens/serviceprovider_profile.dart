@@ -703,7 +703,10 @@ class _ServiceproviderProfileScreenState
                     width: double.infinity,
                     height: 150,
                     child: const Center(
-                      child: Icon(Icons.error),
+                      child: Icon(
+                        Icons.error,
+                        size: 90,
+                      ),
                     ),
                   );
                 },

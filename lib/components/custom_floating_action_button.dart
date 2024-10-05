@@ -11,7 +11,7 @@ Widget customFloatingActionButton(BuildContext context,
       color: primaryColor,
     ),
     height: elevatedButtonHeight,
-    margin: const EdgeInsets.all(primarySizedBox),
+    margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
     child: TextButton(
       onPressed: onPressed,
       child: Center(
