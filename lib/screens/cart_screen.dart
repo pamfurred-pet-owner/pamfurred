@@ -5,6 +5,7 @@ import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/providers/cart_provider.dart';
 import 'package:pamfurred/screens/successful_appointment.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -121,12 +122,26 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             width: 90,
                             height: 85,
                             fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child; // Image loaded successfully
+                              } else {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    width: 90,
+                                    height: 85,
+                                    color: Colors.grey[300],
+                                  ),
+                                ); // Shimmer effect while loading
+                              }
+                            },
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 width: 90,
                                 height: 85,
-                                color: Colors
-                                    .grey[300], // Fallback background color
+                                color: Colors.grey[300],
                                 child: const Icon(
                                   Icons.broken_image,
                                   color: Colors.grey,

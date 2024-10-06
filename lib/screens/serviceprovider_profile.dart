@@ -9,15 +9,16 @@ import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/cart_provider.dart';
+import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/providers/sp_profile_provider_packages.dart';
 import 'package:pamfurred/providers/sp_profile_provider_services.dart';
 import 'package:pamfurred/providers/sp_tab_provider.dart';
 import 'package:pamfurred/screens/cart_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ServiceproviderProfileScreen extends ConsumerStatefulWidget {
-  final String imageUrl;
-  const ServiceproviderProfileScreen(this.imageUrl, {super.key});
-
+  const ServiceproviderProfileScreen(this.spId, {super.key});
+  final String spId;
   @override
   ConsumerState<ServiceproviderProfileScreen> createState() =>
       _ServiceproviderProfileScreenState();
@@ -31,11 +32,14 @@ class _ServiceproviderProfileScreenState
     const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
     const double elevatedButtonHeight = 50;
+    final allItems = ref.watch(mockDbProvider);
+
+    // Find the service provider with the matching sp_id
+    final sp = allItems.firstWhere(
+        (item) => item['sp_id'].toString() == widget.spId.toString());
 
     // Cart services provider
     final cartServices = ref.watch(cartNotifierProvider);
-    // Cart services provider
-    // final cartPackages = ref.watch(cartPakagesNotifierProvider);
     // Service and package bottomsheet options
     final serviceOptions = ref.watch(serviceOptionsProvider);
     // Services riverpod provider variables
@@ -104,32 +108,40 @@ class _ServiceproviderProfileScreenState
       ),
     ];
 
-    // TODO: Make services and packages tab content reusable
-    // TODO: Add "all" in filtering services and packages
+    // Variable for service provider rating, handling null values
+    final rating = sp['rating'] != null ? sp['rating'].toString() : 'N/A';
+
+    // Check if the rating is 0.0 and handle it accordingly
+    final displayRating = (rating == '0.0' || rating == 'N/A') ? 'N/A' : rating;
 
     final List<Widget> tabContents = [
       // About tab content
       Center(
         child: Column(
           children: [
+            // This is temporary. Remove this when it's ensured that we don't take null addresses from service providers
+            sp.isNotEmpty
+                ? spDetailsHeader(
+                    CupertinoIcons.location_solid, sp['address'] ?? 'N/A')
+                : spDetailsHeader(CupertinoIcons.location_solid, 'N/A'),
+            const SizedBox(height: secondarySizedBox),
+
+// Rating display logic (assuming 'displayRating' handles null internally)
+            spDetailsHeader(Icons.star, displayRating),
+            const SizedBox(height: secondarySizedBox),
+
             spDetailsHeader(
-              CupertinoIcons.location_solid,
-              "28th Street Nazareth, Cagayan de Oro City",
-            ),
+                Icons.home_repair_service, sp['service_type'] ?? 'N/A'),
             const SizedBox(height: secondarySizedBox),
-            spDetailsHeader(Icons.star, "4.5"),
+
+            spDetailsHeader(Icons.access_time_filled, sp['hours'] ?? 'N/A'),
             const SizedBox(height: secondarySizedBox),
-            spDetailsHeader(Icons.home_repair_service, "In salon"),
+
+            spDetailsHeader(Icons.call, sp['phone'] ?? 'N/A'),
             const SizedBox(height: secondarySizedBox),
-            spDetailsHeader(Icons.access_time_filled, "9 AM - 6 PM"),
+
+            spDetailsHeader(Icons.pets, sp['pets_catered'] ?? 'N/A'),
             const SizedBox(height: secondarySizedBox),
-            spDetailsHeader(Icons.call, "092555517754"),
-            const SizedBox(height: secondarySizedBox),
-            spDetailsHeader(Icons.pets, "Caters dogs, cats, bunnies"),
-            const SizedBox(height: secondarySizedBox),
-            // Expanded(
-            //     child: ListView.builder(
-            //         itemCount: 2, itemBuilder: (context, index) {}))
           ],
         ),
       ),
@@ -320,18 +332,39 @@ class _ServiceproviderProfileScreenState
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       primaryBorderRadius),
-                                  child: SizedBox(
+                                  child: Image.network(
+                                    service.image,
                                     width: 90,
                                     height: 85,
-                                    child: Image.network(
-                                      service.image,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Icon(Icons.error,
-                                            size: 70);
-                                      },
-                                    ),
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child; // Image loaded successfully
+                                      } else {
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            width: 90,
+                                            height: 85,
+                                            color: Colors.grey[300],
+                                          ),
+                                        ); // Shimmer effect while loading
+                                      }
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 90,
+                                        height: 85,
+                                        color: Colors.grey[300],
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                          size: 50,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 const SizedBox(
@@ -586,18 +619,39 @@ class _ServiceproviderProfileScreenState
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       primaryBorderRadius),
-                                  child: SizedBox(
+                                  child: Image.network(
+                                    package.image,
                                     width: 90,
                                     height: 85,
-                                    child: Image.network(
-                                      package.image,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Icon(Icons.error,
-                                            size: 70);
-                                      },
-                                    ),
+                                    fit: BoxFit.cover,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child; // Image loaded successfully
+                                      } else {
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            width: 90,
+                                            height: 85,
+                                            color: Colors.grey[300],
+                                          ),
+                                        ); // Shimmer effect while loading
+                                      }
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 90,
+                                        height: 85,
+                                        color: Colors.grey[300],
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                          size: 50,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 const SizedBox(
@@ -680,20 +734,25 @@ class _ServiceproviderProfileScreenState
           child: Column(
             children: [
               Image.network(
-                widget.imageUrl,
+                sp['image'],
                 width: double.infinity,
                 height: 200,
-                fit: widget.imageUrl == defaultImage
-                    ? BoxFit.contain
-                    : BoxFit.cover,
+                fit:
+                    sp['image'] == defaultImage ? BoxFit.contain : BoxFit.cover,
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) {
                     return child;
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        width: double.infinity,
+                        height: 200,
+                        color: Colors.grey[300],
+                      ),
+                    ); // Shimmer effect while loading
                   }
                 },
                 errorBuilder: (BuildContext context, Object error,
@@ -701,7 +760,7 @@ class _ServiceproviderProfileScreenState
                   return Container(
                     color: lighterGreyColor,
                     width: double.infinity,
-                    height: 150,
+                    height: 200,
                     child: const Center(
                       child: Icon(
                         Icons.error,
@@ -716,7 +775,7 @@ class _ServiceproviderProfileScreenState
                 child: Column(
                   children: [
                     const SizedBox(height: tertiarySizedBox),
-                    customTitleText(context, "Paws and Claws Pet Station"),
+                    customTitleText(context, sp['name']),
                     const SizedBox(height: secondarySizedBox),
                     Column(
                       children: [

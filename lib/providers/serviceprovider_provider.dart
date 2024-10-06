@@ -7,231 +7,175 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "image":
           "https://scontent.fmnl25-2.fna.fbcdn.net/v/t39.30808-6/303383610_451807140302013_8347004728886342413_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFdwN-UdOPvFGaR0fzTPGAL5ZkDFMSFixblmQMUxIWLFtzeMtRnz8FpQtIJyXJsdFxVhE0pX9hSoi4H2HxwYA1W&_nc_ohc=8JWvA2Y7z_wQ7kNvgEGap0T&_nc_ht=scontent.fmnl25-2.fna&_nc_gid=AEozISPsKFFOBvLvsb-3VGD&oh=00_AYApCD-bAvevNu5ch9TAG5naheHYqDRkzIc5xrJ7W1lBbg&oe=66EA06FD",
       "name": "Golden Pet Veterinary Clinic",
+      "address": "Iponan, Cagayan de Oro City",
       "latitude": 8.1920,
       "longitude": 124.0850,
       "rating": 4.5,
-      "category": "pet-grooming",
-      "packages": {
-        "Bath and blow dry": {"small": 200, "medium": 300, "large": 500},
-        "Nail clipping": {"small": 200, "medium": 300, "large": 500},
-      },
-      "services": {
-        "Ears hair color": 175,
-        "Tail hair color": 200,
-        "Bath": {"small": 100, "medium": 200, "large": 300},
-        "Toothbrush": {"small": 100, "medium": 200, "large": 300}
-      },
+      "category": "Pet grooming",
+      "phone": "+63 917 123 4567",
+      "hours": "9 am - 5 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic, Home service",
     },
     {
       "sp_id": 2,
       "image": "",
       "name": "Purrfect Paws Grooming Spa",
+      "address": "Divisoria, Cagayan de Oro City",
       "latitude": 8.4770,
       "longitude": 124.6501,
       "rating": 4.3,
-      "category": "pet-grooming",
-      "packages": {
-        "Full Grooming": {"small": 250, "medium": 400, "large": 600},
-      },
-      "services": {
-        "Teeth Brushing": 150,
-        "Flea and Tick Treatment": 200,
-        "Bath": {"small": 100, "medium": 200, "large": 300}
-      }
+      "category": "Pet grooming",
+      "phone": "+63 917 234 5678",
+      "hours": "10 am - 6 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     },
     {
       "sp_id": 3,
       "image":
           "https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg",
       "name": "Furry Finishers Pet Salon",
+      "address": "Agusan, Cagayan de Oro City",
       "latitude": 8.4800,
       "longitude": 124.5916,
       "rating": 0.0,
-      "category": "pet-grooming",
-      "packages": {
-        "Basic Wash": {"small": 150, "medium": 250, "large": 400},
-        "De-Shedding Treatment": {"small": 200, "medium": 300, "large": 500}
-      },
-      "services": {
-        "Nail Trimming": 100,
-      }
+      "category": "Pet grooming",
+      "phone": "+63 917 345 6789",
+      "hours": "8 am - 4 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "Home service",
     },
     {
       "sp_id": 4,
       "image":
           "https://images.pexels.com/photos/6490932/pexels-photo-6490932.jpeg",
       "name": "Grooming Glitz and Glam",
+      "address": "Cogon, Cagayan de Oro City",
       "latitude": 8.4685,
       "longitude": 124.6829,
       "rating": 4.5,
-      "category": "pet-grooming",
-      "packages": {
-        "Luxury Grooming Package": {"small": 350, "medium": 500, "large": 700},
-      },
-      "services": {"Pawdicure": 180, "Ear Cleaning": 100}
+      "category": "Pet grooming",
+      "phone": "+63 917 456 7890",
+      "hours": "9 am - 5 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic, Home service",
     },
     {
       "sp_id": 5,
       "image":
           "https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg",
       "name": "Paw-sitively Polished Pet Parlor",
+      "address": "Cugman, Cagayan de Oro City",
       "latitude": 8.5091,
       "longitude": 124.7689,
       "rating": 4.3,
-      "category": "pet-grooming",
-      "packages": {
-        "Haircut and Styling": {"small": 300, "medium": 450, "large": 650},
-      },
-      "services": {"Dental Hygiene": 250, "Skin Treatments": 300}
+      "category": "Pet grooming",
+      "phone": "+63 917 567 8901",
+      "hours": "10 am - 6 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     },
     {
       "sp_id": 11,
       "image": "https://tinyurl.com/mtdukp3d",
       "name": "Furfection",
+      "address": "Gusa, Cagayan de Oro City",
       "latitude": 8.1920,
       "longitude": 124.0850,
       "rating": 4.5,
-      "category": "pet-boarding",
-      "packages": {
-        "Overnight Stay": {"small": 500, "medium": 700, "large": 900},
-        "Daycare": {"small": 200, "medium": 300, "large": 400},
-      },
-      "services": {"Feeding Service": 100}
+      "category": "Pet boarding",
+      "phone": "+63 917 678 9012",
+      "hours": "9 am - 5 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic, Home service",
     },
     {
       "sp_id": 12,
       "image": "https://tinyurl.com/mtk2exvk",
       "name": "Paws & Paradise Retreat",
+      "address": "Lapasan, Cagayan de Oro City",
       "latitude": 8.4770,
       "longitude": 124.6501,
       "rating": 4.3,
-      "category": "pet-boarding",
-      "packages": {
-        "Luxury Suite": {"small": 800, "medium": 1000, "large": 1200},
-      },
-      "services": {"Daily Walks": 150, "Medication Administration": 200}
+      "category": "Pet boarding",
+      "phone": "+63 917 789 0123",
+      "hours": "8 am - 4 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     },
     {
       "sp_id": 21,
       "image": "https://tinyurl.com/5n7bu3a8",
       "name": "Healthy Paws Veterinary",
+      "address": "Gusa, Cagayan de Oro City",
       "latitude": 8.1920,
       "longitude": 124.0850,
       "rating": 4.5,
-      "category": "veterinary-service",
-      "packages": {
-        "Vaccination": {"dog": 500, "cat": 400},
-        "Emergency Care": {"basic": 1000, "advanced": 2000}
-      },
-      "services": {
-        "Health Check-up": 300,
-      }
+      "category": "Veterinary service",
+      "phone": "+63 917 890 1234",
+      "hours": "9 am - 5 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic, Home service",
     },
     {
       "sp_id": 22,
       "image": "https://tinyurl.com/yppwfv6m",
       "name": "Whiskers & Wellness Vet",
+      "address": "Gusa, Cagayan de Oro City",
       "latitude": 8.4770,
       "longitude": 124.6501,
       "rating": 4.3,
-      "category": "veterinary-service",
-      "packages": {
-        "Spay/Neuter": {"dog": 1500, "cat": 1200},
-      },
-      "services": {"X-ray": 800, "Dental Cleaning": 500}
+      "category": "Veterinary service",
+      "phone": "+63 917 901 2345",
+      "hours": "8 am - 6 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     },
     {
       "sp_id": 23,
       "image":
           "https://images.pexels.com/photos/1632061/pexels-photo-1632061.jpeg",
       "name": "TailCare Animal Clinic",
+      "address": "Lapasan, Cagayan de Oro City",
       "latitude": 8.4800,
       "longitude": 124.5916,
       "rating": 0.0,
-      "category": "veterinary-service"
+      "category": "Veterinary service",
+      "phone": "+63 917 012 3456",
+      "hours": "9 am - 5 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     },
     {
       "sp_id": 24,
       "image":
           "https://images.pexels.com/photos/6490932/pexels-photo-6490932.jpeg",
-      "name": "PawPath Veterinary Services",
+      "name": "PawPath Veterinary services",
+      "address": "Bugo, Cagayan de Oro City",
       "latitude": 8.4685,
       "longitude": 124.6829,
       "rating": 4.5,
-      "category": "veterinary-service"
+      "category": "Veterinary service",
+      "phone": "+63 917 123 4567",
+      "hours": "8 am - 6 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic, Home service",
     },
     {
       "sp_id": 25,
       "image":
           "https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg",
       "name": "Furry Friends Vet Clinic",
+      "address": "Tablon, Cagayan de Oro City",
       "latitude": 8.5091,
       "longitude": 124.7689,
       "rating": 4.3,
-      "category": "veterinary-service"
-    },
-    {
-      "sp_id": 26,
-      "image":
-          "https://images.pexels.com/photos/57416/cat-sweet-kitty-animals-57416.jpeg",
-      "name": "PetPulse Animal Health",
-      "latitude": 8.4851,
-      "longitude": 124.7492,
-      "rating": 4.1,
-      "category": "veterinary-service"
-    },
-    {
-      "sp_id": 27,
-      "image":
-          "https://images.pexels.com/photos/1543793/pexels-photo-1543793.jpeg",
-      "name": "Pawsitive Vets",
-      "latitude": 8.4896,
-      "longitude": 124.6576,
-      "rating": 4.5,
-      "category": "veterinary-service"
-    },
-    {
-      "sp_id": 28,
-      "image":
-          "https://images.pexels.com/photos/2194261/pexels-photo-2194261.jpeg",
-      "name": "Whiskers & Wags Animal Care",
-      "latitude": 8.4655,
-      "longitude": 124.7354,
-      "rating": 4.4,
-      "category": "veterinary-service"
-    },
-    {
-      "sp_id": 29,
-      "image":
-          "https://images.pexels.com/photos/1472999/pexels-photo-1472999.jpeg",
-      "name": "VetVital Pet Clinic",
-      "latitude": 8.4795,
-      "longitude": 124.6663,
-      "rating": 4.3,
-      "category": "veterinary-service"
-    },
-    {
-      "sp_id": 30,
-      "image":
-          "https://images.pexels.com/photos/2071882/pexels-photo-2071882.jpeg",
-      "name": "The Pet Wellness Hub",
-      "latitude": 8.4606,
-      "longitude": 124.7830,
-      "rating": 4.5,
-      "category": "veterinary-service"
-    },
-  ];
-});
-// Provider for fetching packages
-final packagesProvider = Provider<Map<String, dynamic>>((ref) {
-  final mockDb = ref.watch(mockDbProvider);
-  final packages = <String, dynamic>{};
-
-  for (var serviceProvider in mockDb) {
-    if (serviceProvider.containsKey('packages')) {
-      packages[serviceProvider['name']] = serviceProvider['packages'];
+      "category": "Veterinary service",
+      "phone": "+63 917 234 5678",
+      "hours": "10 am - 4 pm",
+      "pets_catered": "Caters dogs, cats, and bunnies",
+      "service_type": "In-clinic",
     }
-  }
-
-  return packages;
+  ];
 });

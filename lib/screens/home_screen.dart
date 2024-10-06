@@ -264,9 +264,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       children: [
         const SizedBox(height: primarySizedBox),
-        _recoSection("Pet grooming service providers", "pet-grooming"),
-        _recoSection("Pet boarding service providers", "pet-boarding"),
-        _recoSection("Veterinary service providers", "veterinary-service"),
+        _recoSection("Pet grooming service providers", "Pet grooming"),
+        _recoSection("Pet boarding service providers", "Pet boarding"),
+        _recoSection("Veterinary service providers", "Veterinary service"),
       ],
     );
   }
@@ -312,8 +312,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: primarySizedBox),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                      rightToLeftRoute(ServiceproviderProfileScreen(imageUrl)));
+                  Navigator.push(
+                      context,
+                      rightToLeftRoute(ServiceproviderProfileScreen(
+                          sp['sp_id'].toString())));
                 },
                 child: SizedBox(
                   width: 250,
