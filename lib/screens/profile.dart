@@ -56,7 +56,7 @@ class ProfileScreen extends ConsumerWidget {
                           children: [
                             customTitleText(context, "Pets"),
                             const Icon(Icons.edit,
-                                size: 20, color: Colors.black)
+                                size: 20, color: primaryColor)
                           ],
                         ),
                       ),
@@ -85,7 +85,7 @@ class ProfileScreen extends ConsumerWidget {
                                       bottom: 13),
                                   child: const ClipOval(
                                     child: Material(
-                                      color: lightGreyColor, // Button color
+                                      color: lighterSecondaryColor, // Button color
                                       child: SizedBox(
                                           width: 45,
                                           child: Icon(Icons.add,

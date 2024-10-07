@@ -40,7 +40,7 @@ const primaryPadding = EdgeInsets.fromLTRB(35, 0, 35, 0);
 
 // Overall screen padding
 double screenPadding(BuildContext context) {
-  return MediaQuery.of(context).size.width - 40;
+  return MediaQuery.of(context).size.width - 45;
 }
 
 // SizedBox

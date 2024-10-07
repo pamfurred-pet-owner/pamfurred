@@ -5,16 +5,21 @@ import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/pet_profile_provider.dart';
 
-class PetProfileScreen extends ConsumerWidget {
+class PetProfileScreen extends ConsumerStatefulWidget {
   final int petId;
 
   const PetProfileScreen({super.key, required this.petId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final asyncPet = ref.watch(fetchPetByIdProvider(petId));
+  _PetProfileScreenState createState() => _PetProfileScreenState();
+}
 
-    // bool _isExpanded = false;
+class _PetProfileScreenState extends ConsumerState<PetProfileScreen> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final asyncPet = ref.watch(fetchPetByIdProvider(widget.petId));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -43,10 +48,11 @@ class PetProfileScreen extends ConsumerWidget {
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: LinearGradient(
-                                    colors: [primaryColor, Colors.transparent],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: [0.25, 0.9]),
+                                  colors: [primaryColor, Colors.transparent],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: [0.25, 0.9],
+                                ),
                               ),
                               child: Card(
                                 shape: const CircleBorder(),
@@ -91,7 +97,6 @@ class PetProfileScreen extends ConsumerWidget {
                         const SizedBox(
                           width: secondarySizedBox,
                         ),
-                        editIcon(),
                       ],
                     ),
                     const SizedBox(height: tertiarySizedBox),
@@ -107,22 +112,62 @@ class PetProfileScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: secondarySizedBox),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        petDesc(context, 'assets/id-card.png', pet['pet_name'],
-                            "name"),
-                        const SizedBox(height: secondarySizedBox),
-                        petDesc(context, 'assets/time.png',
-                            pet['age'].toString(), "mos. old"),
-                        const SizedBox(height: secondarySizedBox),
-                        petDesc(context, 'assets/weight-scale.png',
-                            pet['weight'].toString(), "kg."),
-                        const SizedBox(height: secondarySizedBox),
-                        // petDesc(context, 'assets/gender.png',
-                        //     pet['sex'].toString(), "sex"),
+                        Padding(
+                          padding: const EdgeInsets.all(secondarySizedBox),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  petDesc(context, 'assets/id-card.png',
+                                      pet['pet_name'], "name"),
+                                  const SizedBox(height: secondarySizedBox),
+                                  petDesc(context, 'assets/time.png',
+                                      pet['age'].toString(), "mos. old"),
+                                  const SizedBox(height: secondarySizedBox),
+                                  petDesc(context, 'assets/weight-scale.png',
+                                      pet['weight'].toString(), "kg."),
+                                  const SizedBox(height: secondarySizedBox),
+                                ],
+                              ),
+                              if (_isExpanded) ...[
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    petDesc(context, 'assets/gender.png',
+                                        pet['sex'], "sex"),
+                                    const SizedBox(height: secondarySizedBox),
+                                    petDesc(context, 'assets/breed.png',
+                                        pet['breed'], "breed"),
+                                    const SizedBox(height: secondarySizedBox),
+                                    petDesc(context, 'assets/categories.png',
+                                        pet['pet_category'], "category"),
+                                  ],
+                                ),
+                              ],
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isExpanded = !_isExpanded;
+                                    });
+                                  },
+                                  child: Text(
+                                    _isExpanded ? "See less" : "See more",
+                                    style:
+                                        const TextStyle(fontSize: regularText),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: tertiarySizedBox),
                     SizedBox(
                       width: descWidth + 25,
                       child: Row(
@@ -142,7 +187,8 @@ class PetProfileScreen extends ConsumerWidget {
                             style: const TextStyle(
                                 color: darkGreyColor, fontSize: regularText)),
                       ),
-                    )
+                    ),
+                    const SizedBox(height: quaternarySizedBox),
                   ],
                 ),
               ),
@@ -165,7 +211,6 @@ class PetProfileScreen extends ConsumerWidget {
     );
   }
 
-// Unused
   verticalDivider() {
     return Container(
       width: 1, // Width of the divider
@@ -190,7 +235,7 @@ class PetProfileScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                customTitleText(context, petDetail),
+                customBoldWeightRegularText(context, petDetail),
               ],
             ),
             Row(
@@ -205,6 +250,6 @@ class PetProfileScreen extends ConsumerWidget {
   }
 
   editIcon() {
-    return const Icon(Icons.edit, size: 18, color: Colors.black);
+    return const Icon(Icons.edit, size: 18, color: primaryColor);
   }
 }

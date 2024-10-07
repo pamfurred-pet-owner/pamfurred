@@ -88,8 +88,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   child: const Text(
                     'Book now',
                     style: TextStyle(
-                      fontSize: titleFont,
-                      fontWeight: boldWeight,
+                      fontSize: regularText,
+                      fontWeight: regularWeight,
                       color: Colors.white,
                     ),
                   ),
@@ -127,12 +127,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 return child; // Image loaded successfully
                               } else {
                                 return Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
+                                  baseColor: lightGreyColor,
                                   highlightColor: Colors.grey[100]!,
                                   child: Container(
                                     width: 90,
                                     height: 85,
-                                    color: Colors.grey[300],
+                                    color: lightGreyColor,
                                   ),
                                 ); // Shimmer effect while loading
                               }
@@ -141,11 +141,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               return Container(
                                 width: 90,
                                 height: 85,
-                                color: Colors.grey[300],
+                                color: lightGreyColor,
                                 child: const Icon(
                                   Icons.broken_image,
-                                  color: Colors.grey,
-                                  size: 50,
                                 ),
                               );
                             },

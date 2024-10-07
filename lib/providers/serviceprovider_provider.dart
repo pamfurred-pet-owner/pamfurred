@@ -179,3 +179,15 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
     }
   ];
 });
+
+// Provider to manage the selected service provider for booking appointment
+final selectedSpIndexProvider = StateProvider<String>((ref) => '');
+
+final spIndexProvider = Provider<Map<String, dynamic>>((ref) {
+  final allItems = ref.watch(mockDbProvider);
+
+  final selectedSp = ref.watch(selectedSpIndexProvider);
+
+  // Find the service provider with the matching sp_id
+  return allItems.firstWhere((item) => item['sp_id'].toString() == selectedSp);
+});

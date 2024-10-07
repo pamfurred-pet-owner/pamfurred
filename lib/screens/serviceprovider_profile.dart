@@ -17,8 +17,7 @@ import 'package:pamfurred/screens/cart_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ServiceproviderProfileScreen extends ConsumerStatefulWidget {
-  const ServiceproviderProfileScreen(this.spId, {super.key});
-  final String spId;
+  const ServiceproviderProfileScreen({super.key});
   @override
   ConsumerState<ServiceproviderProfileScreen> createState() =>
       _ServiceproviderProfileScreenState();
@@ -32,22 +31,25 @@ class _ServiceproviderProfileScreenState
     const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
     const double elevatedButtonHeight = 50;
-    final allItems = ref.watch(mockDbProvider);
 
     // Find the service provider with the matching sp_id
-    final sp = allItems.firstWhere(
-        (item) => item['sp_id'].toString() == widget.spId.toString());
+    final sp = ref.watch(spIndexProvider);
 
     // Cart services provider
     final cartServices = ref.watch(cartNotifierProvider);
+
     // Service and package bottomsheet options
     final serviceOptions = ref.watch(serviceOptionsProvider);
+
     // Services riverpod provider variables
     final selectedServiceType = ref.watch(serviceTypeProvider);
     final selectedPetType = ref.watch(petTypeProvider);
     final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
-    // Filtered services based on selection
+
+    // All services
     final allServices = ref.watch(servicesProvider);
+
+    // Filtered services based on selection
     final filteredServices = allServices.where((service) {
       final matchesPetType = service.petType.contains(selectedPetType);
       final matchesServiceCategory =
@@ -343,12 +345,12 @@ class _ServiceproviderProfileScreenState
                                         return child; // Image loaded successfully
                                       } else {
                                         return Shimmer.fromColors(
-                                          baseColor: Colors.grey[300]!,
+                                          baseColor: lightGreyColor,
                                           highlightColor: Colors.grey[100]!,
                                           child: Container(
                                             width: 90,
                                             height: 85,
-                                            color: Colors.grey[300],
+                                            color: lightGreyColor,
                                           ),
                                         ); // Shimmer effect while loading
                                       }
@@ -357,11 +359,9 @@ class _ServiceproviderProfileScreenState
                                       return Container(
                                         width: 90,
                                         height: 85,
-                                        color: Colors.grey[300],
+                                        color: lightGreyColor,
                                         child: const Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                          size: 50,
+                                          Icons.error,
                                         ),
                                       );
                                     },
@@ -630,12 +630,12 @@ class _ServiceproviderProfileScreenState
                                         return child; // Image loaded successfully
                                       } else {
                                         return Shimmer.fromColors(
-                                          baseColor: Colors.grey[300]!,
+                                          baseColor: lightGreyColor,
                                           highlightColor: Colors.grey[100]!,
                                           child: Container(
                                             width: 90,
                                             height: 85,
-                                            color: Colors.grey[300],
+                                            color: lightGreyColor,
                                           ),
                                         ); // Shimmer effect while loading
                                       }
@@ -644,11 +644,9 @@ class _ServiceproviderProfileScreenState
                                       return Container(
                                         width: 90,
                                         height: 85,
-                                        color: Colors.grey[300],
+                                        color: lightGreyColor,
                                         child: const Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                          size: 50,
+                                          Icons.error,
                                         ),
                                       );
                                     },
@@ -745,12 +743,12 @@ class _ServiceproviderProfileScreenState
                     return child;
                   } else {
                     return Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
+                      baseColor: lightGreyColor,
                       highlightColor: Colors.grey[100]!,
                       child: Container(
                         width: double.infinity,
                         height: 200,
-                        color: Colors.grey[300],
+                        color: lightGreyColor,
                       ),
                     ); // Shimmer effect while loading
                   }
@@ -764,7 +762,6 @@ class _ServiceproviderProfileScreenState
                     child: const Center(
                       child: Icon(
                         Icons.error,
-                        size: 90,
                       ),
                     ),
                   );

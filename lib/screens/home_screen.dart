@@ -167,7 +167,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           SizedBox(
             height: height,
-            width: MediaQuery.of(context).size.width / 2 - 24,
+            width: MediaQuery.of(context).size.width / 2 - 25,
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: Card(
@@ -312,10 +312,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: primarySizedBox),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      rightToLeftRoute(ServiceproviderProfileScreen(
-                          sp['sp_id'].toString())));
+                  ref.read(selectedSpIndexProvider.notifier).state =
+                      sp['sp_id'].toString();
+                  Navigator.push(context,
+                      rightToLeftRoute(const ServiceproviderProfileScreen()));
                 },
                 child: SizedBox(
                   width: 250,
