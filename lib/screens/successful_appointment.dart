@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
-import 'package:pamfurred/providers/cart_provider.dart';
+// import 'package:pamfurred/providers/cart_provider.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/screens/home_screen.dart';
 import '../components/globals.dart';
@@ -14,7 +14,7 @@ class SuccessfulAppointment extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sp = ref.watch(spIndexProvider);
-    final cartProducts = ref.watch(cartNotifierProvider);
+    // final cartProducts = ref.watch(cartNotifierProvider);
 
     return Scaffold(
       body: Stack(

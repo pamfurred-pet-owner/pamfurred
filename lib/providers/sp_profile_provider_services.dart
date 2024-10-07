@@ -120,5 +120,5 @@ final serviceOptionsProvider = Provider<List<String>>((ref) {
 
 // Provider to manage the selected service category
 final selectedServiceCategoryProvider = StateProvider<String>((ref) {
-  return 'Pet grooming services'; // Adjust default value if needed
+  return 'All'; // Adjust default value if needed
 });

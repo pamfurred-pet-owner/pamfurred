@@ -30,8 +30,6 @@ class _ServiceproviderProfileScreenState
     final selectedIndex = ref.watch(selectedTabProvider);
     const defaultImage = 'https://tinyurl.com/3tnt6yyy';
 
-    const double elevatedButtonHeight = 50;
-
     // Find the service provider with the matching sp_id
     final sp = ref.watch(spIndexProvider);
 
@@ -46,35 +44,54 @@ class _ServiceproviderProfileScreenState
     final selectedPetType = ref.watch(petTypeProvider);
     final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
 
-    // All services
+// Watch all services from the provider
     final allServices = ref.watch(servicesProvider);
 
-    // Filtered services based on selection
+// Filter services based on the user's selections
     final filteredServices = allServices.where((service) {
-      final matchesPetType = service.petType.contains(selectedPetType);
-      final matchesServiceCategory =
+      // If "All" is selected for pet type, skip pet type filtering
+      final matchesPetType =
+          selectedPetType == 'All' || service.petType.contains(selectedPetType);
+
+      // If "All" is selected for service category, skip category filtering
+      final matchesServiceCategory = selectedServiceCategory == 'All' ||
           service.category == selectedServiceCategory;
-      final matchesSelectedServiceType =
+
+      // If "All" is selected for service type, skip service type filtering
+      final matchesSelectedServiceType = selectedServiceType == 'All' ||
           service.serviceType.contains(selectedServiceType);
+
+      // Return services that match all the conditions
       return matchesPetType &&
           matchesServiceCategory &&
           matchesSelectedServiceType;
     }).toList();
-    // Packages riverpod provider variables
-    final selectedPackageType = ref.watch(packageTypeProvider);
-    final selectedPetTypePackage = ref.watch(petTypePackageProvider);
-    final selectedPackageCategory = ref.watch(selectedPackageCategoryProvider);
 
-    // Filtered packages based on selection
+// Watch all packages from the provider
     final allPackages = ref.watch(packagesProvider);
 
+// Watch user selections from various providers
+    final selectedPetTypePackage =
+        ref.watch(petTypePackageProvider); // Pet type for package
+    final selectedPackageCategory =
+        ref.watch(selectedPackageCategoryProvider); // Package category
+    final selectedPackageType = ref.watch(packageTypeProvider); // Package type
+
+// Filter packages based on the user's selections
     final filteredPackages = allPackages.where((package) {
-      final matchesPetTypePackage =
+      // If "All" is selected for pet type, skip pet type filtering
+      final matchesPetTypePackage = selectedPetTypePackage == 'All' ||
           package.petType.contains(selectedPetTypePackage);
-      final matchesPackageCategory =
+
+      // If "All" is selected for package category, skip category filtering
+      final matchesPackageCategory = selectedPackageCategory == 'All' ||
           package.category == selectedPackageCategory;
-      final matchesSelectedPackageType =
+
+      // If "All" is selected for package type, skip package type filtering
+      final matchesSelectedPackageType = selectedPackageType == 'All' ||
           package.packageType.contains(selectedPackageType);
+
+      // Return packages that match all the conditions
       return matchesPetTypePackage &&
           matchesPackageCategory &&
           matchesSelectedPackageType;
@@ -170,7 +187,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 180,
+                                height: 220,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
@@ -219,7 +236,7 @@ class _ServiceproviderProfileScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            height: 230,
+                            height: 220,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,73 +244,78 @@ class _ServiceproviderProfileScreenState
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Pet Type'),
                                 const SizedBox(height: secondarySizedBox),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    CustomRadioButton(
-                                      buttonLables: const [
-                                        'Dog',
-                                        'Cat',
-                                        'Rabbit'
-                                      ],
-                                      buttonValues: const [
-                                        'Dog',
-                                        'Cat',
-                                        'Rabbit'
-                                      ],
-                                      radioButtonValue: (value) =>
-                                          // Updating pet type
-                                          {
-                                        ref
-                                            .read(petTypeProvider.notifier)
-                                            .updatePetType(value)
-                                      },
-                                      defaultSelected:
-                                          ref.watch(petTypeProvider),
-                                      selectedColor: primaryColor,
-                                      unSelectedColor: Colors.transparent,
-                                      elevation: 0,
-                                      enableShape: true,
-                                      buttonTextStyle: const ButtonTextStyle(
-                                          textStyle:
-                                              TextStyle(fontSize: regularText)),
-                                    ),
-                                  ],
+                                Flexible(
+                                  child: CustomRadioButton(
+                                    autoWidth: true,
+                                    buttonLables: const [
+                                      'All',
+                                      'Dog',
+                                      'Cat',
+                                      'Rabbit',
+                                    ],
+                                    buttonValues: const [
+                                      'All',
+                                      'Dog',
+                                      'Cat',
+                                      'Rabbit',
+                                    ],
+                                    radioButtonValue: (value) =>
+                                        // Updating pet type
+                                        {
+                                      ref
+                                          .read(petTypeProvider.notifier)
+                                          .updatePetType(value)
+                                    },
+                                    defaultSelected: ref.watch(petTypeProvider),
+                                    selectedColor: primaryColor,
+                                    unSelectedColor: Colors.transparent,
+                                    elevation: 0,
+                                    enableShape: true,
+                                    buttonTextStyle: const ButtonTextStyle(
+                                        textStyle:
+                                            TextStyle(fontSize: regularText)),
+                                  ),
                                 ),
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Service Type'),
                                 const SizedBox(height: secondarySizedBox),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    CustomRadioButton(
-                                      buttonLables: const [
-                                        'Home service',
-                                        'In-clinic'
-                                      ],
-                                      buttonValues: const [
-                                        'Home service',
-                                        'In-clinic'
-                                      ],
-                                      radioButtonValue: (value) =>
-                                          // Updating service type
-                                          {
-                                        ref
-                                            .read(serviceTypeProvider.notifier)
-                                            .updateServiceType(value)
-                                      },
-                                      defaultSelected:
-                                          ref.watch(serviceTypeProvider),
-                                      selectedColor: primaryColor,
-                                      unSelectedColor: Colors.transparent,
-                                      elevation: 0,
-                                      enableShape: true,
-                                      buttonTextStyle: const ButtonTextStyle(
-                                          textStyle:
-                                              TextStyle(fontSize: regularText)),
-                                      width: 150,
-                                    ),
-                                  ],
+                                Flexible(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CustomRadioButton(
+                                        autoWidth: true,
+                                        buttonLables: const [
+                                          'All',
+                                          'Home service',
+                                          'In-clinic',
+                                        ],
+                                        buttonValues: const [
+                                          'All',
+                                          'Home service',
+                                          'In-clinic',
+                                        ],
+                                        radioButtonValue: (value) =>
+                                            // Updating service type
+                                            {
+                                          ref
+                                              .read(
+                                                  serviceTypeProvider.notifier)
+                                              .updateServiceType(value)
+                                        },
+                                        defaultSelected:
+                                            ref.watch(serviceTypeProvider),
+                                        selectedColor: primaryColor,
+                                        unSelectedColor: Colors.transparent,
+                                        elevation: 0,
+                                        enableShape: true,
+                                        buttonTextStyle: const ButtonTextStyle(
+                                            textStyle: TextStyle(
+                                                fontSize: regularText)),
+                                        width: 150,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -318,6 +340,7 @@ class _ServiceproviderProfileScreenState
                     )
                   : Expanded(
                       child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 80),
                         itemCount: filteredServices.length,
                         itemBuilder: (context, index) {
                           // Get the current service from the filtered list
@@ -345,12 +368,12 @@ class _ServiceproviderProfileScreenState
                                         return child; // Image loaded successfully
                                       } else {
                                         return Shimmer.fromColors(
-                                          baseColor: lightGreyColor,
+                                          baseColor: Colors.grey[300]!,
                                           highlightColor: Colors.grey[100]!,
                                           child: Container(
                                             width: 90,
                                             height: 85,
-                                            color: lightGreyColor,
+                                            color: Colors.grey[300],
                                           ),
                                         ); // Shimmer effect while loading
                                       }
@@ -359,7 +382,7 @@ class _ServiceproviderProfileScreenState
                                       return Container(
                                         width: 90,
                                         height: 85,
-                                        color: lightGreyColor,
+                                        color: Colors.grey[300],
                                         child: const Icon(
                                           Icons.error,
                                         ),
@@ -425,9 +448,6 @@ class _ServiceproviderProfileScreenState
                         },
                       ),
                     ),
-              const SizedBox(
-                height: elevatedButtonHeight + tertiarySizedBox,
-              )
             ],
           ),
         ),
@@ -455,7 +475,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 180,
+                                height: 220,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
@@ -504,7 +524,7 @@ class _ServiceproviderProfileScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            height: 230,
+                            height: 220,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,74 +532,79 @@ class _ServiceproviderProfileScreenState
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Pet Type'),
                                 const SizedBox(height: secondarySizedBox),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    CustomRadioButton(
-                                      buttonLables: const [
-                                        'Dog',
-                                        'Cat',
-                                        'Rabbit'
-                                      ],
-                                      buttonValues: const [
-                                        'Dog',
-                                        'Cat',
-                                        'Rabbit'
-                                      ],
-                                      radioButtonValue: (value) =>
-                                          // Updating pet type
-                                          {
-                                        ref
-                                            .read(
-                                                petTypePackageProvider.notifier)
-                                            .updatePetTypePackage(value)
-                                      },
-                                      defaultSelected:
-                                          ref.watch(petTypePackageProvider),
-                                      selectedColor: primaryColor,
-                                      unSelectedColor: Colors.transparent,
-                                      elevation: 0,
-                                      enableShape: true,
-                                      buttonTextStyle: const ButtonTextStyle(
-                                          textStyle:
-                                              TextStyle(fontSize: regularText)),
-                                    ),
-                                  ],
+                                Flexible(
+                                  child: CustomRadioButton(
+                                    autoWidth: true,
+                                    buttonLables: const [
+                                      'All',
+                                      'Dog',
+                                      'Cat',
+                                      'Rabbit',
+                                    ],
+                                    buttonValues: const [
+                                      'All',
+                                      'Dog',
+                                      'Cat',
+                                      'Rabbit',
+                                    ],
+                                    radioButtonValue: (value) =>
+                                        // Updating pet type
+                                        {
+                                      ref
+                                          .read(petTypePackageProvider.notifier)
+                                          .updatePetTypePackage(value)
+                                    },
+                                    defaultSelected:
+                                        ref.watch(petTypePackageProvider),
+                                    selectedColor: primaryColor,
+                                    unSelectedColor: Colors.transparent,
+                                    elevation: 0,
+                                    enableShape: true,
+                                    buttonTextStyle: const ButtonTextStyle(
+                                        textStyle:
+                                            TextStyle(fontSize: regularText)),
+                                  ),
                                 ),
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Service Type'),
                                 const SizedBox(height: secondarySizedBox),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    CustomRadioButton(
-                                      buttonLables: const [
-                                        'Home service',
-                                        'In-clinic'
-                                      ],
-                                      buttonValues: const [
-                                        'Home service',
-                                        'In-clinic'
-                                      ],
-                                      radioButtonValue: (value) =>
-                                          // Updating service type
-                                          {
-                                        ref
-                                            .read(packageTypeProvider.notifier)
-                                            .updatePackageType(value)
-                                      },
-                                      defaultSelected:
-                                          ref.watch(serviceTypeProvider),
-                                      selectedColor: primaryColor,
-                                      unSelectedColor: Colors.transparent,
-                                      elevation: 0,
-                                      enableShape: true,
-                                      buttonTextStyle: const ButtonTextStyle(
-                                          textStyle:
-                                              TextStyle(fontSize: regularText)),
-                                      width: 150,
-                                    ),
-                                  ],
+                                Flexible(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CustomRadioButton(
+                                        autoWidth: true,
+                                        buttonLables: const [
+                                          'All',
+                                          'Home service',
+                                          'In-clinic',
+                                        ],
+                                        buttonValues: const [
+                                          'All',
+                                          'Home service',
+                                          'In-clinic',
+                                        ],
+                                        radioButtonValue: (value) =>
+                                            // Updating service type
+                                            {
+                                          ref
+                                              .read(
+                                                  packageTypeProvider.notifier)
+                                              .updatePackageType(value)
+                                        },
+                                        defaultSelected:
+                                            ref.watch(serviceTypeProvider),
+                                        selectedColor: primaryColor,
+                                        unSelectedColor: Colors.transparent,
+                                        elevation: 0,
+                                        enableShape: true,
+                                        buttonTextStyle: const ButtonTextStyle(
+                                            textStyle: TextStyle(
+                                                fontSize: regularText)),
+                                        width: 150,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -604,6 +629,7 @@ class _ServiceproviderProfileScreenState
                     )
                   : Expanded(
                       child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 80),
                         itemCount: filteredPackages.length,
                         itemBuilder: (context, index) {
                           final package = filteredPackages[index];
@@ -630,12 +656,12 @@ class _ServiceproviderProfileScreenState
                                         return child; // Image loaded successfully
                                       } else {
                                         return Shimmer.fromColors(
-                                          baseColor: lightGreyColor,
+                                          baseColor: Colors.grey[300]!,
                                           highlightColor: Colors.grey[100]!,
                                           child: Container(
                                             width: 90,
                                             height: 85,
-                                            color: lightGreyColor,
+                                            color: Colors.grey[300],
                                           ),
                                         ); // Shimmer effect while loading
                                       }
@@ -644,7 +670,7 @@ class _ServiceproviderProfileScreenState
                                       return Container(
                                         width: 90,
                                         height: 85,
-                                        color: lightGreyColor,
+                                        color: Colors.grey[300],
                                         child: const Icon(
                                           Icons.error,
                                         ),
@@ -709,109 +735,103 @@ class _ServiceproviderProfileScreenState
                           );
                         },
                       ),
-                    ),
-              const SizedBox(
-                height: elevatedButtonHeight + tertiarySizedBox,
-              )
+                    )
             ],
           ),
         ),
       ),
     ];
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: customAppBar(context),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: customFloatingActionButton(context,
-            buttonText: 'Book appointment', onPressed: () {
-          Navigator.push(context, slideUpRoute(const CartScreen()));
-        }),
-        body: Center(
-          child: Column(
-            children: [
-              Image.network(
-                sp['image'],
-                width: double.infinity,
-                height: 200,
-                fit:
-                    sp['image'] == defaultImage ? BoxFit.contain : BoxFit.cover,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  } else {
-                    return Shimmer.fromColors(
-                      baseColor: lightGreyColor,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        width: double.infinity,
-                        height: 200,
-                        color: lightGreyColor,
-                      ),
-                    ); // Shimmer effect while loading
-                  }
-                },
-                errorBuilder: (BuildContext context, Object error,
-                    StackTrace? stackTrace) {
-                  return Container(
-                    color: lighterGreyColor,
-                    width: double.infinity,
-                    height: 200,
-                    child: const Center(
-                      child: Icon(
-                        Icons.error,
-                      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: customAppBar(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: customFloatingActionButton(context,
+          buttonText: 'Book appointment', onPressed: () {
+        Navigator.push(context, slideUpRoute(const CartScreen()));
+      }),
+      body: Center(
+        child: Column(
+          children: [
+            Image.network(
+              sp['image'],
+              width: double.infinity,
+              height: 200,
+              fit: sp['image'] == defaultImage ? BoxFit.contain : BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      color: Colors.grey[300],
                     ),
-                  );
-                },
-              ),
-              SizedBox(
-                width: screenPadding(context),
-                child: Column(
-                  children: [
-                    const SizedBox(height: tertiarySizedBox),
-                    customTitleText(context, sp['name']),
-                    const SizedBox(height: secondarySizedBox),
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: List.generate(tabContents.length, (index) {
-                            return GestureDetector(
-                              onTap: () => ref
-                                  .read(selectedTabProvider.notifier)
-                                  .state = index,
+                  ); // Shimmer effect while loading
+                }
+              },
+              errorBuilder:
+                  (BuildContext context, Object error, StackTrace? stackTrace) {
+                return Container(
+                  color: lighterGreyColor,
+                  width: double.infinity,
+                  height: 200,
+                  child: const Center(
+                    child: Icon(
+                      Icons.error,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SizedBox(
+              width: screenPadding(context),
+              child: Column(
+                children: [
+                  const SizedBox(height: tertiarySizedBox),
+                  customTitleText(context, sp['name']),
+                  const SizedBox(height: secondarySizedBox),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(tabContents.length, (index) {
+                          return GestureDetector(
+                            onTap: () => ref
+                                .read(selectedTabProvider.notifier)
+                                .state = index,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: primarySizedBox),
                               child: Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: primarySizedBox),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        quaternaryBorderRadius),
-                                    color: selectedIndex == index
-                                        ? lighterSecondaryColor
-                                        : Colors.transparent,
-                                  ),
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: tabTitles[index]),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      quaternaryBorderRadius),
+                                  color: selectedIndex == index
+                                      ? lighterSecondaryColor
+                                      : Colors.transparent,
                                 ),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: tabTitles[index]),
                               ),
-                            );
-                          }),
-                        ),
-                        const SizedBox(height: tertiarySizedBox),
-                        tabContents[selectedIndex],
-                      ],
-                    )
-                  ],
-                ),
+                            ),
+                          );
+                        }),
+                      ),
+                      const SizedBox(height: tertiarySizedBox),
+                      tabContents[selectedIndex],
+                    ],
+                  )
+                ],
               ),
-              const SizedBox(height: primarySizedBox),
-            ],
-          ),
+            ),
+            const SizedBox(height: primarySizedBox),
+          ],
         ),
       ),
     );
