@@ -44,10 +44,10 @@ class _ServiceproviderProfileScreenState
     final selectedPetType = ref.watch(petTypeProvider);
     final selectedServiceCategory = ref.watch(selectedServiceCategoryProvider);
 
-// Watch all services from the provider
+    // Watch all services from the provider
     final allServices = ref.watch(servicesProvider);
 
-// Filter services based on the user's selections
+    // Filter services based on the user's selections
     final filteredServices = allServices.where((service) {
       // If "All" is selected for pet type, skip pet type filtering
       final matchesPetType =
@@ -187,7 +187,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 220,
+                                height: 190,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
@@ -236,7 +236,7 @@ class _ServiceproviderProfileScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            height: 220,
+                            height: 230,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,76 +245,94 @@ class _ServiceproviderProfileScreenState
                                 customTitleText(context, 'Pet Type'),
                                 const SizedBox(height: secondarySizedBox),
                                 Flexible(
-                                  child: CustomRadioButton(
-                                    autoWidth: true,
-                                    buttonLables: const [
-                                      'All',
-                                      'Dog',
-                                      'Cat',
-                                      'Rabbit',
-                                    ],
-                                    buttonValues: const [
-                                      'All',
-                                      'Dog',
-                                      'Cat',
-                                      'Rabbit',
-                                    ],
-                                    radioButtonValue: (value) =>
-                                        // Updating pet type
-                                        {
-                                      ref
-                                          .read(petTypeProvider.notifier)
-                                          .updatePetType(value)
-                                    },
-                                    defaultSelected: ref.watch(petTypeProvider),
-                                    selectedColor: primaryColor,
-                                    unSelectedColor: Colors.transparent,
-                                    elevation: 0,
-                                    enableShape: true,
-                                    buttonTextStyle: const ButtonTextStyle(
-                                        textStyle:
-                                            TextStyle(fontSize: regularText)),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis
+                                        .horizontal, // Enable horizontal scrolling
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CustomRadioButton(
+                                          autoWidth: true,
+                                          buttonLables: const [
+                                            'All',
+                                            'Dog',
+                                            'Cat',
+                                            'Rabbit',
+                                          ],
+                                          buttonValues: const [
+                                            'All',
+                                            'Dog',
+                                            'Cat',
+                                            'Rabbit',
+                                          ],
+                                          radioButtonValue: (value) =>
+                                              // Updating pet type
+                                              {
+                                            ref
+                                                .read(petTypeProvider.notifier)
+                                                .updatePetType(value)
+                                          },
+                                          defaultSelected:
+                                              ref.watch(petTypeProvider),
+                                          selectedColor: primaryColor,
+                                          unSelectedColor: Colors.transparent,
+                                          elevation: 0,
+                                          enableShape: true,
+                                          buttonTextStyle:
+                                              const ButtonTextStyle(
+                                                  textStyle: TextStyle(
+                                                      fontSize: regularText)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Service Type'),
                                 const SizedBox(height: secondarySizedBox),
                                 Flexible(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      CustomRadioButton(
-                                        autoWidth: true,
-                                        buttonLables: const [
-                                          'All',
-                                          'Home service',
-                                          'In-clinic',
-                                        ],
-                                        buttonValues: const [
-                                          'All',
-                                          'Home service',
-                                          'In-clinic',
-                                        ],
-                                        radioButtonValue: (value) =>
-                                            // Updating service type
-                                            {
-                                          ref
-                                              .read(
-                                                  serviceTypeProvider.notifier)
-                                              .updateServiceType(value)
-                                        },
-                                        defaultSelected:
-                                            ref.watch(serviceTypeProvider),
-                                        selectedColor: primaryColor,
-                                        unSelectedColor: Colors.transparent,
-                                        elevation: 0,
-                                        enableShape: true,
-                                        buttonTextStyle: const ButtonTextStyle(
-                                            textStyle: TextStyle(
-                                                fontSize: regularText)),
-                                        width: 150,
-                                      ),
-                                    ],
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis
+                                        .horizontal, // Enable horizontal scrolling
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CustomRadioButton(
+                                          autoWidth: true,
+                                          buttonLables: const [
+                                            'All',
+                                            'Home service',
+                                            'In-clinic',
+                                          ],
+                                          buttonValues: const [
+                                            'All',
+                                            'Home service',
+                                            'In-clinic',
+                                          ],
+                                          radioButtonValue: (value) =>
+                                              // Updating service type
+                                              {
+                                            ref
+                                                .read(serviceTypeProvider
+                                                    .notifier)
+                                                .updateServiceType(value)
+                                          },
+                                          defaultSelected:
+                                              ref.watch(serviceTypeProvider),
+                                          selectedColor: primaryColor,
+                                          unSelectedColor: Colors.transparent,
+                                          elevation: 0,
+                                          enableShape: true,
+                                          buttonTextStyle:
+                                              const ButtonTextStyle(
+                                                  textStyle: TextStyle(
+                                                      fontSize: regularText)),
+                                          width: 150,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -475,7 +493,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 220,
+                                height: 190,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
@@ -524,7 +542,7 @@ class _ServiceproviderProfileScreenState
                         context: context,
                         builder: (BuildContext context) {
                           return Container(
-                            height: 220,
+                            height: 230,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -533,77 +551,95 @@ class _ServiceproviderProfileScreenState
                                 customTitleText(context, 'Pet Type'),
                                 const SizedBox(height: secondarySizedBox),
                                 Flexible(
-                                  child: CustomRadioButton(
-                                    autoWidth: true,
-                                    buttonLables: const [
-                                      'All',
-                                      'Dog',
-                                      'Cat',
-                                      'Rabbit',
-                                    ],
-                                    buttonValues: const [
-                                      'All',
-                                      'Dog',
-                                      'Cat',
-                                      'Rabbit',
-                                    ],
-                                    radioButtonValue: (value) =>
-                                        // Updating pet type
-                                        {
-                                      ref
-                                          .read(petTypePackageProvider.notifier)
-                                          .updatePetTypePackage(value)
-                                    },
-                                    defaultSelected:
-                                        ref.watch(petTypePackageProvider),
-                                    selectedColor: primaryColor,
-                                    unSelectedColor: Colors.transparent,
-                                    elevation: 0,
-                                    enableShape: true,
-                                    buttonTextStyle: const ButtonTextStyle(
-                                        textStyle:
-                                            TextStyle(fontSize: regularText)),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis
+                                        .horizontal, // Enable horizontal scrolling
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CustomRadioButton(
+                                          autoWidth: true,
+                                          buttonLables: const [
+                                            'All',
+                                            'Dog',
+                                            'Cat',
+                                            'Rabbit',
+                                          ],
+                                          buttonValues: const [
+                                            'All',
+                                            'Dog',
+                                            'Cat',
+                                            'Rabbit',
+                                          ],
+                                          radioButtonValue: (value) =>
+                                              // Updating pet type
+                                              {
+                                            ref
+                                                .read(petTypePackageProvider
+                                                    .notifier)
+                                                .updatePetTypePackage(value)
+                                          },
+                                          defaultSelected:
+                                              ref.watch(petTypePackageProvider),
+                                          selectedColor: primaryColor,
+                                          unSelectedColor: Colors.transparent,
+                                          elevation: 0,
+                                          enableShape: true,
+                                          buttonTextStyle:
+                                              const ButtonTextStyle(
+                                                  textStyle: TextStyle(
+                                                      fontSize: regularText)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: secondarySizedBox),
                                 customTitleText(context, 'Service Type'),
                                 const SizedBox(height: secondarySizedBox),
                                 Flexible(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      CustomRadioButton(
-                                        autoWidth: true,
-                                        buttonLables: const [
-                                          'All',
-                                          'Home service',
-                                          'In-clinic',
-                                        ],
-                                        buttonValues: const [
-                                          'All',
-                                          'Home service',
-                                          'In-clinic',
-                                        ],
-                                        radioButtonValue: (value) =>
-                                            // Updating service type
-                                            {
-                                          ref
-                                              .read(
-                                                  packageTypeProvider.notifier)
-                                              .updatePackageType(value)
-                                        },
-                                        defaultSelected:
-                                            ref.watch(serviceTypeProvider),
-                                        selectedColor: primaryColor,
-                                        unSelectedColor: Colors.transparent,
-                                        elevation: 0,
-                                        enableShape: true,
-                                        buttonTextStyle: const ButtonTextStyle(
-                                            textStyle: TextStyle(
-                                                fontSize: regularText)),
-                                        width: 150,
-                                      ),
-                                    ],
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis
+                                        .horizontal, // Enable horizontal scrolling
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CustomRadioButton(
+                                          autoWidth: true,
+                                          buttonLables: const [
+                                            'All',
+                                            'Home service',
+                                            'In-clinic',
+                                          ],
+                                          buttonValues: const [
+                                            'All',
+                                            'Home service',
+                                            'In-clinic',
+                                          ],
+                                          radioButtonValue: (value) =>
+                                              // Updating service type
+                                              {
+                                            ref
+                                                .read(packageTypeProvider
+                                                    .notifier)
+                                                .updatePackageType(value)
+                                          },
+                                          defaultSelected:
+                                              ref.watch(serviceTypeProvider),
+                                          selectedColor: primaryColor,
+                                          unSelectedColor: Colors.transparent,
+                                          elevation: 0,
+                                          enableShape: true,
+                                          buttonTextStyle:
+                                              const ButtonTextStyle(
+                                                  textStyle: TextStyle(
+                                                      fontSize: regularText)),
+                                          width: 150,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

@@ -115,6 +115,7 @@ final serviceOptionsProvider = Provider<List<String>>((ref) {
     'Pet grooming services',
     'Pet boarding services',
     'Veterinary services',
+    'All'
   ];
 });
 

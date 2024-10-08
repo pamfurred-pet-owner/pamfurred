@@ -1,16 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class Reviews {
-  const Reviews({
-    required this.id,
-    required this.content,
-    required this.date,
-  });
-
-  final int id;
-  final String content;
-  final String date;
-}
+import 'package:pamfurred/models/review.dart';
 
 const List<Reviews> allReviews = [
   Reviews(
