@@ -11,10 +11,10 @@ class PetProfileScreen extends ConsumerStatefulWidget {
   const PetProfileScreen({super.key, required this.petId});
 
   @override
-  _PetProfileScreenState createState() => _PetProfileScreenState();
+  PetProfileScreenState createState() => PetProfileScreenState();
 }
 
-class _PetProfileScreenState extends ConsumerState<PetProfileScreen> {
+class PetProfileScreenState extends ConsumerState<PetProfileScreen> {
   bool _isExpanded = false;
 
   @override
