@@ -1,11 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
-import 'package:pamfurred/screens/otp_auth.dart';
+import 'package:pamfurred/screens/email_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase package
+
 import '../components/globals.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,7 +18,6 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final formKey = GlobalKey<FormState>();
-
   late Map<String, TextEditingController> controllers;
 
   @override
@@ -27,18 +27,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     controllers = {
       'firstName': TextEditingController(),
       'lastName': TextEditingController(),
-      'phoneNumber': TextEditingController(),
-      'doorNo': TextEditingController(),
-      'street': TextEditingController(),
-      'barangay': TextEditingController(),
-      'city': TextEditingController(),
-      'username': TextEditingController(),
       'email': TextEditingController(),
       'password': TextEditingController(),
+      'contactNo': TextEditingController(), // Added contact number controller
     };
   }
 
   bool _obscureText = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -107,26 +103,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildPhoneField() {
-    return SizedBox(
-      height: 65,
-      child: IntlPhoneField(
-        initialCountryCode: 'PH',
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(10.0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(secondaryBorderRadius),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: secondaryColor),
-            borderRadius: BorderRadius.circular(secondaryBorderRadius),
-          ),
-        ),
-        onChanged: (phone) {
-          controllers['phoneNumber']?.text = phone.completeNumber;
+  Future<void> _registerUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final email = controllers['email']?.text ?? '';
+    final password = controllers['password']?.text ?? '';
+    final firstName = controllers['firstName']?.text ?? '';
+    final lastName = controllers['lastName']?.text ?? '';
+    final contactNo = controllers['contactNo']?.text ?? ''; // Capture contact number
+
+    try {
+      // Call Supabase Auth to sign up the user with email and password
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+        data: {
+          'firstName': firstName,
+          'lastName': lastName,
         },
-      ),
-    );
+      );
+
+      if (response.user != null) {
+        // User registered successfully, now add additional info to the users table
+        await Supabase.instance.client.from('user').insert({
+          'user_id': response.user!.id, // Ensure 'id' matches your users table's primary key
+          'first_name': firstName,
+          'last_name': lastName,
+          'email_address': email,
+          'contact_no': contactNo, // Insert contact number into the database
+          'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
+        }).select();
+
+        // User registered successfully, navigate to OTPAuth screen
+        Navigator.push(
+          context, rightToLeftRoute(const EmailAuth()));
+      } else {
+        // Handle registration error
+        final error = response.error?.message ?? "Unknown error";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Registration failed: $error")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -162,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: secondarySizedBox),
-              customTitleText(context, "Name and Contact"),
+              customTitleText(context, "Name"),
               const SizedBox(height: secondarySizedBox),
               Row(
                 children: [
@@ -172,39 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
               const SizedBox(height: secondarySizedBox),
-              const Text("Phone number *"),
-              const SizedBox(height: secondarySizedBox),
-              _buildPhoneField(),
-              const SizedBox(height: secondarySizedBox),
-              customTitleText(context, "Address"),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Door no.", "doorNo")),
-                  const SizedBox(width: primarySizedBox),
-                  Expanded(child: _buildTextField("Street", "street")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Barangay", "barangay")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("City", "city")),
-                ],
-              ),
-              const SizedBox(height: secondarySizedBox),
               customTitleText(context, "Credentials"),
-              const SizedBox(height: secondarySizedBox),
-              Row(
-                children: [
-                  Expanded(child: _buildTextField("Username", "username")),
-                ],
-              ),
               const SizedBox(height: secondarySizedBox),
               Row(
                 children: [
@@ -219,16 +215,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           isPassword: true)),
                 ],
               ),
+              const SizedBox(height: secondarySizedBox),
+              customTitleText(context, "Contact Number"), // Added Contact field label
+              const SizedBox(height: secondarySizedBox),
+              Row(
+                children: [
+                  Expanded(
+                      child: _buildTextField("Contact Number", "contactNo")),
+                ],
+              ),
               const SizedBox(height: tertiarySizedBox),
               Center(
                 child: SizedBox(
                   width: deviceWidth,
                   height: primaryTextFieldHeight,
                   child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context, rightToLeftRoute(const OTPAuth()));
-                    },
+                    onPressed: _isLoading ? null : _registerUser, // Disable while loading
                     style: ButtonStyle(
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -239,37 +241,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       backgroundColor:
                           WidgetStateProperty.all<Color>(primaryColor),
                     ),
-                    child: const Text(
-                      "Register",
-                      style:
-                          TextStyle(color: Colors.white, fontSize: regularText),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            "Register",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
                   ),
                 ),
               ),
               const SizedBox(height: tertiarySizedBox),
               Center(
-                child: SizedBox(
-                  width: deviceWidth,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: const TextStyle(fontSize: regularText),
-                      children: [
-                        const TextSpan(
-                          text: "Already have an account? ",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: "Login",
-                          style: const TextStyle(color: primaryColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pop(context);
-                            },
-                        ),
-                      ],
-                    ),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: "Already have an account? ",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: "Log in",
+                        style: const TextStyle(color: primaryColor),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pop(context);
+                          },
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -280,4 +282,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+}
+
+extension on AuthResponse {
+  get error => null;
 }

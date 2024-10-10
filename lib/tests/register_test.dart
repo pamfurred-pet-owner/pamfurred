@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -9,6 +10,7 @@ import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/screens/otp_auth.dart';
 import 'package:pamfurred/screens/pin_location.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../components/custom_padded_button.dart';
 
 class RegisterScreenTest extends StatefulWidget {
