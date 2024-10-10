@@ -30,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email': TextEditingController(),
       'password': TextEditingController(),
       'contactNo': TextEditingController(), // Added contact number controller
+      'username': TextEditingController(), // Added username controller
     };
   }
 
@@ -112,7 +113,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = controllers['password']?.text ?? '';
     final firstName = controllers['firstName']?.text ?? '';
     final lastName = controllers['lastName']?.text ?? '';
-    final contactNo = controllers['contactNo']?.text ?? ''; // Capture contact number
+    final contactNo =
+        controllers['contactNo']?.text ?? ''; // Capture contact number
+    final username = controllers['username']?.text ?? ''; // Capture username
 
     try {
       // Call Supabase Auth to sign up the user with email and password
@@ -122,23 +125,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
         data: {
           'firstName': firstName,
           'lastName': lastName,
+          'username': username, // Include username in the sign-up data
         },
       );
 
       if (response.user != null) {
         // User registered successfully, now add additional info to the users table
         await Supabase.instance.client.from('user').insert({
-          'user_id': response.user!.id, // Ensure 'id' matches your users table's primary key
+          'user_id': response
+              .user!.id, // Ensure 'id' matches your users table's primary key
           'first_name': firstName,
           'last_name': lastName,
           'email_address': email,
           'contact_no': contactNo, // Insert contact number into the database
+          'username': username, // Insert username into the database
           'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
         }).select();
 
         // User registered successfully, navigate to OTPAuth screen
-        Navigator.push(
-          context, rightToLeftRoute(const EmailAuth()));
+        Navigator.push(context, rightToLeftRoute(const EmailAuth()));
       } else {
         // Handle registration error
         final error = response.error?.message ?? "Unknown error";
@@ -204,6 +209,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: secondarySizedBox),
               Row(
                 children: [
+                  Expanded(
+                      child: _buildTextField(
+                          "Username", "username")), // Username field added here
+                ],
+              ),
+              const SizedBox(height: secondarySizedBox),
+              Row(
+                children: [
                   Expanded(child: _buildTextField("Email address", "email")),
                 ],
               ),
@@ -215,8 +228,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           isPassword: true)),
                 ],
               ),
-              const SizedBox(height: secondarySizedBox),
-              customTitleText(context, "Contact Number"), // Added Contact field label
               const SizedBox(height: secondarySizedBox),
               Row(
                 children: [
@@ -230,7 +241,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: deviceWidth,
                   height: primaryTextFieldHeight,
                   child: TextButton(
-                    onPressed: _isLoading ? null : _registerUser, // Disable while loading
+                    onPressed: _isLoading
+                        ? null
+                        : _registerUser, // Disable while loading
                     style: ButtonStyle(
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
