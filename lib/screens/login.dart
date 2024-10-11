@@ -29,7 +29,7 @@ class LoginScreenState extends State<LoginScreen> {
     super.initState();
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
-    checkIfUserIsLoggedIn();  // Check if user is already logged in
+    checkIfUserIsLoggedIn(); // Check if user is already logged in
   }
 
   @override
@@ -56,7 +56,7 @@ class LoginScreenState extends State<LoginScreen> {
       // User is already logged in
       Navigator.pushReplacement(
         context,
-        crossFadeRoute(const MainScreen()),
+        crossFadeRoute(MainScreen(userId: user.id)), // Pass the correct userId
       );
     }
   }
@@ -69,8 +69,8 @@ class LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await Supabase.instance.client.auth.signInWithPassword(
-        email: email,
-        password: password,
+        email: email.trim(), // Trim whitespace from email input
+        password: password.trim(),
       );
 
       if (response.session != null) {
@@ -79,7 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
           const SnackBar(content: Text('Login successful!')),
         );
         // Navigate to MainScreen if authentication is successful
-        Navigator.pushReplacement(context, crossFadeRoute(const MainScreen()));
+        Navigator.pushReplacement(context, crossFadeRoute(MainScreen(userId: response.user!.id)));
       } else if (response.error != null) {
         // Show error message if authentication fails
         ScaffoldMessenger.of(context).showSnackBar(
@@ -142,6 +142,7 @@ class LoginScreenState extends State<LoginScreen> {
                               focusNode: emailFocusNode,
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
+                              readOnly: isLoading, // Disable input when loading
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10.0),
                                 prefixIcon: const Icon(Icons.person, size: 19),
@@ -172,6 +173,7 @@ class LoginScreenState extends State<LoginScreen> {
                               validator: (value) {
                                 return (value == '') ? 'Please enter password' : null;
                               },
+                              readOnly: isLoading, // Disable input when loading
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10.0),
                                 prefixIcon: Transform.rotate(
@@ -300,7 +302,7 @@ class LoginScreenState extends State<LoginScreen> {
                           TextSpan(text: " • "),
                           TextSpan(text: "Privacy Policy"),
                           TextSpan(text: " • "),
-                          TextSpan(text: "Terms of use")
+                          TextSpan(text: "Terms of Service"),
                         ],
                       ),
                     ),

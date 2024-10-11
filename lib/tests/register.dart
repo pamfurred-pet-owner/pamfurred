@@ -29,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'lastName': TextEditingController(),
       'email': TextEditingController(),
       'password': TextEditingController(),
-      'contactNo': TextEditingController(), // Added contact number controller
+      'phone_number': TextEditingController(), // Added contact number controller
       'username': TextEditingController(), // Added username controller
     };
   }
@@ -113,8 +113,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = controllers['password']?.text ?? '';
     final firstName = controllers['firstName']?.text ?? '';
     final lastName = controllers['lastName']?.text ?? '';
-    final contactNo =
-        controllers['contactNo']?.text ?? ''; // Capture contact number
+    final phone_number =
+        controllers['phone_number']?.text ?? ''; // Capture contact number
     final username = controllers['username']?.text ?? ''; // Capture username
 
     try {
@@ -137,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'first_name': firstName,
           'last_name': lastName,
           'email_address': email,
-          'contact_no': contactNo, // Insert contact number into the database
+          'phone_number': phone_number, // Insert contact number into the database
           'username': username, // Insert username into the database
           'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
         }).select();
@@ -232,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Row(
                 children: [
                   Expanded(
-                      child: _buildTextField("Contact Number", "contactNo")),
+                      child: _buildTextField("Phone Number", "phone_number")),
                 ],
               ),
               const SizedBox(height: tertiarySizedBox),

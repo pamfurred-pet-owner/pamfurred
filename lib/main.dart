@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/screens/login.dart';
-import 'package:pamfurred/screens/main_screen.dart';
-import 'package:pamfurred/tests/register_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 void main() async {
   // Lock the app in portrait mode and initialize Supabase
@@ -54,9 +53,7 @@ class MyApp extends StatelessWidget {
               Theme.of(context).colorScheme.copyWith(primary: primaryColor),
           splashFactory: NoSplash.splashFactory, // Disable splash colors
         ),
-        // home: const LoginScreen(),
-        // home: const RegisterScreenTest(),
-        home: const MainScreen(),
+        home: const LoginScreen(),
       ),
     );
   }
