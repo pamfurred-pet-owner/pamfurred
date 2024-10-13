@@ -10,9 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  final String userId; // UUID of the logged-in user
-
-  const ProfileScreen({super.key, required this.userId});
+  const ProfileScreen();
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -31,11 +29,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   // Function to fetch user data from Supabase
   Future<void> _fetchUserData() async {
     try {
+      // Assuming you store user information in the session state or global state
+      // You can directly use those variables here.
+      final userSession = Supabase.instance.client.auth.currentSession;
+
+      if (userSession == null) {
+        throw Exception("User not logged in");
+      }
+
+      // Use your session data to get user info (modify as needed based on how you manage user info)
+      final userId = userSession.user.id; // Get user ID from session
+
       final response = await Supabase.instance.client
           .from('user')
           .select()
-          .eq('user_id', widget.userId)
-          .single(); // Query Supabase for user info
+          .eq('user_id', userId) // Query based on the current user's ID
+          .single();
 
       setState(() {
         profileData = response;
@@ -54,7 +63,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   String convertToAsterisks(String text) {
-    return '*' * text.length; // Create a string of asterisks with the same length
+    return '*' *
+        text.length; // Create a string of asterisks with the same length
   }
 
   @override
@@ -93,7 +103,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   customTitleText(context, "Pets"),
                                   const Icon(Icons.edit,
@@ -105,16 +116,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 height: 60,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      petProfileData.length + 1, // Add 1 for the Add button
+                                  itemCount: petProfileData.length +
+                                      1, // Add 1 for the Add button
                                   itemBuilder: (context, index) {
                                     // Logic for pet profiles and "Add" button
-                                    final petProfileImage = index < petProfileData.length
+                                    final petProfileImage = index <
+                                            petProfileData.length
                                         ? petProfileData[index]['image'] ?? ''
                                         : '';
                                     return index == petProfileData.length
                                         ? _buildAddPetButton(context)
-                                        : _buildPetProfile(petProfileImage, index);
+                                        : _buildPetProfile(
+                                            petProfileImage, index);
                                   },
                                 )),
                           ],
@@ -138,9 +151,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: const ClipOval(
         child: Material(
           color: lightGreyColor, // Button color
-          child: SizedBox(
-              width: 45,
-              child: Icon(Icons.add, color: primaryColor)),
+          child:
+              SizedBox(width: 45, child: Icon(Icons.add, color: primaryColor)),
         ),
       ),
     );
@@ -148,7 +160,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildPetProfile(String imageUrl, int index) {
     return Container(
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: tertiarySizedBox),
+      padding:
+          const EdgeInsets.only(left: 8, right: 8, bottom: tertiarySizedBox),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -168,7 +181,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   : Shimmer.fromColors(
                       baseColor: Colors.grey[300]!,
                       highlightColor: Colors.grey[100]!,
-                      child: Container(height: 40, width: 45, color: Colors.white),
+                      child:
+                          Container(height: 40, width: 45, color: Colors.white),
                     );
             },
             errorBuilder: (context, error, stackTrace) {
@@ -203,7 +217,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     context: context,
                     title: "Name",
                     details:
-                        "${profileData?['first_name']} ${profileData?['last_name']}" ?? '',
+                        "${profileData?['first_name'] ?? ''} ${profileData?['last_name'] ?? ''}",
                   ),
                   _detailsCard(
                     context: context,
@@ -219,7 +233,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     context: context,
                     title: "Address",
                     details:
-                        "${profileData?['door_no']}, ${profileData?['street']}, ${profileData?['barangay']}, ${profileData?['city']}" ?? '',
+                        "${profileData?['door_no'] ?? ''}, ${profileData?['street'] ?? ''}, ${profileData?['barangay'] ?? ''}, ${profileData?['city'] ?? ''}",
                   ),
                 ],
               ),
@@ -292,7 +306,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     Text(title, style: const TextStyle(fontSize: 16)),
                     const SizedBox(height: 8),
-                    Text(details ?? '', style: const TextStyle(color: greyColor)),
+                    Text(details ?? '',
+                        style: const TextStyle(color: greyColor)),
                   ],
                 ),
               ),
@@ -304,44 +319,52 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Future<void> _editDetails(BuildContext context, String field, String details) async {
+  Future<void> _editDetails(
+      BuildContext context, String field, String details) async {
+    // Get the current session
+    Session? userSession = Supabase.instance.client.auth.currentSession;
+
+    if (userSession == null) {
+      throw Exception("User not logged in");
+    }
+
     if (field == "Name") {
       final newValues = await _showEditNameDialog(context, details);
       if (newValues != null) {
-        await Supabase.instance.client
-            .from('user')
-            .update({
-              'first_name': newValues[0],
-              'last_name': newValues[1],
-            })
-            .eq('user_id', widget.userId);
+        await Supabase.instance.client.from('user').update({
+          'first_name': newValues[0],
+          'last_name': newValues[1],
+        }).eq('user_id', userSession.user.id); // Use the session user ID
         _fetchUserData(); // Refresh user data
       }
     } else if (field == "Phone number") {
-      final newPhone = await _showEditSingleFieldDialog(context, details, "Phone Number");
+      final newPhone =
+          await _showEditSingleFieldDialog(context, details, "Phone Number");
       if (newPhone != null) {
         await Supabase.instance.client
             .from('user')
-            .update({'phone_number': newPhone})
-            .eq('user_id', widget.userId);
+            .update({'phone_number': newPhone}).eq(
+                'user_id', userSession.user.id); // Use the session user ID
         _fetchUserData(); // Refresh user data
       }
     } else if (field == "Email address") {
-      final newEmail = await _showEditSingleFieldDialog(context, details, "Email Address");
+      final newEmail =
+          await _showEditSingleFieldDialog(context, details, "Email Address");
       if (newEmail != null) {
         await Supabase.instance.client
             .from('user')
-            .update({'email_address': newEmail})
-            .eq('user_id', widget.userId);
+            .update({'email_address': newEmail}).eq(
+                'user_id', userSession.user.id); // Use the session user ID
         _fetchUserData(); // Refresh user data
       }
     } else if (field == "Username") {
-      final newUsername = await _showEditSingleFieldDialog(context, details, "Username");
+      final newUsername =
+          await _showEditSingleFieldDialog(context, details, "Username");
       if (newUsername != null) {
         await Supabase.instance.client
             .from('user')
-            .update({'username': newUsername})
-            .eq('user_id', widget.userId);
+            .update({'username': newUsername}).eq(
+                'user_id', userSession.user.id); // Use the session user ID
         _fetchUserData(); // Refresh user data
       }
     } else if (field == "Address") {
@@ -350,19 +373,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         await Supabase.instance.client
             .from('address') // Assuming you have an address table
             .update({
-              'street': newAddressValues[0],
-              'barangay': newAddressValues[1],
-              'city': newAddressValues[2],
-            })
-            .eq('user_id', widget.userId); // Assuming you have a reference from user to address
+          'street': newAddressValues[0],
+          'barangay': newAddressValues[1],
+          'city': newAddressValues[2],
+        }).eq('user_id', userSession.user.id); // Use the session user ID
         _fetchUserData(); // Refresh user data
       }
     }
   }
 
-  Future<List<String?>?> _showEditNameDialog(BuildContext context, String currentValue) {
-    TextEditingController firstNameController = TextEditingController(text: currentValue.split(" ")[0]);
-    TextEditingController lastNameController = TextEditingController(text: currentValue.split(" ").length > 1 ? currentValue.split(" ")[1] : '');
+  Future<List<String?>?> _showEditNameDialog(
+      BuildContext context, String currentValue) {
+    TextEditingController firstNameController =
+        TextEditingController(text: currentValue.split(" ")[0]);
+    TextEditingController lastNameController = TextEditingController(
+        text: currentValue.split(" ").length > 1
+            ? currentValue.split(" ")[1]
+            : '');
 
     return showDialog<List<String?>?>(
       context: context,
@@ -372,14 +399,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: firstNameController, decoration: const InputDecoration(labelText: "First Name")),
-              TextField(controller: lastNameController, decoration: const InputDecoration(labelText: "Last Name")),
+              TextField(
+                  controller: firstNameController,
+                  decoration: const InputDecoration(labelText: "First Name")),
+              TextField(
+                  controller: lastNameController,
+                  decoration: const InputDecoration(labelText: "Last Name")),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
             TextButton(
-              onPressed: () => Navigator.of(context).pop([firstNameController.text, lastNameController.text]),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.of(context)
+                  .pop([firstNameController.text, lastNameController.text]),
               child: const Text('Save'),
             ),
           ],
@@ -388,8 +422,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Future<String?> _showEditSingleFieldDialog(BuildContext context, String currentValue, String title) {
-    TextEditingController controller = TextEditingController(text: currentValue);
+  Future<String?> _showEditSingleFieldDialog(
+      BuildContext context, String currentValue, String title) {
+    TextEditingController controller =
+        TextEditingController(text: currentValue);
 
     return showDialog<String?>(
       context: context,
@@ -401,7 +437,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             decoration: InputDecoration(labelText: title),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel')),
             TextButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
               child: const Text('Save'),
@@ -413,9 +451,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<List<String?>?> _showEditAddressDialog(BuildContext context) {
-    TextEditingController streetController = TextEditingController(text: profileData?['street'] ?? '');
-    TextEditingController barangayController = TextEditingController(text: profileData?['barangay'] ?? '');
-    TextEditingController cityController = TextEditingController(text: profileData?['city'] ?? '');
+    TextEditingController streetController =
+        TextEditingController(text: profileData?['street'] ?? '');
+    TextEditingController barangayController =
+        TextEditingController(text: profileData?['barangay'] ?? '');
+    TextEditingController cityController =
+        TextEditingController(text: profileData?['city'] ?? '');
 
     return showDialog<List<String?>?>(
       context: context,
@@ -425,15 +466,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: streetController, decoration: const InputDecoration(labelText: "Street")),
-              TextField(controller: barangayController, decoration: const InputDecoration(labelText: "Barangay")),
-              TextField(controller: cityController, decoration: const InputDecoration(labelText: "City")),
+              TextField(
+                  controller: streetController,
+                  decoration: const InputDecoration(labelText: "Street")),
+              TextField(
+                  controller: barangayController,
+                  decoration: const InputDecoration(labelText: "Barangay")),
+              TextField(
+                  controller: cityController,
+                  decoration: const InputDecoration(labelText: "City")),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
             TextButton(
-              onPressed: () => Navigator.of(context).pop([streetController.text, barangayController.text, cityController.text]),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop([
+                streetController.text,
+                barangayController.text,
+                cityController.text
+              ]),
               child: const Text('Save'),
             ),
           ],

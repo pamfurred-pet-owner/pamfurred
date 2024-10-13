@@ -6,9 +6,7 @@ import 'package:pamfurred/screens/profile.dart';
 import '../components/bottom_navbar.dart';
 
 class MainScreen extends StatefulWidget {
-  final String userId; // The userId passed from the login screen
-
-  const MainScreen({super.key, required this.userId});
+  const MainScreen();
 
   @override
   MainScreenState createState() => MainScreenState();
@@ -32,12 +30,12 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Pass the userId to the ProfileScreen
+    // Define screens without userId
     final List<Widget> screens = [
       const HomeScreen(),
       const AppointmentsScreen(),
       const NotificationsScreen(),
-      ProfileScreen(userId: widget.userId), // Ensure userId is passed to ProfileScreen
+      const ProfileScreen(), // Remove userId as it's managed through session
     ];
 
     return Scaffold(

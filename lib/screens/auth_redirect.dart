@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart'; // For Flutter UI components like Scaffold, Navigator, MaterialPageRoute, etc.
+import 'package:pamfurred/screens/login.dart';
+import 'package:pamfurred/screens/main_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // For using Supabase in Flutter
+
+class AuthRedirect extends StatefulWidget {
+  const AuthRedirect({super.key});
+
+  @override
+  _AuthRedirectState createState() => _AuthRedirectState();
+}
+
+class _AuthRedirectState extends State<AuthRedirect> {
+  @override
+  void initState() {
+    super.initState();
+    _checkSession();
+  }
+
+  Future<void> _checkSession() async {
+    final session = Supabase.instance.client.auth.currentSession;
+    print('Session: $session'); // Log the session to the terminal
+
+    await Future.delayed(const Duration(seconds: 2)); // Add delay for debugging
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (session != null) {
+        // User is logged in, navigate to Home Screen
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      } else {
+        // User is not logged in, navigate to Login Screen
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body:
+          Center(child: CircularProgressIndicator()), // While checking session
+    );
+  }
+}

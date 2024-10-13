@@ -47,16 +47,15 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // Method to check if user is already logged in
+// Method to check if user is already logged in
   Future<void> checkIfUserIsLoggedIn() async {
     final session = Supabase.instance.client.auth.currentSession;
-    final user = Supabase.instance.client.auth.currentUser;
 
-    if (user != null) {
+    if (session != null) {
       // User is already logged in
       Navigator.pushReplacement(
         context,
-        crossFadeRoute(MainScreen(userId: user.id)), // Pass the correct userId
+        crossFadeRoute(MainScreen()), // No need to pass userId
       );
     }
   }
@@ -79,16 +78,14 @@ class LoginScreenState extends State<LoginScreen> {
           const SnackBar(content: Text('Login successful!')),
         );
         // Navigate to MainScreen if authentication is successful
-        Navigator.pushReplacement(context, crossFadeRoute(MainScreen(userId: response.user!.id)));
-      } else if (response.error != null) {
-        // Show error message if authentication fails
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.error!.message)),
+        Navigator.pushReplacement(
+          context,
+          crossFadeRoute(MainScreen()),
         );
       }
-    } catch (e) {
+    } on AuthException catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
+        SnackBar(content: Text(error.message)),
       );
     } finally {
       setState(() {
@@ -146,13 +143,19 @@ class LoginScreenState extends State<LoginScreen> {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10.0),
                                 prefixIcon: const Icon(Icons.person, size: 19),
-                                labelText: emailFocusNode.hasFocus ? '' : 'Email address',
-                                labelStyle: const TextStyle(fontSize: regularText),
-                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                labelText: emailFocusNode.hasFocus
+                                    ? ''
+                                    : 'Email address',
+                                labelStyle:
+                                    const TextStyle(fontSize: regularText),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
                                 filled: true,
-                                fillColor: const Color.fromRGBO(241, 241, 241, 1.0),
+                                fillColor:
+                                    const Color.fromRGBO(241, 241, 241, 1.0),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(secondaryBorderRadius),
+                                  borderRadius: BorderRadius.circular(
+                                      secondaryBorderRadius),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
@@ -171,7 +174,9 @@ class LoginScreenState extends State<LoginScreen> {
                               controller: passwordController,
                               obscureText: obscureText,
                               validator: (value) {
-                                return (value == '') ? 'Please enter password' : null;
+                                return (value == '')
+                                    ? 'Please enter password'
+                                    : null;
                               },
                               readOnly: isLoading, // Disable input when loading
                               decoration: InputDecoration(
@@ -180,8 +185,11 @@ class LoginScreenState extends State<LoginScreen> {
                                   angle: 40,
                                   child: const Icon(Icons.key, size: 19),
                                 ),
-                                labelText: passwordFocusNode.hasFocus ? '' : 'Password',
-                                labelStyle: const TextStyle(fontSize: regularText),
+                                labelText: passwordFocusNode.hasFocus
+                                    ? ''
+                                    : 'Password',
+                                labelStyle:
+                                    const TextStyle(fontSize: regularText),
                                 suffix: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -192,17 +200,22 @@ class LoginScreenState extends State<LoginScreen> {
                                         });
                                       }),
                                       child: Icon(
-                                        obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                                        obscureText
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
                                         size: 19,
                                       ),
                                     )
                                   ],
                                 ),
-                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
                                 filled: true,
-                                fillColor: const Color.fromRGBO(241, 241, 241, 1.0),
+                                fillColor:
+                                    const Color.fromRGBO(241, 241, 241, 1.0),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(secondaryBorderRadius),
+                                  borderRadius: BorderRadius.circular(
+                                      secondaryBorderRadius),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
@@ -242,15 +255,19 @@ class LoginScreenState extends State<LoginScreen> {
                                       }
                                     },
                               style: ButtonStyle(
-                                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(secondaryBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        secondaryBorderRadius),
                                   ),
                                 ),
-                                backgroundColor: WidgetStateProperty.all<Color>(primaryColor),
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                    primaryColor),
                               ),
                               child: isLoading
-                                  ? const CircularProgressIndicator(color: Colors.white)
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
                                   : const Text(
                                       "Login",
                                       style: TextStyle(
@@ -277,7 +294,10 @@ class LoginScreenState extends State<LoginScreen> {
                                     style: const TextStyle(color: primaryColor),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.push(context, rightToLeftRoute(const RegisterScreen()));
+                                        Navigator.push(
+                                            context,
+                                            rightToLeftRoute(
+                                                const RegisterScreen()));
                                       },
                                   )
                                 ],
@@ -296,7 +316,8 @@ class LoginScreenState extends State<LoginScreen> {
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: const TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: regularText),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: regularText),
                         children: [
                           TextSpan(text: "About Pamfurred"),
                           TextSpan(text: " • "),
@@ -315,8 +336,4 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-extension on AuthResponse {
-  get error => null;
 }
