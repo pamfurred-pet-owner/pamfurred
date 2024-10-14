@@ -187,7 +187,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 190,
+                                height: 230,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
@@ -493,7 +493,7 @@ class _ServiceproviderProfileScreenState
                             context: context,
                             builder: (BuildContext context) {
                               return Container(
-                                height: 190,
+                                height: 230,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                       topLeft:
