@@ -7,10 +7,10 @@ class AuthRedirect extends StatefulWidget {
   const AuthRedirect({super.key});
 
   @override
-  _AuthRedirectState createState() => _AuthRedirectState();
+  AuthRedirectState createState() => AuthRedirectState();
 }
 
-class _AuthRedirectState extends State<AuthRedirect> {
+class AuthRedirectState extends State<AuthRedirect> {
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,7 @@ class _AuthRedirectState extends State<AuthRedirect> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body:
           Center(child: CircularProgressIndicator()), // While checking session
     );

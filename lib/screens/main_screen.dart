@@ -6,7 +6,7 @@ import 'package:pamfurred/screens/profile.dart';
 import '../components/bottom_navbar.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen();
+  const MainScreen({super.key});
 
   @override
   MainScreenState createState() => MainScreenState();

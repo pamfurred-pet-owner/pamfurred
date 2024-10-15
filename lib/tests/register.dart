@@ -29,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'lastName': TextEditingController(),
       'email': TextEditingController(),
       'password': TextEditingController(),
-      'phone_number': TextEditingController(), // Added contact number controller
+      'phoneNumber': TextEditingController(), // Added contact number controller
       'username': TextEditingController(), // Added username controller
     };
   }
@@ -113,8 +113,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = controllers['password']?.text ?? '';
     final firstName = controllers['firstName']?.text ?? '';
     final lastName = controllers['lastName']?.text ?? '';
-    final phone_number =
-        controllers['phone_number']?.text ?? ''; // Capture contact number
+    final phoneNumber =
+        controllers['phoneNumber']?.text ?? ''; // Capture contact number
     final username = controllers['username']?.text ?? ''; // Capture username
 
     try {
@@ -137,24 +137,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'first_name': firstName,
           'last_name': lastName,
           'email_address': email,
-          'phone_number': phone_number, // Insert contact number into the database
+          'phone_number':
+              phoneNumber, // Insert contact number into the database
           'username': username, // Insert username into the database
           'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
         }).select();
-
-        // User registered successfully, navigate to OTPAuth screen
-        Navigator.push(context, rightToLeftRoute(const EmailAuth()));
+        if (mounted) {
+          // User registered successfully, navigate to OTPAuth screen
+          Navigator.push(context, rightToLeftRoute(const EmailAuth()));
+        }
       } else {
         // Handle registration error
         final error = response.error?.message ?? "Unknown error";
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration failed: $error")),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Registration failed: $error")),
+          );
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -232,7 +238,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Row(
                 children: [
                   Expanded(
-                      child: _buildTextField("Phone Number", "phone_number")),
+                      child: _buildTextField("Phone Number", "phoneNumber")),
                 ],
               ),
               const SizedBox(height: tertiarySizedBox),

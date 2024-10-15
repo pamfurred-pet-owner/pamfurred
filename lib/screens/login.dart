@@ -55,7 +55,7 @@ class LoginScreenState extends State<LoginScreen> {
       // User is already logged in
       Navigator.pushReplacement(
         context,
-        crossFadeRoute(MainScreen()), // No need to pass userId
+        crossFadeRoute(const MainScreen()), // No need to pass userId
       );
     }
   }
@@ -74,19 +74,25 @@ class LoginScreenState extends State<LoginScreen> {
 
       if (response.session != null) {
         // Save session for the logged-in user
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login successful!')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login successful!')),
+          );
+        }
         // Navigate to MainScreen if authentication is successful
-        Navigator.pushReplacement(
-          context,
-          crossFadeRoute(MainScreen()),
-        );
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            crossFadeRoute(const MainScreen()),
+          );
+        }
       }
     } on AuthException catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.message)),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+      }
     } finally {
       setState(() {
         isLoading = false;

@@ -12,10 +12,10 @@ class EmailAuth extends StatefulWidget {
   const EmailAuth({super.key});
 
   @override
-  State<EmailAuth> createState() => _EmailAuthState();
+  State<EmailAuth> createState() => EmailAuthState();
 }
 
-class _EmailAuthState extends State<EmailAuth> {
+class EmailAuthState extends State<EmailAuth> {
   bool _isLoading = false;
   Timer? _timer;
   int _counter = 300;
@@ -63,14 +63,18 @@ class _EmailAuthState extends State<EmailAuth> {
           _counter = 60; // Restart the timer
           _startTimer();
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Verification email resent!')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Verification email resent!')),
+          );
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error sending verification email: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sending verification email: $e')),
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -142,12 +146,15 @@ class _EmailAuthState extends State<EmailAuth> {
           children: [
             const Text(
               'Please verify your email by clicking the link sent to your inbox.',
-              style: TextStyle(fontSize: regularText, fontWeight: FontWeight.w600),
+              style:
+                  TextStyle(fontSize: regularText, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: secondarySizedBox),
             Center(
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _checkEmailVerification, // Check email verification on press
+                onPressed: _isLoading
+                    ? null
+                    : _checkEmailVerification, // Check email verification on press
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(primaryColor),
                 ),

@@ -10,7 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen();
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -56,9 +56,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         isLoading = false; // Stop loading even on error
       });
       // Show a snackbar on error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to load user data')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load user data')),
+        );
+      }
     }
   }
 
@@ -75,13 +77,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Center(
-            child: SizedBox(
-              width: screenPadding(context),
-              child: isLoading
-                  ? const CircularProgressIndicator() // Show loading spinner
-                  : Column(children: [
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator()) // Show loading spinner
+            : SingleChildScrollView(
+                child: Center(
+                  child: SizedBox(
+                    width: screenPadding(context),
+                    child: Column(children: [
                       const SizedBox(height: tertiarySizedBox),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,28 +111,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 children: [
                                   customTitleText(context, "Pets"),
                                   const Icon(Icons.edit,
-                                      size: 20, color: Colors.black)
+                                      size: 20, color: primaryColor)
                                 ],
                               ),
                             ),
-                            SizedBox(
-                                height: 60,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: petProfileData.length +
-                                      1, // Add 1 for the Add button
-                                  itemBuilder: (context, index) {
-                                    // Logic for pet profiles and "Add" button
-                                    final petProfileImage = index <
-                                            petProfileData.length
-                                        ? petProfileData[index]['image'] ?? ''
-                                        : '';
-                                    return index == petProfileData.length
-                                        ? _buildAddPetButton(context)
-                                        : _buildPetProfile(
-                                            petProfileImage, index);
-                                  },
-                                )),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: tertiarySizedBox,
+                                    right: tertiarySizedBox),
+                                child: SizedBox(
+                                    height: 60,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: petProfileData.length +
+                                          1, // Add 1 for the Add button
+                                      itemBuilder: (context, index) {
+                                        // Logic for pet profiles and "Add" button
+                                        final petProfileImage = index <
+                                                petProfileData.length
+                                            ? petProfileData[index]['image'] ??
+                                                ''
+                                            : '';
+                                        return index == petProfileData.length
+                                            ? _buildAddPetButton(context)
+                                            : _buildPetProfile(
+                                                petProfileImage, index);
+                                      },
+                                    )),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -138,19 +149,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const SizedBox(height: primarySizedBox),
                       _buildAccountCard(context),
                     ]),
-            ),
-          ),
-        ),
+                  ),
+                ),
+              ),
       ),
     );
   }
 
   Widget _buildAddPetButton(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 13),
+      padding: const EdgeInsets.only(bottom: tertiarySizedBox),
       child: const ClipOval(
         child: Material(
-          color: lightGreyColor, // Button color
+          color: lighterSecondaryColor, // Button color
           child:
               SizedBox(width: 45, child: Icon(Icons.add, color: primaryColor)),
         ),
@@ -160,8 +171,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildPetProfile(String imageUrl, int index) {
     return Container(
-      padding:
-          const EdgeInsets.only(left: 8, right: 8, bottom: tertiarySizedBox),
+      padding: const EdgeInsets.only(
+          left: secondarySizedBox,
+          right: primarySizedBox,
+          bottom: tertiarySizedBox),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -260,7 +273,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ]),
             const SizedBox(height: primarySizedBox),
             SizedBox(
-              height: 182,
+              height: 155,
               child: Column(
                 children: [
                   _detailsCard(
@@ -268,11 +281,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     title: "Username",
                     details: profileData?['username'] ?? '',
                   ),
-                  _detailsCard(
-                    context: context,
-                    title: "Password",
-                    details: convertToAsterisks(profileData?['password'] ?? ''),
-                  ),
+                  const InkWell(
+                    child: Card(
+                      color: lightGreyColor,
+                      elevation: 0,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Change password',
+                                      style: TextStyle(fontSize: 16)),
+                                ],
+                              ),
+                            ),
+                            Icon(Icons.arrow_forward_ios_outlined,
+                                color: greyColor),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -311,7 +346,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ],
                 ),
               ),
-              const Icon(Icons.edit, color: Colors.black),
+              const Icon(Icons.arrow_forward_ios_outlined, color: greyColor),
             ],
           ),
         ),
