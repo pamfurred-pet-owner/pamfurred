@@ -125,22 +125,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
         data: {
           'firstName': firstName,
           'lastName': lastName,
-          'username': username, // Include username in the sign-up data
+          'phone_number': phoneNumber,
         },
       );
 
+      final userId = response.user!.id;
+
       if (response.user != null) {
-        // User registered successfully, now add additional info to the users table
-        await Supabase.instance.client.from('user').insert({
-          'user_id': response
-              .user!.id, // Ensure 'id' matches your users table's primary key
+        // Save additional user details (username) in the `pet_owner` table
+        await Supabase.instance.client
+            .from('pet_owner')
+            .insert({'username': username, 'user_id': userId}).select();
+        await Supabase.instance.client.from('users').insert({
+          'user_id': userId,
+          'phone_number': phoneNumber,
+          'email_address': email,
+          'password': password,
+          'user_type': 'pet_owner',
           'first_name': firstName,
           'last_name': lastName,
-          'email_address': email,
-          'phone_number':
-              phoneNumber, // Insert contact number into the database
-          'username': username, // Insert username into the database
-          'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
         }).select();
         if (mounted) {
           // User registered successfully, navigate to OTPAuth screen
@@ -151,7 +154,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final error = response.error?.message ?? "Unknown error";
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Registration failed: $error")),
+            SnackBar(
+                content: Text("Registration failed: $error"),
+                duration: const Duration(seconds: 20)),
           );
         }
       }

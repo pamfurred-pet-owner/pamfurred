@@ -5,6 +5,7 @@ import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/pet_profile_provider.dart';
+import 'package:pamfurred/screens/login.dart';
 import 'package:pamfurred/screens/pet_profile.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
@@ -18,12 +19,22 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Map<String, dynamic>? profileData; // Store user data
+  Map<String, dynamic>? mapUserDetails; // Store user data
   bool isLoading = true; // Loading state
 
   @override
   void initState() {
     super.initState();
     _fetchUserData(); // Fetch user data when the screen initializes
+  }
+
+  void _logout() async {
+    await Supabase.instance.client.auth.signOut();
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
   }
 
   // Function to fetch user data from Supabase
@@ -40,14 +51,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // Use your session data to get user info (modify as needed based on how you manage user info)
       final userId = userSession.user.id; // Get user ID from session
 
-      final response = await Supabase.instance.client
-          .from('user')
+      final username = await Supabase.instance.client
+          .from('pet_owner')
+          .select()
+          .eq('user_id', userId) // Query based on the current user's ID
+          .single();
+
+      final userDetails = await Supabase.instance.client
+          .from('users')
           .select()
           .eq('user_id', userId) // Query based on the current user's ID
           .single();
 
       setState(() {
-        profileData = response;
+        profileData = username;
+        mapUserDetails = userDetails;
         isLoading = false;
       });
     } catch (e) {
@@ -90,7 +108,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildSectionHeader(profileData?['username'] ?? ''),
-                          const Icon(Icons.settings, size: 25),
+                          IconButton(
+                            onPressed: _logout,
+                            icon: const Icon(Icons.logout),
+                            iconSize: 25,
+                            color: greyColor,
+                          )
                         ],
                       ),
                       const SizedBox(height: primarySizedBox),
@@ -230,23 +253,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     context: context,
                     title: "Name",
                     details:
-                        "${profileData?['first_name'] ?? ''} ${profileData?['last_name'] ?? ''}",
+                        "${mapUserDetails?['first_name'] ?? ''} ${mapUserDetails?['last_name'] ?? ''}",
                   ),
                   _detailsCard(
                     context: context,
                     title: "Phone number",
-                    details: profileData?['phone_number'] ?? '',
+                    details: mapUserDetails?['phone_number'] ?? '',
                   ),
                   _detailsCard(
                     context: context,
                     title: "Email address",
-                    details: profileData?['email_address'] ?? '',
+                    details: mapUserDetails?['email_address'] ?? '',
                   ),
                   _detailsCard(
                     context: context,
                     title: "Address",
                     details:
-                        "${profileData?['door_no'] ?? ''}, ${profileData?['street'] ?? ''}, ${profileData?['barangay'] ?? ''}, ${profileData?['city'] ?? ''}",
+                        "${mapUserDetails?['door_no'] ?? ''}, ${mapUserDetails?['street'] ?? ''}, ${mapUserDetails?['barangay'] ?? ''}, ${mapUserDetails?['city'] ?? ''}",
                   ),
                 ],
               ),
@@ -340,7 +363,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 16)),
+                    customRegularWeightTitleText(context, title),
                     const SizedBox(height: 8),
                     Text(details ?? '',
                         style: const TextStyle(color: greyColor)),
