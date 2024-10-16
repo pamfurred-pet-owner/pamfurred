@@ -108,7 +108,7 @@ class LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Form(
           key: formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.disabled,
           child: SizedBox(
             height: double.infinity,
             child: Column(
@@ -133,13 +133,12 @@ class LoginScreenState extends State<LoginScreen> {
                             height: 50,
                             child: TextFormField(
                               validator: (value) {
-                                if (value == '') {
+                                if (value == null || value.isEmpty) {
                                   return 'Please enter email address';
-                                } else {
-                                  return (!EmailValidator.validate(value!))
-                                      ? 'Invalid Email Address'
-                                      : null;
+                                } else if (!EmailValidator.validate(value)) {
+                                  return 'Invalid Email Address';
                                 }
+                                return null;
                               },
                               cursorColor: const Color.fromRGBO(74, 74, 74, 1),
                               focusNode: emailFocusNode,
@@ -180,7 +179,7 @@ class LoginScreenState extends State<LoginScreen> {
                               controller: passwordController,
                               obscureText: obscureText,
                               validator: (value) {
-                                return (value == '')
+                                return (value == null || value.isEmpty)
                                     ? 'Please enter password'
                                     : null;
                               },

@@ -28,8 +28,7 @@ class PetProfileScreenState extends ConsumerState<PetProfileScreen> {
         data: (pet) {
           const double descWidth = 331;
           return SingleChildScrollView(
-            child: Align(
-              alignment: Alignment.center,
+            child: Center(
               child: SizedBox(
                 width: screenPadding(context),
                 child: Column(
@@ -100,14 +99,16 @@ class PetProfileScreenState extends ConsumerState<PetProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: tertiarySizedBox),
-                    SizedBox(
-                      width: descWidth + 25,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          customTitleText(context, 'Basic info'),
-                          editIcon()
-                        ],
+                    Center(
+                      child: SizedBox(
+                        width: descWidth + 25,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            customTitleText(context, 'Basic info'),
+                            editIcon()
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: secondarySizedBox),

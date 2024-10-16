@@ -326,6 +326,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       onTap: details != null && details.isNotEmpty
           ? () => _editDetails(context, title, details)
           : null,
+      hoverColor: Colors.transparent,
       child: Card(
         color: lightGreyColor,
         elevation: 0,
