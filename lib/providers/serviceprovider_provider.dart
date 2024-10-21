@@ -16,6 +16,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "9 am - 5 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic, Home service",
+      "sentiment_label": "positive"
     },
     {
       "sp_id": 2,
@@ -30,6 +31,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "10 am - 6 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic",
+      "sentiment_label": "neutral"
     },
     {
       "sp_id": 3,
@@ -45,6 +47,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "8 am - 4 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "Home service",
+      "sentiment_label": "negative"
     },
     {
       "sp_id": 4,
@@ -60,6 +63,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "9 am - 5 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic, Home service",
+      "sentiment_label": "positive"
     },
     {
       "sp_id": 5,
@@ -75,6 +79,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "10 am - 6 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic",
+      "sentiment_label": "neutral"
     },
     {
       "sp_id": 11,
@@ -89,6 +94,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "9 am - 5 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic, Home service",
+      "sentiment_label": "positive"
     },
     {
       "sp_id": 12,
@@ -103,6 +109,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "8 am - 4 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic",
+      "sentiment_label": "neutral"
     },
     {
       "sp_id": 21,
@@ -117,6 +124,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "9 am - 5 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic, Home service",
+      "sentiment_label": "positive"
     },
     {
       "sp_id": 22,
@@ -131,6 +139,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "8 am - 6 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic",
+      "sentiment_label": "neutral"
     },
     {
       "sp_id": 23,
@@ -146,6 +155,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "9 am - 5 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic",
+      "sentiment_label": "negative"
     },
     {
       "sp_id": 24,
@@ -161,21 +171,7 @@ final mockDbProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "hours": "8 am - 6 pm",
       "pets_catered": "Caters dogs, cats, and bunnies",
       "service_type": "In-clinic, Home service",
-    },
-    {
-      "sp_id": 25,
-      "image":
-          "https://images.pexels.com/photos/1629781/pexels-photo-1629781.jpeg",
-      "name": "Furry Friends Vet Clinic",
-      "address": "Tablon, Cagayan de Oro City",
-      "latitude": 8.5091,
-      "longitude": 124.7689,
-      "rating": 4.3,
-      "category": "Veterinary service",
-      "phone": "+63 917 234 5678",
-      "hours": "10 am - 4 pm",
-      "pets_catered": "Caters dogs, cats, and bunnies",
-      "service_type": "In-clinic",
+      "sentiment_label": "positive"
     }
   ];
 });

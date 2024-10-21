@@ -11,7 +11,7 @@ final Map<String, dynamic> data = {
       "appointment_date": "2024-01-01",
       "appointment_time": "09:00",
       "status": "Done",
-      "total_amount": 50.00
+      "total_amount": 50.00,
     },
     {
       "appointment_id": 2,

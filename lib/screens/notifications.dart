@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pamfurred/components/globals.dart';
+import 'package:pamfurred/components/header.dart';
+import 'package:pamfurred/components/pull_to_refresh.dart';
 // import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/title_text.dart';
 
@@ -141,25 +143,28 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 const SizedBox(height: secondarySizedBox),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      // Today header and appointments
-                      customTitleTextWithPrimaryColor(context, "Today"),
-                      // Today Appointments
-                      ...todayAppointments.map((appointment) {
-                        int index = appointments.indexOf(appointment);
-                        return reusableNotificationCard(index, appointment);
-                      }),
-                      const SizedBox(height: primarySizedBox),
-                      // Earlier Header
-                      customTitleTextWithPrimaryColor(context, "Earlier"),
-                      const SizedBox(height: primarySizedBox),
-                      // Earlier Appointments
-                      ...earlierAppointments.map((appointment) {
-                        int index = appointments.indexOf(appointment);
-                        return reusableNotificationCard(index, appointment);
-                      }),
-                    ],
+                  child: PullToRefresh(
+                    child: ListView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        // Today header and appointments
+                        buildSectionHeader("Today"),
+                        // Today Appointments
+                        ...todayAppointments.map((appointment) {
+                          int index = appointments.indexOf(appointment);
+                          return reusableNotificationCard(index, appointment);
+                        }),
+                        const SizedBox(height: primarySizedBox),
+                        // Earlier Header
+                        buildSectionHeader("Earlier"),
+                        const SizedBox(height: primarySizedBox),
+                        // Earlier Appointments
+                        ...earlierAppointments.map((appointment) {
+                          int index = appointments.indexOf(appointment);
+                          return reusableNotificationCard(index, appointment);
+                        }),
+                      ],
+                    ),
                   ),
                 ),
               ],

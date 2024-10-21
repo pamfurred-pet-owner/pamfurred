@@ -95,6 +95,8 @@ dependencies:
 
   custom_radio_grouped_button: any
 
+  pull_to_refresh_flutter3: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

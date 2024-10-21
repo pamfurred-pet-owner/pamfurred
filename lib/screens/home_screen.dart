@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
+import 'package:pamfurred/components/pull_to_refresh.dart';
 import 'package:pamfurred/math_functions/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/providers/global_providers.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/screens/search_results.dart';
 import 'package:pamfurred/screens/serviceprovider_profile.dart';
@@ -19,8 +22,28 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   bool isSelected = false;
-  int selectedIndex = 0; // No service category selected initially
+  int selectedIndex = 0; // First(1st) service category selected initially
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        ref
+            .read(visibilityProvider.notifier)
+            .setVisible(false); // Hide AppBar & BottomNavBar
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        ref
+            .read(visibilityProvider.notifier)
+            .setVisible(true); // Show AppBar & BottomNavBar
+      }
+    });
+  }
 
   void onItemTap(int index) {
     setState(() {
@@ -46,30 +69,36 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(context),
-      body: SingleChildScrollView(
-        child: Align(
-          alignment: Alignment.center,
-          child: SizedBox(
-            width: screenPadding(context),
-            child: Column(
-              children: [
-                const SizedBox(height: secondarySizedBox),
-                _sectionHeader(context, "Upcoming appointments"),
-                const SizedBox(height: primarySizedBox),
-                _upcomingAppointmentCard(),
-                const SizedBox(height: primarySizedBox),
-                _viewAppointmentsButton(),
-                const SizedBox(height: primarySizedBox),
-                _sectionHeader(context, "I'm looking for"),
-                const SizedBox(height: primarySizedBox),
-                _serviceSelection(context),
-                const SizedBox(height: primarySizedBox),
-                _submitButton(),
-                const SizedBox(height: primarySizedBox),
-                _getRecos(),
-              ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: ref.watch(visibilityProvider) ? appBar(context) : null,
+        body: PullToRefresh(
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: screenPadding(context),
+                child: Column(
+                  children: [
+                    const SizedBox(height: secondarySizedBox),
+                    _sectionHeader(context, "Upcoming appointments"),
+                    const SizedBox(height: primarySizedBox),
+                    _upcomingAppointmentCard(),
+                    const SizedBox(height: primarySizedBox),
+                    _viewAppointmentsButton(),
+                    const SizedBox(height: primarySizedBox),
+                    _sectionHeader(context, "I'm looking for"),
+                    const SizedBox(height: primarySizedBox),
+                    _serviceSelection(context),
+                    const SizedBox(height: primarySizedBox),
+                    _submitButton(),
+                    const SizedBox(height: primarySizedBox),
+                    _getRecos(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -295,8 +324,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return SizedBox(
-      height: 207,
+      height: 225,
       child: ListView.builder(
+        physics:
+            const BouncingScrollPhysics(), // Prevents the list from stretching
         scrollDirection: Axis.horizontal,
         itemCount: items.length > 10 ? 10 : items.length,
         itemBuilder: (context, index) {
@@ -373,11 +404,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                         ]),
-                        const SizedBox(height: primarySizedBox),
+                        const SizedBox(height: secondarySizedBox),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
+                            SizedBox(
+                              width: 150,
                               child: Text(sp['name'],
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -385,9 +417,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                                       fontSize: regularText,
                                       fontWeight: mediumWeight)),
                             ),
+                            sentimentLabelTextWidget(sp['sentiment_label']),
                           ],
                         ),
-                        const SizedBox(height: primarySizedBox),
+                        const SizedBox(height: secondarySizedBox),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -443,6 +476,35 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget sentimentLabelTextWidget(String text) {
+    Color borderColor;
+
+    if (text == 'positive') {
+      borderColor = Colors.green;
+    } else if (text == 'negative') {
+      borderColor = Colors.red;
+    } else {
+      borderColor = darkGreyColor;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor, width: .75), // Outline border
+        borderRadius:
+            BorderRadius.circular(primaryBorderRadius), // Optional: for rounded corners
+      ),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 8.0, vertical: 4.0), // Padding around the text
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: smallText,
+          color: borderColor, // Use the same color for the text
+        ),
+      ),
     );
   }
 }

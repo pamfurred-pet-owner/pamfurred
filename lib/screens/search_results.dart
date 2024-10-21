@@ -174,6 +174,7 @@ class SearchResultsScreenState extends State<SearchResultsScreen> {
             Expanded(
               child: isLoading
                   ? ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: 6, // number of shimmer items
                       itemBuilder: (context, index) {
                         return Shimmer.fromColors(
@@ -229,6 +230,7 @@ class SearchResultsScreenState extends State<SearchResultsScreen> {
                       },
                     )
                   : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       itemCount: providers.length,
                       itemBuilder: (context, index) {
                         var provider = providers[index];

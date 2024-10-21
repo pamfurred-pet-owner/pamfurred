@@ -61,9 +61,12 @@ class AppointmentsScreenState extends ConsumerState<AppointmentsScreen>
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: List.generate(5, (index) => _buildAppointmentList()),
+      body: Center(
+        child: TabBarView(
+          controller: _tabController,
+          physics: const BouncingScrollPhysics(),
+          children: List.generate(5, (index) => _buildAppointmentList()),
+        ),
       ),
     );
   }
@@ -88,6 +91,7 @@ class AppointmentsScreenState extends ConsumerState<AppointmentsScreen>
     }
 
     return ListView.builder(
+      physics: const BouncingScrollPhysics(),
       itemCount: appointmentList.length,
       itemBuilder: (context, index) {
         final appointment = appointmentList[index];

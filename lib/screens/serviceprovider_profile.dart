@@ -9,10 +9,10 @@ import 'package:pamfurred/components/regular_text.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/cart_provider.dart';
+import 'package:pamfurred/providers/global_providers.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/providers/sp_profile_provider_packages.dart';
 import 'package:pamfurred/providers/sp_profile_provider_services.dart';
-import 'package:pamfurred/providers/sp_tab_provider.dart';
 import 'package:pamfurred/screens/cart_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -882,7 +882,7 @@ class _ServiceproviderProfileScreenState
           children: [
             Icon(icon, size: 20, color: const Color.fromARGB(255, 26, 10, 10)),
             const SizedBox(width: secondarySizedBox),
-            regularGreyTextWidget(detail),
+            regularTextWidget(detail),
           ],
         ),
         const SizedBox(height: secondarySizedBox),

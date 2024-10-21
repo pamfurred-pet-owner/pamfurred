@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Primarily for homescreen
 AppBar appBar(BuildContext context) {
   return AppBar(
-    shape: const Border.symmetric(horizontal: BorderSide(width: .1)),
     backgroundColor: Colors.white,
     toolbarHeight: 60,
     leadingWidth: 190,

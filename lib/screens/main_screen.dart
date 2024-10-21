@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pamfurred/providers/global_providers.dart';
 import 'package:pamfurred/screens/home_screen.dart';
 import 'package:pamfurred/screens/appointments.dart';
 import 'package:pamfurred/screens/notifications.dart';
 import 'package:pamfurred/screens/profile.dart';
 import '../components/bottom_navbar.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class MainScreenState extends ConsumerState<MainScreen> {
   int currentIndex = 0;
   final PageController _pageController = PageController();
 
@@ -35,7 +37,7 @@ class MainScreenState extends State<MainScreen> {
       const HomeScreen(),
       const AppointmentsScreen(),
       const NotificationsScreen(),
-      const ProfileScreen(), // Remove userId as it's managed through session
+      const ProfileScreen(), // Removed userId as it's managed through session
     ];
 
     return Scaffold(
@@ -45,19 +47,21 @@ class MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: screens,
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-      ),
+      bottomNavigationBar: ref.watch(visibilityProvider)
+          ? CustomBottomNavBar(
+              currentIndex: currentIndex,
+              onTap: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+                _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+            )
+          : null,
     );
   }
 }
