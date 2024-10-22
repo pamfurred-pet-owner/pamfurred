@@ -5,6 +5,7 @@ import 'package:pamfurred/components/header.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
 import 'package:pamfurred/providers/pet_profile_provider.dart';
+import 'package:pamfurred/screens/login.dart';
 import 'package:pamfurred/screens/pet_profile.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
@@ -24,6 +25,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
     _fetchUserData(); // Fetch user data when the screen initializes
+  }
+
+  void _logout() async {
+    await Supabase.instance.client.auth.signOut();
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
   }
 
   // Function to fetch user data from Supabase
@@ -90,7 +100,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildSectionHeader(profileData?['username'] ?? ''),
-                          const Icon(Icons.settings, size: 25),
+                          IconButton(
+                              icon: const Icon(Icons.logout),
+                              iconSize: 25,
+                              color: greyColor,
+                              onPressed: _logout),
                         ],
                       ),
                       const SizedBox(height: primarySizedBox),
@@ -230,7 +244,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     context: context,
                     title: "Name",
                     details:
-                        "${profileData?['first_name'] ?? ''} ${profileData?['last_name'] ?? ''}",
+                        "${profileData?['first_name']} ${profileData?['last_name']}",
                   ),
                   _detailsCard(
                     context: context,
@@ -418,14 +432,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  Future<List<String?>?> _showEditNameDialog(
-      BuildContext context, String currentValue) {
-    TextEditingController firstNameController =
-        TextEditingController(text: currentValue.split(" ")[0]);
-    TextEditingController lastNameController = TextEditingController(
-        text: currentValue.split(" ").length > 1
-            ? currentValue.split(" ")[1]
-            : '');
+Future<List<String?>?> _showEditNameDialog(
+    BuildContext context, String currentValue) {
+  
+  // If there is more than one word, treat the last part as the last name and the rest as the first name
+  String firstName = profileData?['first_name'] ;
+  String lastName = profileData?['last_name'];
+
+  TextEditingController firstNameController = TextEditingController(text: firstName);
+  TextEditingController lastNameController = TextEditingController(text: lastName);
 
     return showDialog<List<String?>?>(
       context: context,

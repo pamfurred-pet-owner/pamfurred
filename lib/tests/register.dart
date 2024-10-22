@@ -113,9 +113,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = controllers['password']?.text ?? '';
     final firstName = controllers['firstName']?.text ?? '';
     final lastName = controllers['lastName']?.text ?? '';
-    final phoneNumber =
-        controllers['phoneNumber']?.text ?? ''; // Capture contact number
-    final username = controllers['username']?.text ?? ''; // Capture username
+    final phoneNumber = controllers['phoneNumber']?.text ?? '';
+    final username = controllers['username']?.text ?? '';
 
     try {
       // Call Supabase Auth to sign up the user with email and password
@@ -125,26 +124,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
         data: {
           'firstName': firstName,
           'lastName': lastName,
-          'username': username, // Include username in the sign-up data
+          'username': username,
         },
       );
 
       if (response.user != null) {
-        // User registered successfully, now add additional info to the users table
-        await Supabase.instance.client.from('user').insert({
-          'user_id': response
-              .user!.id, // Ensure 'id' matches your users table's primary key
-          'first_name': firstName,
-          'last_name': lastName,
-          'email_address': email,
-          'phone_number':
-              phoneNumber, // Insert contact number into the database
-          'username': username, // Insert username into the database
-          'user_type': 'pet_owner', // Hardcoded as 'pet_owner'
-        }).select();
-        if (mounted) {
-          // User registered successfully, navigate to OTPAuth screen
-          Navigator.push(context, rightToLeftRoute(const EmailAuth()));
+        // User registered successfully, now add additional info to the pet_owner table first
+        final petOwnerResponse =
+            await Supabase.instance.client.from('pet_owner').insert({
+          'username': username,
+          'user_id': response.user!
+              .id, // Ensure you pass the user_id to associate the pet owner
+        }); // Execute the query to get the response
+
+        if (petOwnerResponse.error == null) {
+          // Proceed to insert into the user table
+          final userResponse =
+              await Supabase.instance.client.from('user').insert({
+            'user_id': response.user!.id,
+            'first_name': firstName,
+            'last_name': lastName,
+            'email_address': email,
+            'phone_number': phoneNumber,
+            'username': username,
+            'user_type': 'pet_owner',
+          }); // Execute the query to get the response
+
+          if (userResponse.error == null) {
+            // Both insertions successful, navigate to OTPAuth screen
+            if (mounted) {
+              Navigator.push(context, rightToLeftRoute(const EmailAuth()));
+            }
+          } else {
+            // Handle user insertion error
+            final error = userResponse.error?.message ?? "Unknown error";
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Error inserting user: $error")),
+              );
+            }
+          }
+        } else {
+          // Handle pet owner insertion error
+          final error = petOwnerResponse.error?.message ?? "Unknown error";
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Error inserting pet owner: $error")),
+            );
+          }
         }
       } else {
         // Handle registration error

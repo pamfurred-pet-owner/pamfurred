@@ -5,7 +5,8 @@ import 'package:pamfurred/components/screen_transitions.dart';
 import 'package:pamfurred/components/title_text.dart';
 // import 'package:pamfurred/providers/cart_provider.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
-import 'package:pamfurred/screens/home_screen.dart';
+import 'package:pamfurred/screens/main_screen.dart';
+
 import '../components/globals.dart';
 
 class SuccessfulAppointment extends ConsumerWidget {
@@ -140,7 +141,7 @@ class SuccessfulAppointment extends ConsumerWidget {
                     text: 'Return to dashboard',
                     onPressed: () {
                       Navigator.push(
-                          context, crossFadeRoute(const HomeScreen()));
+                          context, crossFadeRoute(const MainScreen()));
                     }),
               )
             ],

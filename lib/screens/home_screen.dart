@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pamfurred/components/custom_appbar.dart';
 import 'package:pamfurred/components/custom_padded_button.dart';
-import 'package:pamfurred/math_functions/distance_calculator.dart';
 import 'package:pamfurred/components/globals.dart';
 import 'package:pamfurred/components/screen_transitions.dart';
+import 'package:pamfurred/math_functions/distance_calculator.dart';
 import 'package:pamfurred/providers/serviceprovider_provider.dart';
 import 'package:pamfurred/screens/search_results.dart';
 import 'package:pamfurred/screens/serviceprovider_profile.dart';
+
 import '../components/title_text.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -283,9 +284,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _serviceProviders(String serviceCategory) {
-    final allItems = ref.watch(mockDbProvider);
-    final items =
-        allItems.where((item) => item['category'] == serviceCategory).toList();
+    final allItems = ref.watch(dataProvider);
+
+  return allItems.when(
+    data: (allItems) {
+      // Filter the items based on serviceCategory
+      final items = allItems
+          .where((item) => item['category'] == serviceCategory)
+          .toList();
 
     if (items.isEmpty) {
       return const SizedBox(
@@ -445,4 +451,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       ],
     );
   }
+  ,loading: () => const Center(
+      child: CircularProgressIndicator(),
+    ),
+  error: (err, stack) => Center(
+      child: Text('Error: $err'),
+    ),
+  );
+}
 }
