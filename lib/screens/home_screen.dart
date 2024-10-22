@@ -74,32 +74,37 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         backgroundColor: Colors.white,
         appBar: ref.watch(visibilityProvider) ? appBar(context) : null,
         body: PullToRefresh(
-          child: SingleChildScrollView(
+          child: ListView(
             controller: _scrollController,
-            child: Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: screenPadding(context),
-                child: Column(
-                  children: [
-                    const SizedBox(height: secondarySizedBox),
-                    _sectionHeader(context, "Upcoming appointments"),
-                    const SizedBox(height: primarySizedBox),
-                    _upcomingAppointmentCard(),
-                    const SizedBox(height: primarySizedBox),
-                    _viewAppointmentsButton(),
-                    const SizedBox(height: primarySizedBox),
-                    _sectionHeader(context, "I'm looking for"),
-                    const SizedBox(height: primarySizedBox),
-                    _serviceSelection(context),
-                    const SizedBox(height: primarySizedBox),
-                    _submitButton(),
-                    const SizedBox(height: primarySizedBox),
-                    _getRecos(),
-                  ],
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: screenPadding(context),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: secondarySizedBox),
+                        _sectionHeader(context, "Upcoming appointments"),
+                        const SizedBox(height: primarySizedBox),
+                        _upcomingAppointmentCard(),
+                        const SizedBox(height: primarySizedBox),
+                        _viewAppointmentsButton(),
+                        const SizedBox(height: primarySizedBox),
+                        _sectionHeader(context, "I'm looking for"),
+                        const SizedBox(height: primarySizedBox),
+                        _serviceSelection(context),
+                        const SizedBox(height: primarySizedBox),
+                        _submitButton(),
+                        const SizedBox(height: primarySizedBox),
+                        _getRecos(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -493,8 +498,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: borderColor, width: .75), // Outline border
-        borderRadius:
-            BorderRadius.circular(primaryBorderRadius), // Optional: for rounded corners
+        borderRadius: BorderRadius.circular(
+            primaryBorderRadius), // Optional: for rounded corners
       ),
       padding: const EdgeInsets.symmetric(
           horizontal: 8.0, vertical: 4.0), // Padding around the text

@@ -8,12 +8,11 @@ class CustomHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ClassicHeader(
-      refreshingText: 'Loading...',
+      refreshingText: '',
       completeText: '',
       failedText: 'Refresh Failed',
-      idleText: 'Pull down to refresh',
+      idleText: '',
       releaseText: 'Release to refresh',
-      // Adjust the distance by modifying the `height`
       height: 100.0, // Adjust height for pull distance
     );
   }
