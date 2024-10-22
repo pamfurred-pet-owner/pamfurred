@@ -286,177 +286,184 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _serviceProviders(String serviceCategory) {
     final allItems = ref.watch(dataProvider);
 
-  return allItems.when(
-    data: (allItems) {
-      // Filter the items based on serviceCategory
-      final items = allItems
-          .where((item) => item['category'] == serviceCategory)
-          .toList();
+    return allItems.when(
+      data: (allItems) {
+        // Filter the items based on serviceCategory
+        final items = allItems
+            .where((item) => item['category'] == serviceCategory)
+            .toList();
 
-    if (items.isEmpty) {
-      return const SizedBox(
-        height: 150,
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
+        if (items.isEmpty) {
+          return const SizedBox(
+            height: 150,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    return SizedBox(
-      height: 207,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length > 10 ? 10 : items.length,
-        itemBuilder: (context, index) {
-          final sp = items[index];
-          final imageUrl = sp['image'].isEmpty
-              ? 'https://tinyurl.com/3tnt6yyy'
-              : sp['image'];
-          final rating = (sp['rating'] == 0.0)
-              ? 'N/A'
-              : sp['rating']; // Default to 'N/A' if rating is 0.0
+        return SizedBox(
+          height: 207,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: items.length > 10 ? 10 : items.length,
+            itemBuilder: (context, index) {
+              final sp = items[index];
+              final imageUrl = sp['image'].isEmpty
+                  ? 'https://tinyurl.com/3tnt6yyy'
+                  : sp['image'];
+              final rating = (sp['rating'] == 0.0)
+                  ? 'N/A'
+                  : sp['rating']; // Default to 'N/A' if rating is 0.0
 
-          return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: primarySizedBox),
-              child: GestureDetector(
-                onTap: () {
-                  ref.read(selectedSpIndexProvider.notifier).state =
-                      sp['sp_id'].toString();
-                  Navigator.push(context,
-                      rightToLeftRoute(const ServiceproviderProfileScreen()));
-                },
-                child: SizedBox(
-                  width: 250,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(secondaryBorderRadius)),
-                    elevation: 0,
-                    color: Colors.transparent,
-                    child: Column(
-                      children: [
-                        Stack(children: [
-                          Positioned(
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                  color: lightGreyColor,
-                                  borderRadius: BorderRadius.circular(
-                                      primaryBorderRadius)),
-                            ),
-                          ),
-                          Positioned(
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(primaryBorderRadius),
-                              child: Image.network(
-                                imageUrl,
-                                width: double.infinity,
-                                height: 150,
-                                fit: sp['image'].isEmpty
-                                    ? BoxFit.contain
-                                    : BoxFit.cover,
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  } else {
-                                    return const SizedBox(
-                                        height: 150,
-                                        child: Center(
-                                            child:
-                                                CircularProgressIndicator()));
-                                  }
-                                },
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  return const SizedBox(
-                                      width: double.infinity,
-                                      height: 150,
-                                      child: Center(child: Icon(Icons.error)));
-                                },
+              return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: primarySizedBox),
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(selectedSpIndexProvider.notifier).state =
+                          sp['sp_id'].toString();
+                      Navigator.push(
+                          context,
+                          rightToLeftRoute(
+                              const ServiceproviderProfileScreen()));
+                    },
+                    child: SizedBox(
+                      width: 250,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(secondaryBorderRadius)),
+                        elevation: 0,
+                        color: Colors.transparent,
+                        child: Column(
+                          children: [
+                            Stack(children: [
+                              Positioned(
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                      color: lightGreyColor,
+                                      borderRadius: BorderRadius.circular(
+                                          primaryBorderRadius)),
+                                ),
                               ),
+                              Positioned(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      primaryBorderRadius),
+                                  child: Image.network(
+                                    imageUrl,
+                                    width: double.infinity,
+                                    height: 150,
+                                    fit: sp['image'].isEmpty
+                                        ? BoxFit.contain
+                                        : BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return const SizedBox(
+                                            height: 150,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()));
+                                      }
+                                    },
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return const SizedBox(
+                                          width: double.infinity,
+                                          height: 150,
+                                          child:
+                                              Center(child: Icon(Icons.error)));
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            const SizedBox(height: primarySizedBox),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Text(sp['name'],
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                          fontSize: regularText,
+                                          fontWeight: mediumWeight)),
+                                ),
+                              ],
                             ),
-                          ),
-                        ]),
-                        const SizedBox(height: primarySizedBox),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(sp['name'],
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                      fontSize: regularText,
-                                      fontWeight: mediumWeight)),
+                            const SizedBox(height: primarySizedBox),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.star,
+                                        size: 19, color: secondaryColor),
+                                    Text(rating.toString())
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(CupertinoIcons.location,
+                                        size: 19),
+                                    Text(calculateDistance(
+                                        sp['latitude'], sp['longitude']))
+                                  ],
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        const SizedBox(height: primarySizedBox),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.star,
-                                    size: 19, color: secondaryColor),
-                                Text(rating.toString())
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Icon(CupertinoIcons.location, size: 19),
-                                Text(calculateDistance(
-                                    sp['latitude'], sp['longitude']))
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ));
-        },
-      ),
-    );
-  }
-
-  Widget serviceProviderImage(String imageUrl) {
-    return Container(
-      height: 140,
-      width: 250,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(secondaryBorderRadius),
-        color: Colors.grey[200],
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(imageUrl),
-        ),
-      ),
-    );
-  }
-
-  Widget serviceProviderName(String name) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
+                  ));
+            },
           ),
-        ),
-      ],
+        );
+      }
+
+      // Widget serviceProviderImage(String imageUrl) {
+      //   return Container(
+      //     height: 140,
+      //     width: 250,
+      //     decoration: BoxDecoration(
+      //       borderRadius: BorderRadius.circular(secondaryBorderRadius),
+      //       color: Colors.grey[200],
+      //       image: DecorationImage(
+      //         fit: BoxFit.cover,
+      //         image: NetworkImage(imageUrl),
+      //       ),
+      //     ),
+      //   );
+      // }
+
+      // Widget serviceProviderName(String name) {
+      //   return Row(
+      //     children: [
+      //       Expanded(
+      //         child: Text(
+      //           name,
+      //           style: const TextStyle(fontWeight: FontWeight.bold),
+      //           overflow: TextOverflow.ellipsis,
+      //         ),
+      //       ),
+      //     ],
+      //   );
+      // }
+      ,
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (err, stack) => Center(
+        child: Text('Error: $err'),
+      ),
     );
   }
-  ,loading: () => const Center(
-      child: CircularProgressIndicator(),
-    ),
-  error: (err, stack) => Center(
-      child: Text('Error: $err'),
-    ),
-  );
-}
 }

@@ -4,12 +4,21 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase_package;
 final supabase = supabase_package.Supabase.instance.client;
 
 Future<List<Map<String, dynamic>>> fetchDataFromSupabase() async {
-  final response = await supabase.from('service_provider').select();
+  final response = await supabase_package.Supabase.instance.client
+      .rpc('get_service_providers_by_category');
   if (response.error != null) {
     throw response.error!;
   }
   return response.data as List<Map<String, dynamic>>;
 }
+
+// Future<List<Map<String, dynamic>>> fetchDataFromSupabase() async {
+//   final response = await supabase.from('service_provider').select();
+//   if (response.error != null) {
+//     throw response.error!;
+//   }
+//   return response.data as List<Map<String, dynamic>>;
+// }
 
 final dataProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   try {

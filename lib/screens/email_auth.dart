@@ -18,22 +18,24 @@ class EmailAuth extends StatefulWidget {
 class EmailAuthState extends State<EmailAuth> {
   bool _isLoading = false;
   Timer? _timer;
-  int _counter = 300;
+  int _counter = 60;
+  final TextEditingController _otpController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _startTimer();
-    _checkEmailVerificationRepeatedly(); // Start checking email verification
+    _sendOtpEmail(); // Send OTP to user's email on load
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _otpController.dispose();
     super.dispose();
   }
 
-  // Start the timer for countdown to resend the verification email
+  // Start the timer for countdown to resend the OTP email
   void _startTimer() {
     _counter = 60;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -47,8 +49,8 @@ class EmailAuthState extends State<EmailAuth> {
     });
   }
 
-  // Resend the email verification link
-  Future<void> _resendVerificationEmail() async {
+  // Resend the OTP verification email
+  Future<void> _sendOtpEmail() async {
     setState(() {
       _isLoading = true;
     });
@@ -65,14 +67,14 @@ class EmailAuthState extends State<EmailAuth> {
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verification email resent!')),
+            const SnackBar(content: Text('OTP email sent! Check your inbox.')),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error sending verification email: $e')),
+          SnackBar(content: Text('Error sending OTP email: $e')),
         );
       }
     } finally {
@@ -82,57 +84,54 @@ class EmailAuthState extends State<EmailAuth> {
     }
   }
 
-  // Check if the user's email has been authenticated
-  Future<void> _checkEmailVerification() async {
+  // Verify the OTP entered by the user
+  Future<void> _verifyOtp() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // Check if the current user has verified their email
-      final session = Supabase.instance.client.auth.currentSession;
-      final user = session?.user;
+      final otp = _otpController.text.trim();
 
-      if (user != null && user.emailConfirmedAt != null) {
-        // If the email is verified, redirect to the SuccessfulRegistration screen
-        Navigator.push(
-            context, rightToLeftRoute(const SuccessfulRegistration()));
-      } else {
-        // If email not verified, show a message
+      if (otp.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please verify your email to proceed.')),
+          const SnackBar(
+              content: Text('Please enter the OTP sent to your email.')),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final response = await Supabase.instance.client.auth.verifyOTP(
+        email: Supabase.instance.client.auth.currentSession!.user.email!,
+        token: otp,
+        type: OtpType.email, // Specify that this is an email OTP verification
+      );
+
+      if (response.user != null) {
+        // If OTP is verified, redirect to the SuccessfulRegistration screen
+        if (mounted) {
+          Navigator.push(
+            context,
+            rightToLeftRoute(const SuccessfulRegistration()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid OTP. Please try again.')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error verifying user: $e')),
+        SnackBar(content: Text('Error verifying OTP: $e')),
       );
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
-  }
-
-  // Continuously check for email verification until success or timeout
-  void _checkEmailVerificationRepeatedly() {
-    Timer.periodic(const Duration(seconds: 5), (timer) async {
-      final session = Supabase.instance.client.auth.currentSession;
-      final user = session?.user;
-
-      if (user == null || user.emailConfirmedAt == null) {
-        // Email not verified, continue checking
-        await _checkEmailVerification();
-      } else {
-        // Email verified, stop checking
-        timer.cancel();
-      }
-
-      // If the counter reaches zero, stop checking
-      if (_counter == 0) {
-        timer.cancel();
-      }
-    });
   }
 
   @override
@@ -145,23 +144,31 @@ class EmailAuthState extends State<EmailAuth> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Please verify your email by clicking the link sent to your inbox.',
+              'Enter the OTP sent to your email to verify your account.',
               style:
                   TextStyle(fontSize: regularText, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: secondarySizedBox),
+            TextField(
+              controller: _otpController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'OTP',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: secondarySizedBox),
             Center(
               child: ElevatedButton(
-                onPressed: _isLoading
-                    ? null
-                    : _checkEmailVerification, // Check email verification on press
+                onPressed:
+                    _isLoading ? null : _verifyOtp, // Verify OTP on press
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(primaryColor),
+                  backgroundColor: MaterialStateProperty.all(primaryColor),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
-                        'Check Verification',
+                        'Verify OTP',
                         style: TextStyle(color: Colors.white),
                       ),
               ),
@@ -169,16 +176,16 @@ class EmailAuthState extends State<EmailAuth> {
             const SizedBox(height: secondarySizedBox),
             Center(
               child: Text(
-                'Resend verification email in $_counter seconds',
+                'Resend OTP in $_counter seconds',
                 style: const TextStyle(color: greyColor),
               ),
             ),
             const SizedBox(height: secondarySizedBox),
             Center(
               child: TextButton(
-                onPressed: _counter == 0 ? _resendVerificationEmail : null,
+                onPressed: _counter == 0 ? _sendOtpEmail : null,
                 child: const Text(
-                  'Resend Verification Email',
+                  'Resend OTP',
                   style: TextStyle(color: primaryColor),
                 ),
               ),
